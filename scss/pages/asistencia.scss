@@ -1,0 +1,308 @@
+.asistencia {
+  main {
+    padding: 0;
+
+    .content {
+      padding: 40px clamp(20px, 3vw, 80px) 120px;
+
+      .info {
+        margin-bottom: 30px;
+      }
+
+      h2 {
+        margin-bottom: 30px;
+      }
+
+      h3 {
+        margin-bottom: 16px;
+      }
+
+      .inactive,
+      .indaycare,
+      .inhome {
+        justify-items: center;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(115px, 1fr));
+        gap: 20px 90px;
+
+        li {
+          cursor: pointer;
+          width: 115px;
+
+          .image {
+            position: relative;
+
+            .options {
+              position: absolute;
+              top: 0;
+              right: 0;
+              width: 16px;
+              height: 16px;
+
+              i {
+                color: var(--gris3);
+                font-size: 16px;
+              }
+
+              ul {
+                box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+                border-radius: 8px;
+                overflow: hidden;
+                width: 120px;
+                position: absolute;
+                top: 100%;
+                right: 0;
+                display: none;
+                background-color: #fff;
+
+                li {
+                  button {
+                    padding: 5px 10px;
+                    width: 100%;
+                    font-size: 12px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 20px;
+                    text-align: left;
+
+                    &:hover {
+                      opacity: 0.5;
+                    }
+
+                    &#desactivar {
+                      color: var(--morita);
+                      border-bottom: 1px solid #e1e4e9;
+                    }
+
+                    &#eliminar {
+                      color: var(--sandia);
+                    }
+                  }
+                }
+              }
+
+              &:hover {
+                ul {
+                  display: block;
+                }
+              }
+            }
+
+            &>img {
+              border: 4px solid;
+              height: 115px;
+              width: 115px;
+              border-radius: 50%;
+            }
+
+            &>i {
+              position: absolute;
+              bottom: 0;
+              right: 0;
+              color: #fff;
+              font-size: 16px;
+              padding: 8px;
+              border-radius: 50%;
+            }
+          }
+
+          .name {
+            color: var(--gris1, #140a4c);
+            text-align: center;
+            font-size: 12px;
+            font-style: normal;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: normal;
+            margin: 15px auto;
+          }
+
+          .acuarelausers-buttons {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: scale(0) translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+
+            .acuarelauser-button {
+              position: absolute;
+              width: 40px; // Ajustar tamaño del botón
+              height: 40px; // Ajustar tamaño del botón
+              border-radius: 50%;
+              background-color: #fff; // Ajustar color de fondo
+              border: 1px solid #ccc; // Ajustar borde
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              cursor: pointer;
+              transition: transform 0.3s;
+
+
+
+              img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                border-width: 2px;
+              }
+
+              .acuarelauser-name {
+                display: none; // Ocultar el nombre por defecto
+                position: absolute;
+                top: 50%;
+                left: 110%;
+                color: var(--gris1, #140A4C);
+                font-size: 15px;
+                font-style: normal;
+                font-weight: 700;
+                line-height: 20px;
+                width: 120px;
+                text-align: left;
+                transform: translateY(-50%);
+              }
+
+              &:hover {
+                transform: scale(1.1);
+
+                .acuarelauser-name {
+                  display: block; // Ocultar el nombre por defecto
+                }
+              }
+            }
+          }
+
+          &.active {
+
+
+            .acuarelausers-buttons {
+              transform: scale(1) translate(-50%, -50%);
+            }
+
+            .image {
+
+              &>i {
+                display: none;
+              }
+            }
+          }
+        }
+
+        &.activeKid {
+          li {
+            opacity: 0.5;
+
+            &.active {
+              opacity: 1;
+            }
+          }
+        }
+      }
+
+      .indaycare {
+        li {
+          .image {
+            img {
+              border-color: var(--cielo);
+            }
+
+            &>i {
+              background-color: var(--cielo);
+            }
+          }
+        }
+      }
+
+      .inhome {
+        li {
+          .image {
+            img {
+              border-color: var(--pollito);
+            }
+
+            &>i {
+              background-color: var(--pollito);
+            }
+          }
+        }
+      }
+
+      .inactive {
+        li {
+          .image {
+            opacity: 0.5;
+
+            img {
+              border-color: var(--gris1);
+            }
+
+            &>i {
+              background-color: var(--gris1);
+            }
+          }
+
+          button {
+            color: var(--secundario1);
+            display: flex;
+            align-items: center;
+            margin: 0 auto;
+            justify-content: center;
+          }
+        }
+      }
+    }
+  }
+}
+
+.methods-register {
+  display: flex;
+  justify-content: center;
+  gap: 122px;
+  width: 100%;
+
+  button {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    svg {
+      width: 127px;
+      height: 127px;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+      margin: 0 auto;
+    }
+
+    span {
+      color: var(--gris2, #55637E);
+      text-align: center;
+      font-size: 12px;
+      display: block;
+      width: 100%;
+      font-style: normal;
+      font-weight: 700;
+      line-height: normal;
+    }
+
+    .info {
+      margin: 0 auto;
+
+      p {
+        margin: 0;
+        color: #FFF;
+      }
+    }
+
+    &:hover {
+      svg {
+        transform: scale(1.1);
+      }
+    }
+  }
+}

@@ -1,0 +1,113 @@
+a {
+  color: inherit;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1366px;
+  width: 100%;
+  padding: 0 20px;
+}
+
+.splide__list {
+  transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+hr {
+  border-color: #e1e4e9;
+  margin: 40px auto;
+}
+
+.hidden {
+  display: none;
+}
+
+body {
+  display: grid;
+  background: var(--Fondos-Fondo-1, #F0FEFF);
+  grid-template-columns: 257px 1fr;
+
+  main {
+    position: relative;
+    background-image: url(../img/manchas/inferior_derecha.svg);
+    background-size: 640px;
+    background-position: 107% 100%;
+    background-repeat: no-repeat;
+
+    @media only screen and (max-width: 1023px) {
+      grid-column: span 2;
+    }
+
+    .content {
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+  }
+
+  header {
+    i {
+      &.acuarela-Menu {
+        display: block;
+      }
+
+      &.acuarela-Cancelar {
+        display: none;
+      }
+    }
+  }
+
+  &.activeMenu {
+    header {
+      i {
+        &.acuarela-Menu {
+          display: none;
+        }
+
+        &.acuarela-Cancelar {
+          display: block;
+        }
+      }
+    }
+
+    aside {}
+  }
+}
+
+i {
+
+  &.acuarela-Alimentacion {
+    color: var(--sandia);
+  }
+
+  &.acuarela-Siesta {
+    color: var(--cielo);
+  }
+
+  &.acuarela-Bano {
+    color: var(--secundario2);
+  }
+
+  &.acuarela-Salud {
+    color: var(--secundario1);
+  }
+
+  &.acuarela-Actividades {
+    color: var(--morita);
+  }
+}
+
+.emptyElement {
+  display: none;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+
+  h2,
+  p {
+    margin-bottom: 16px;
+  }
+}

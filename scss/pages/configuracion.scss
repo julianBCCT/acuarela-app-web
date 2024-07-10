@@ -1,0 +1,23 @@
+.configuracion {
+    main {
+        padding: 0;
+
+        .mainHeader {
+            box-shadow: none;
+        }
+
+        .content {
+            padding: 40px clamp(20px, 3vw, 80px) 120px;
+
+            .basicinfo {
+                align-items: flex-start;
+
+                .txt,
+
+                a {
+                    flex: 1;
+                }
+            }
+        }
+    }
+}

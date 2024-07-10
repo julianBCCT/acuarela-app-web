@@ -1,0 +1,27 @@
+RewriteEngine On
+RewriteBase /miembros/acuarela-app-web/
+
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteCond %{SCRIPT_FILENAME} !-f
+
+RewriteRule ^s/([^/]*)/$ set/$1.php?lang=es [L,QSA]
+RewriteRule ^g/([^/]*)/$ get/$1.php?lang=es [L,QSA]
+RewriteRule ^c/([^/]*)/$ cron/$1.php?lang=es [L,QSA]
+RewriteRule ^wh/([^/]*)/$ webhooks/$1.php?lang=es [L,QSA]
+
+RewriteRule ^$ index.php?activeTab=0?activeTab=0&section=muro-social  [L,QSA]
+RewriteRule ^inscripciones$ inscripciones_list.php?activeTab=1&section=inscripciones [L,QSA]
+RewriteRule ^agregar-ninx$ inscripcion.php?activeTab=1&section=agregar-ninx [L,QSA]
+RewriteRule ^inscripciones/([^/]*)$ inscripcion.php?activeTab=1&section=agregar-ninx&id=$1 [L,QSA]
+RewriteRule ^asistencia$ asistencia.php?activeTab=2&section=asistencia [L,QSA]
+RewriteRule ^asistentes$ asistentes.php?activeTab=3&section=asistentes [L,QSA]
+RewriteRule ^grupos$ grupos.php?activeTab=4&section=grupos [L,QSA]
+RewriteRule ^grupos/nuevo-grupo$ new_grupo.php?activeTab=4&section=nuevogrupo [L,QSA]
+RewriteRule ^finanzas$ finanzas.php?activeTab=5&section=finanzas [L,QSA]
+RewriteRule ^inspeccion$ inspeccion.php?activeTab=6&section=inspeccion [L,QSA]
+RewriteRule ^visitas$ visitas.php?activeTab=7&section=visitas [L,QSA]
+RewriteRule ^configuracion$ configuracion.php?activeTab=8&section=configuracion [L,QSA]
+RewriteRule ^ninxs/([^/]*)$ kid_profile.php?activeTab=2&id=$1 [L,QSA]
+RewriteRule ^asistente/([^/]*)$ asistente.php?activeTab=3&id=$1 [L,QSA]
+RewriteRule ^agregar-asistente$ agregar-asistente.php?activeTab=3[L,QSA]
+RewriteRule ^grupo/([^/]*)$ grupo.php?activeTab=4&id=$1 [L,QSA]
