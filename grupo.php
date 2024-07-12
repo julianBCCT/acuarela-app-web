@@ -2,7 +2,8 @@
 <main>
   <?php
     $mainHeaderTitle = "{$grupo->name}" ;
-    $action = '<a href="/miembros/acuarela-app-web/editar-grupo/'.$_GET['id'].'" class="btn btn-action-secondary enfasis btn-big">Editar grupo</a>';
+    // $action = '<a href="/miembros/acuarela-app-web/editar-grupo/'.$_GET['id'].'" class="btn btn-action-secondary enfasis btn-big">Editar grupo</a>';
+    $action = '';
     include "templates/sectionHeader.php";
 ?>
   <div class="content">

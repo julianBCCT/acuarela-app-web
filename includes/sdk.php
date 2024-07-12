@@ -114,7 +114,7 @@ class Acuarela {
             return $resp;
         }else{
             $respInscripcion = $this->queryStrapi("inscripciones", $data, "POST");
-            $data['inscripcion'] = $respInscripcion->id;
+            $data->inscripcion = $respInscripcion->id;
             $respInscripcionComplete = $this->queryStrapi("inscripciones/complete", $data, "POST");
             return $respInscripcionComplete;
         }

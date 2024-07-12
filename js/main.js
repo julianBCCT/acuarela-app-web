@@ -1059,7 +1059,7 @@ const getAsistentes = async () => {
             </div>
             ${
               asistente.photo
-                ? `<img src='https://acuarelacore.com/api/${asistente.photo.formats.small.url}' alt='${asistente.name}'>`
+                ? `<img src='https://acuarelacore.com/api/${asistente.photo.url}' alt='${asistente.name}'>`
                 : `<img src="img/placeholder.png" alt="placeholder">`
             }
             <i class="acuarela ${iconClass}"></i>
