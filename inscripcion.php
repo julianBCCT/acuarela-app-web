@@ -21,7 +21,9 @@
     <form action="s/createInscription/" method="POST" id="inscription" autocomplete="off">
       <div class="formHeader">
         <strong>
-          Has completado el <span class="percentage"><?=$inscripcion != "" ? $inscripcion->percentaje : "0"?>%</span> de la inscripción
+          Has completado el <span class="percentage">
+            <?=$inscripcion != "" ? $inscripcion->percentaje : "0"?>%
+          </span> de la inscripción
           mínima de <span class="name"></span>
         </strong>
         <button type="button" id="next" class="btn btn-action-secondary btn-big enfasis">
@@ -32,26 +34,30 @@
         <span>
           <i class="acuarela acuarela-Usuario"></i>
           <label for="name">Nombre</label>
-          <input type="text" name="name" id="name" / value="<?=$inscripcion != "" ? $inscripcion->name : ""?>" required>
+          <input type="text" name="name" id="name" / value="<?=$inscripcion != "" ? $inscripcion->name : ""?>" required oninput="changeValuesForMultipleContainers(event, {'span.name': ' {value}', '#resname strong': '{value}'})">
         </span>
         <span>
           <i class="acuarela acuarela-Usuario"></i>
           <label for="lastname">Apellidos</label>
-          <input type="text" name="lastname" id="lastname" / value="<?=$inscripcion != "" ? $inscripcion->lastname : ""?>" required>
+          <input type="text" name="lastname" id="lastname" /
+            value="<?=$inscripcion != "" ? $inscripcion->lastname : ""?>" required>
         </span>
         <div class="row">
           <span class="calendar">
             <i class="acuarela acuarela-Calendario"></i>
             <label for="birthdate">Fecha de nacimiento</label>
-            <input type="date" name="birthdate" id="birthdate" / value="<?=$inscripcion != "" ? $inscripcion->birthdate : ""?>" required>
+            <input type="date" name="birthdate" id="birthdate" /
+              value="<?=$inscripcion != "" ? $inscripcion->birthdate : ""?>" required onchange="changeValuesForMultipleContainers(event, {'#resbirthday strong': '{value}'})">
           </span>
           <span>
             <i class="acuarela acuarela-Nino"></i>
             <label for="genero">Género</label>
-            <select name="genero" id="genero" <?=$inscripcion != "" ? $inscripcion->gender : ""?>>
-              <option <?=$inscripcion != "" && $inscripcion->gender == "Masculino" ? "selected" : ""?> value="Masculino">Masculino</option>
-              <option <?=$inscripcion != "" && $inscripcion->gender == "Femenino" ? "selected" : ""?> value="Femenino">Femenino</option>
-              <option <?=$inscripcion != "" && $inscripcion->gender == "X" ? "selected" : ""?> value="X">X</option>
+            <select name="genero" id="genero" <?=$inscripcion !="" ? $inscripcion->gender : ""?> onchange="changeValuesForMultipleContainers(event, {'#resgender strong': '{value}'})">
+              <option <?=$inscripcion !="" && $inscripcion->gender == "Masculino" ? "selected" : ""?>
+                value="Masculino">Masculino</option>
+              <option <?=$inscripcion !="" && $inscripcion->gender == "Femenino" ? "selected" : ""?>
+                value="Femenino">Femenino</option>
+              <option <?=$inscripcion !="" && $inscripcion->gender == "X" ? "selected" : ""?> value="X">X</option>
             </select>
           </span>
         </div>
@@ -66,7 +72,7 @@
                   <span>
                     <i class="acuarela acuarela-Familia"></i>
                     <label for="parent_type1">Parentesco</label>
-                    <select name="parent_type1" id="parent_type1">
+                    <select name="parent_type1" id="parent_type1" onchange="changeValuesForMultipleContainers(event, {'#resparenttype strong': '{value}'})">
                       <option value="Mamá">Mamá</option>
                       <option value="Papá">Papá</option>
                     </select>
@@ -75,22 +81,27 @@
                     <i class="acuarela acuarela-Mensajes"></i>
                     <label for="parent_email1">Correo Electrónico</label>
                     <input type="text" autocomplete="off" name="parent_email1" id="parent_email1"
-                      onchange="handleEmailChange(event, 1)" value="<?=$inscripcion != "" ? $inscripcion->parents[0]->email : ""?>" required />
+                      onchange="handleEmailChange(event, 1)"
+                      oninput="changeValuesForMultipleContainers(event, { '#resparentmail strong': '{value}'})"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->email : ""?>" required />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_name1">Nombres</label>
-                    <input type="text" autocomplete="off" name="parent_name1" id="parent_name1" value="<?=$inscripcion != "" ? $inscripcion->parents[0]->name : ""?>" required />
+                    <input type="text" autocomplete="off" name="parent_name1" id="parent_name1"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->name : ""?>" required  oninput="changeValuesForMultipleContainers(event, { '#resparentname strong': '{value}'})" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_lastname1">Apellidos</label>
-                    <input type="text" autocomplete="off" name="parent_lastname1" id="parent_lastname1" value="<?=$inscripcion != "" ? $inscripcion->parents[0]->lastname : ""?>" required />
+                    <input type="text" autocomplete="off" name="parent_lastname1" id="parent_lastname1"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->lastname : ""?>" required />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Telefono"></i>
                     <label for="parent_phone1">Celular</label>
-                    <input type="text" autocomplete="off" name="parent_phone1" id="parent_phone1" value="<?=$inscripcion != "" ? $inscripcion->parents[0]->phone : ""?>" required />
+                    <input type="text" autocomplete="off" name="parent_phone1" id="parent_phone1"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->phone : ""?>" required  oninput="changeValuesForMultipleContainers(event, { '#resparenttel strong': '{value}'})" />
                   </span>
                 </fieldset>
               </li>
@@ -109,26 +120,40 @@
                     <i class="acuarela acuarela-Mensajes"></i>
                     <label for="parent_email2">Correo Electrónico</label>
                     <input type="text" autocomplete="off" name="parent_email2" id="parent_email2"
-                      onchange="handleEmailChange(event, 2)" value="<?=$inscripcion != "" ? $inscripcion->parents[1]->email : ""?>" />
+                      onchange="handleEmailChange(event, 2)"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->email : ""?>" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_name2">Nombres</label>
-                    <input type="text" autocomplete="off" name="parent_name2" id="parent_name2" value="<?=$inscripcion != "" ? $inscripcion->parents[1]->name : ""?>" />
+                    <input type="text" autocomplete="off" name="parent_name2" id="parent_name2"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->name : ""?>" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_lastname2">Apellidos</label>
-                    <input type="text" autocomplete="off" name="parent_lastname2" id="parent_lastname2" value="<?=$inscripcion != "" ? $inscripcion->parents[1]->lastname : ""?>" />
+                    <input type="text" autocomplete="off" name="parent_lastname2" id="parent_lastname2"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->lastname : ""?>" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Telefono"></i>
                     <label for="parent_phone2">Celular</label>
-                    <input type="text" autocomplete="off" name="parent_phone2" id="parent_phone2" value="<?=$inscripcion != "" ? $inscripcion->parents[1]->phone : ""?>" />
+                    <input type="text" autocomplete="off" name="parent_phone2" id="parent_phone2"
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->phone : ""?>" />
                   </span>
                 </fieldset>
               </li>
             </ul>
+          </div>
+          <div class="splide__arrows splide__arrows--ltr">
+            <button class="splide__arrow splide__arrow--prev" type="button" aria-label="Previous slide"
+              aria-controls="splide01-track">
+              <i class="acuarela acuarela-Flecha_izquierda"></i>
+            </button>
+            <button class="splide__arrow splide__arrow--next" type="button" aria-label="Next slide"
+              aria-controls="splide01-track">
+              <i class="acuarela acuarela-Flecha_derecha"></i>
+            </button>
           </div>
         </section>
       </div>
@@ -137,22 +162,29 @@
           <i class="acuarela acuarela-Nino"></i>
           <label for="paymentTime">Cada cuánto se cobra:</label>
           <select name="paymentTime" id="paymentTime">
-            <option <?=$inscripcion != "" && $inscripcion->payment->time == "Diario" ? "selected" : ""?> value="Diario">Diario</option>
-            <option <?=$inscripcion != "" && $inscripcion->payment->time == "Semanal" ? "selected" : ""?> value="Semanal">Semanal</option>
-            <option <?=$inscripcion != "" && $inscripcion->payment->time == "Mensual" ? "selected" : ""?> value="Mensual">Mensual</option>
-            <option <?=$inscripcion != "" && $inscripcion->payment->time == "Semestral" ? "selected" : ""?> value="Semestral">Semestral</option>
-            <option <?=$inscripcion != "" && $inscripcion->payment->time == "Anual" ? "selected" : ""?> value="Anual">Anual</option>
+            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Diario" ? "selected" : ""?>
+              value="Diario">Diario</option>
+            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Semanal" ? "selected" : ""?>
+              value="Semanal">Semanal</option>
+            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Mensual" ? "selected" : ""?>
+              value="Mensual">Mensual</option>
+            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Semestral" ? "selected" : ""?>
+              value="Semestral">Semestral</option>
+            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Anual" ? "selected" : ""?>
+              value="Anual">Anual</option>
           </select>
         </span>
         <span class="calendar">
           <i class="acuarela acuarela-Calendario"></i>
           <label for="proximo_pago">Inicio del cobro</label>
-          <input type="date" name="proximo_pago" id="proximo_pago" value="<?=$inscripcion != "" ? $inscripcion->payment->proximo_pago : ""?>" required />
+          <input type="date" name="proximo_pago" id="proximo_pago"
+            value="<?=$inscripcion != "" ? $inscripcion->payment->proximo_pago : ""?>" required />
         </span>
         <span>
           <i class="acuarela acuarela-Usuario"></i>
           <label for="paymentPrice">Cuánto se va a cobrar:</label>
-          <input type="text" name="paymentPrice" id="paymentPrice" value="<?=$inscripcion != "" ? $inscripcion->payment->price : ""?>" required />
+          <input type="text" name="paymentPrice" id="paymentPrice"
+            value="<?=$inscripcion != "" ? $inscripcion->payment->price : ""?>" required />
         </span>
         <div class="info">
           <i class="acuarela acuarela-Informacion"></i>
@@ -216,26 +248,28 @@
             <i class="acuarela acuarela-Evento"></i>Nacido el<strong>Nacido el</strong>
           </p>
           <p id="resgender">
-            <i class="acuarela acuarela-Nino"></i>Género<strong>Género</strong>
+            <i class="acuarela acuarela-Nino"></i>Género<strong>Masculino</strong>
           </p>
         </div>
-        <h4>Responsables</h4>
+        <h4>Familia</h4>
+        <h5>Padre principal</h5>
         <div class="row">
           <p id="resparentname">
-            <i class="acuarela acuarela-Usuario"></i>Nombre<strong>Nombre</strong>
+            <i class="acuarela acuarela-Usuario"></i>Nombre <strong></strong>
           </p>
           <p id="resparenttype">
-            <i class="acuarela acuarela-Familia"></i>Parentesco<strong>Parentesco</strong>
+            <i class="acuarela acuarela-Familia"></i>Parentesco <strong></strong>
           </p>
         </div>
         <div class="row">
           <p id="resparenttel">
-            <i class="acuarela acuarela-Telefono"></i>Celular<strong>Celular</strong>
+            <i class="acuarela acuarela-Telefono"></i>Celular <strong></strong>
           </p>
           <p id="resparentmail">
-            <i class="acuarela acuarela-Mensajes"></i>Correo electrónico<strong Correo electrónico></strong>
+            <i class="acuarela acuarela-Mensajes"></i>Correo electrónico <strong></strong>
           </p>
         </div>
+        <!-- <h5>Otros responsables</h5> -->
       </div>
       <input type="hidden" name="daycare" id="daycare" value="<?=$a->daycareID?>">
       <input type="hidden" name="inscripcion" id="inscripcion" value="<?=$_GET['id']?>">

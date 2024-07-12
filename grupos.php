@@ -11,9 +11,8 @@
       <p> Has llegado al número máximo de grupos. Si tu daycare requiere más grupos contáctanos</p>
     </div>
     <div class="emptyElement">
-        <h2>Aún no tienes asistentes creados</h2>
-        <p>Actualmente, no has creado ningún asistente. Para comenzar, necesitas crear tu primer asistente. Haz clic en el siguiente botón</p>
-        <a href="/miembros/acuarela-app-web/agregar-asistente" target="_blank" class="btn btn-action-primary enfasis btn-big">Crear asistente</a>
+        <h2>Aún no tienes grupos creados</h2>
+        <p>Actualmente, no has creado ningún grupo.Haz clic en <strong>Crear grupo</strong></p>
     </div>
     <ul class="list">
      

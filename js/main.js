@@ -1,3 +1,10 @@
+var today = new Date();
+var dd = String(today.getDate()).padStart(2, "0");
+var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
+var yyyy = today.getFullYear();
+// Obtiene la fecha actual.
+today = yyyy + "-" + mm + "-" + dd;
+const time = formatTime(new Date());
 let reactions = [
   {
     id: 1,
@@ -124,31 +131,31 @@ const handleInscripcion = async () => {
 
   const files = [
     {
-      name: formValues["acuerdo-de-registro"],
+      name: "acuerdo-de-registro",
       file: formValues["acuerdo-de-registro-id"],
     },
     {
-      name: formValues["formulario-de-examen-de-salud"],
+      name: "formulario-de-examen-de-salud",
       file: formValues["formulario-de-examen-de-salud-id"],
     },
     {
-      name: formValues["formato-de-alergias"],
+      name: "formato-de-alergias",
       file: formValues["formato-de-alergias-id"],
     },
     {
-      name: formValues["id-de-los-padres"],
+      name: "id-de-los-padres",
       file: formValues["id-de-los-padres-id"],
     },
     {
-      name: formValues["plan-de-transporte"],
+      name: "plan-de-transporte",
       file: formValues["plan-de-transporte-id"],
     },
     {
-      name: formValues["acuerdo-de-siestas"],
+      name: "acuerdo-de-siestas",
       file: formValues["acuerdo-de-siestas-id"],
     },
     {
-      name: formValues["archivos-adicionales"],
+      name: "archivos-adicionales",
       file: formValues["archivos-adicionales-id"],
     },
   ];
@@ -177,7 +184,7 @@ const handleInscripcion = async () => {
   let dataToSend = {
     name: formValues.name,
     lastname: formValues.lastname,
-    birthdate: formValues.birthdate,
+    birthdate: formValues.birthdate ? formValues.birthdate : today,
     gender: formValues.genero,
     daycare: formValues.daycare,
     files: files.filter((file) => file.file),
@@ -185,7 +192,7 @@ const handleInscripcion = async () => {
     payment: {
       time: formValues.paymentTime,
       price: formValues.paymentPrice,
-      proximo_pago: formValues.proximo_pago,
+      proximo_pago: formValues.proximo_pago ? formValues.proximo_pago : today,
     },
     inscription_date: new Date(),
     percentaje: isComplete ? 100 : updatePercentage(),
@@ -202,19 +209,51 @@ const handleInscripcion = async () => {
           headers: { "Content-Type": "application/json" },
         });
         const body = await response.json();
+        const success = await processResponse(body, dataToSend, formValues);
+        if (success) {
+          // Aquí puedes redirigir o hacer alguna acción adicional si es necesario
+          window.location.href = `/miembros/acuarela-app-web/inscripciones`;
+        } else {
+          // Manejo de errores en caso de que processResponse falle
+        }
+        async function sendEmailsToParents(parents, daycare, formValues) {
+          const emailPromises = parents.map((parent) => {
+            return sendRegisterEmail(
+              parent.parent_type,
+              daycare,
+              parent.email,
+              `https://acuarelacore.com/auth/register/${parent.id}`,
+              formValues.name
+            );
+          });
 
-        if (body.ok) {
-          if (dataToSend.parents_rel) {
-            if (dataToSend.parents_rel.length === 0) {
-              body.parents.forEach((parent) => {
-                console.log(parent);
-              });
+          try {
+            await Promise.all(emailPromises);
+          } catch (error) {
+            console.error("Error sending emails:", error);
+            throw error;
+          }
+        }
+
+        async function processResponse(body, dataToSend, formValues) {
+          if (!body.ok) {
+            return false;
+          }
+
+          if (dataToSend.parents && dataToSend.parents.length > 0) {
+            try {
+              await sendEmailsToParents(body.parents, daycareName, formValues);
+              fadeOut(preloader);
+            } catch (error) {
+              // Handle error if necessary
+              return false;
             }
           }
-          fadeOut(preloader);
+
           window.location.href = `/miembros/acuarela-app-web/inscripciones`;
           return true;
         }
+
         return false;
       } else {
         dataToSend.daycare = formValues.daycare;
@@ -225,6 +264,7 @@ const handleInscripcion = async () => {
         });
         const body = await response.json();
         fadeOut(preloader);
+        window.location.href = `/miembros/acuarela-app-web/inscripciones`;
         return body || false;
       }
     } else {
@@ -237,13 +277,6 @@ const handleInscripcion = async () => {
         const body = await response.json();
 
         if (body.ok) {
-          if (dataToSend.parents_rel) {
-            if (dataToSend.parents_rel.length === 0) {
-              body.parents.forEach((parent) => {
-                console.log(parent);
-              });
-            }
-          }
           fadeOut(preloader);
           window.location.href = `/miembros/acuarela-app-web/inscripciones`;
           return true;
@@ -360,7 +393,6 @@ const addComment = async (body, inputID) => {
     headers: { "Content-Type": "application/json" },
   });
   const reactionData = await commentResponse.json();
-  console.log(reactionData);
   Fancybox.close();
 };
 const showReactions = (element) => {
@@ -559,11 +591,16 @@ const requestinscripciones = async () => {
               <span id="options">
                 <i class="acuarela acuarela-Opciones"></i>
                 <ul>
+                 ${
+                   percentaje >= 100
+                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/editar-ninxs/${child.id}">Editar ninx</a> </li>`
+                     : ``
+                 }
                   <li>
                   ${
                     percentaje >= 100
-                      ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">ver perfil</a>`
-                      : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
+                      ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">Ver perfil</a>`
+                      : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar inscripción</a>`
                   }
                     
                   </li>
@@ -648,6 +685,46 @@ const updateKid = async (id, data) => {
     })
     .catch((error) => console.error(error));
 };
+const sendEmailRegisterCheck = async (
+  nameKid,
+  nameParent,
+  nameDaycare,
+  nameAcudiente,
+  mail,
+  type
+) => {
+  const url = type === "checkin" ? "s/sendCheckIn/" : "s/sendCheckOut/";
+
+  var myHeaders = new Headers();
+  myHeaders.append(
+    "token",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJtYWlsIjoib2VqYXJhbWlsbG9AZ21haWwuY29tIiwiaWQiOiI2MmYyNmQwMDVkZTRjY2YwZDA2N2Y1ZGUiLCJuYW1lIjoib3NjIiwicGhvbmUiOiIxMjM0NTY3ODkiLCJpYXQiOjE2NjA4NDA1NzUsImV4cCI6MTY2MTA5OTc3NX0.9q2Q3r7hH_LRYB0D9v1nb2vN_gamNQG5E1_EvDtFocY"
+  );
+
+  var formdata = new FormData();
+  formdata.append("nameKid", nameKid);
+  formdata.append("nameParent", nameParent);
+  formdata.append("nameDaycare", nameDaycare);
+  formdata.append("nameAcudiente", nameAcudiente);
+  formdata.append("time", time);
+  formdata.append("date", today);
+  formdata.append("mail", mail);
+  formdata.append("name", nameParent);
+
+  var requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: formdata,
+    redirect: "follow",
+  };
+
+  const response = await fetch(url, requestOptions)
+    .then((response) => response.json())
+    .then((result) => result)
+    .catch((error) => console.log("error", error));
+  return response;
+};
+
 const getChildren = async () => {
   if (document.querySelector(".asistencia")) {
     document
@@ -683,22 +760,22 @@ const getChildren = async () => {
     }
 
     const createKidTemplate = (kid, iconClass) => `
+    <div class="options">
+      <i class="acuarela acuarela-Opciones"></i>
+      <ul>
+        <li>
+          <button type="button" id="desactivar" onclick="updateKid('${
+            kid.id
+          }', {'status': false})">Desactivar</button>
+        </li>
+        <li>
+          <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${
+            kid.id
+          }");'>Eliminar</button>
+        </li>
+      </ul>
+    </div>
     <div class="image">
-      <div class="options">
-        <i class="acuarela acuarela-Opciones"></i>
-        <ul>
-          <li>
-            <button type="button" id="desactivar" onclick="updateKid('${
-              kid.id
-            }', {'status': false})">Desactivar</button>
-          </li>
-          <li>
-            <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${
-              kid.id
-            }");'>Eliminar</button>
-          </li>
-        </ul>
-      </div>
       ${
         kid.photo
           ? `<img src='https://acuarelacore.com/api/${kid.photo.formats.small.url}' alt='${kid.name}'>`
@@ -766,7 +843,11 @@ const getChildren = async () => {
           `position:absolute;top: ${y}px; left: ${x}px;`
         );
         buttonElement.addEventListener("click", () =>
-          handleButtonParent(acuarelauser.id)
+          handleButtonParent(
+            acuarelauser.id,
+            acuarelauser.name,
+            acuarelauser.mail
+          )
         );
         buttonElement.innerHTML = buttonTemplate;
 
@@ -949,14 +1030,8 @@ const getChildren = async () => {
           fragment.appendChild(extraContent);
           showInfoLightbox("Método por QR no disponible", fragment);
         };
-        const manualHandle = async (parentId) => {
+        const manualHandle = async (parentId, parentName, parentEmail) => {
           fadeIn(preloader);
-          var today = new Date();
-          var dd = String(today.getDate()).padStart(2, "0");
-          var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
-          var yyyy = today.getFullYear();
-          // Obtiene la fecha actual.
-          today = yyyy + "-" + mm + "-" + dd;
 
           let data = {
             children: [kid.id],
@@ -975,11 +1050,20 @@ const getChildren = async () => {
             .then((result) => {
               const infoLightbox = document.getElementById("info-lightbox");
               infoLightbox.style.display = "none";
+              // Para enviar un email de check-in
+              sendEmailRegisterCheck(
+                kid.name,
+                parentName,
+                daycareName,
+                parentName,
+                parentEmail,
+                typeCheck
+              );
               getChildren();
             })
             .catch((error) => console.error(error));
         };
-        let handleButtonParent = (parentId) => {
+        let handleButtonParent = (parentId, parentName, parentEmail) => {
           listItem.classList.toggle("active");
 
           const buttonManual = document.createElement("button");
@@ -992,7 +1076,9 @@ const getChildren = async () => {
           buttonQR.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_1_40802)"><path d="M3.7207 29.7656C1.66588 29.7656 0 28.0997 0 26.0449V3.7207C0 1.66588 1.66588 0 3.7207 0H26.0449C28.0997 0 29.7656 1.66588 29.7656 3.7207C29.7656 5.77552 28.0997 7.44141 26.0449 7.44141H7.44141V26.0449C7.44141 28.0997 5.77552 29.7656 3.7207 29.7656Z" fill="#0CB5C3" /><path d="M123.279 29.7656C121.224 29.7656 119.559 28.0997 119.559 26.0449V7.44141H100.955C98.9003 7.44141 97.2344 5.77552 97.2344 3.7207C97.2344 1.66588 98.9003 0 100.955 0H123.279C125.334 0 127 1.66588 127 3.7207V26.0449C127 28.0997 125.334 29.7656 123.279 29.7656Z" fill="#0CB5C3" /><path d="M26.0449 127H3.7207C1.66588 127 0 125.334 0 123.279V100.955C0 98.9003 1.66588 97.2344 3.7207 97.2344C5.77552 97.2344 7.44141 98.9003 7.44141 100.955V119.559H26.0449C28.0997 119.559 29.7656 121.224 29.7656 123.279C29.7656 125.334 28.0997 127 26.0449 127Z" fill="#0CB5C3" /><path d="M123.279 127H100.955C98.9003 127 97.2344 125.334 97.2344 123.279C97.2344 121.224 98.9003 119.559 100.955 119.559H119.559V100.955C119.559 98.9003 121.224 97.2344 123.279 97.2344C125.334 97.2344 127 98.9003 127 100.955V123.279C127 125.334 125.334 127 123.279 127Z" fill="#0CB5C3" /><path d="M74.6621 52.3379H96.9863V30.0137H74.6621V52.3379ZM85.8242 37.4551C87.879 37.4551 89.5449 39.121 89.5449 41.1758C89.5449 43.2306 87.879 44.8965 85.8242 44.8965C83.7694 44.8965 82.1035 43.2306 82.1035 41.1758C82.1035 39.121 83.7694 37.4551 85.8242 37.4551Z" fill="#0CB5C3" /><path d="M74.6621 89.5449H82.1035V96.9863H74.6621V89.5449Z" fill="#0CB5C3" /><path d="M30.0137 96.9863H52.3379V74.6621H30.0137V96.9863ZM41.1758 82.1035C43.2306 82.1035 44.8965 83.7694 44.8965 85.8242C44.8965 87.879 43.2306 89.5449 41.1758 89.5449C39.121 89.5449 37.4551 87.879 37.4551 85.8242C37.4551 83.7694 39.121 82.1035 41.1758 82.1035Z" fill="#0CB5C3" /><path d="M30.0137 52.3379H52.3379V30.0137H30.0137V52.3379ZM41.1758 37.4551C43.2306 37.4551 44.8965 39.121 44.8965 41.1758C44.8965 43.2306 43.2306 44.8965 41.1758 44.8965C39.121 44.8965 37.4551 43.2306 37.4551 41.1758C37.4551 39.121 39.121 37.4551 41.1758 37.4551Z" fill="#0CB5C3" /><path d="M100.707 15.1309H26.293C20.1283 15.1309 15.1309 20.1283 15.1309 26.293V100.707C15.1309 106.872 20.1283 111.869 26.293 111.869H100.707C106.872 111.869 111.869 106.872 111.869 100.707V26.293C111.869 20.1283 106.872 15.1309 100.707 15.1309ZM59.7793 100.707C59.7793 102.762 58.1134 104.428 56.0586 104.428H26.293C24.2381 104.428 22.5723 102.762 22.5723 100.707V70.9414C22.5723 68.8866 24.2381 67.2207 26.293 67.2207H56.0586C58.1134 67.2207 59.7793 68.8866 59.7793 70.9414V100.707ZM59.7793 56.0586C59.7793 58.1134 58.1134 59.7793 56.0586 59.7793H26.293C24.2381 59.7793 22.5723 58.1134 22.5723 56.0586V26.293C22.5723 24.2381 24.2381 22.5723 26.293 22.5723H56.0586C58.1134 22.5723 59.7793 24.2381 59.7793 26.293V56.0586ZM89.5449 100.707C89.5449 102.762 87.879 104.428 85.8242 104.428H70.9414C68.8866 104.428 67.2207 102.762 67.2207 100.707V85.8242C67.2207 83.7694 68.8866 82.1035 70.9414 82.1035H85.8242C87.879 82.1035 89.5449 83.7694 89.5449 85.8242V100.707ZM104.428 100.707C104.428 102.762 102.762 104.428 100.707 104.428C98.6522 104.428 96.9863 102.762 96.9863 100.707V95.7461C96.9863 93.6913 98.6522 92.0254 100.707 92.0254C102.762 92.0254 104.428 93.6913 104.428 95.7461V100.707ZM104.428 80.8633C104.428 82.9181 102.762 84.584 100.707 84.584C98.6522 84.584 96.9863 82.9181 96.9863 80.8633V74.6621H70.9414C68.8866 74.6621 67.2207 72.9962 67.2207 70.9414C67.2207 68.8866 68.8866 67.2207 70.9414 67.2207H100.707C102.762 67.2207 104.428 68.8866 104.428 70.9414V80.8633ZM104.428 56.0586C104.428 58.1134 102.762 59.7793 100.707 59.7793H70.9414C68.8866 59.7793 67.2207 58.1134 67.2207 56.0586V26.293C67.2207 24.2381 68.8866 22.5723 70.9414 22.5723H100.707C102.762 22.5723 104.428 24.2381 104.428 26.293V56.0586Z" fill="#0CB5C3" /></g><defs><clipPath id="clip0_1_40802"><rect width="127" height="127" fill="white" /></clipPath></defs></svg><span>Registro por QR</span>`;
 
           buttonQR.addEventListener("click", qrHandle);
-          buttonManual.addEventListener("click", () => manualHandle(parentId));
+          buttonManual.addEventListener("click", () =>
+            manualHandle(parentId, parentName, parentEmail)
+          );
 
           const contentContainer = document.createElement("div");
           contentContainer.classList.add("methods-register");
@@ -1042,21 +1128,18 @@ const getAsistentes = async () => {
     if (asistentes.length > 0) {
       const createAsistenteTemplate = (asistente, iconClass) => `
         
+      <div class="options">
+        <i class="acuarela acuarela-Opciones"></i>
+        <ul>
+          <li>
+            <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","acuarelausers","${
+              asistente.id
+            }");'>Eliminar</button>
+          </li>
+        </ul>
+      </div>
          <a href="/miembros/acuarela-app-web/asistente/${asistente.id}" >
           <div class="image">
-            <div class="options">
-              <i class="acuarela acuarela-Opciones"></i>
-              <ul>
-                <li>
-                  <button type="button" id="desactivar" onclick="desactivarKid('')">Desactivar</button>
-                </li>
-                <li>
-                  <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","children","${
-                    asistente.id
-                  }");'>Eliminar</button>
-                </li>
-              </ul>
-            </div>
             ${
               asistente.photo
                 ? `<img src='https://acuarelacore.com/api/${asistente.photo.url}' alt='${asistente.name}'>`
@@ -1098,6 +1181,9 @@ const getGrupos = async () => {
     if (grupos.length == 3) {
       document.querySelector(".alertMessage").style.display = "flex";
       document.querySelector(".mainHeader .actions a").style.display = "none";
+    }
+    if (grupos.length == 0) {
+      document.querySelector(".emptyElement").style.display = "flex";
     }
     grupos.forEach((grupo) => {
       let { name, age_range, shift, rates, acuarelauser, id } = grupo;
@@ -1161,16 +1247,18 @@ const getInfoNewGroup = () => {
             "#edades"
           ).innerHTML += `<option value="${name}">${name}</option>`;
         });
-        let childrenNoGroup = children.response.filter((kid) => !kid.group);
+        let childrenNoGroup = children.response;
         childrenNoGroup.forEach((kid) => {
-          let { name, photo, id } = kid;
+          let { name, photo, id, group } = kid;
           let url = null;
           if (photo) {
             url = photo.url;
           }
 
-          document.querySelector(".children").innerHTML += `<li>
-                        <input type="checkbox" name="${id}" id="${id}">
+          document.querySelector(".children").innerHTML += `<li >
+                        <input type="checkbox" name="${id}" id="${id}" ${
+            group ? `disabled` : ``
+          }>
                         <label for="${id}">
                              ${
                                photo
@@ -1260,7 +1348,6 @@ const handleEmailChange = (event, index) => {
       showParentLightbox(parent, index);
     } else {
       // Aquí puedes agregar código para manejar si el correo no existe
-      console.log("El correo no existe");
     }
   });
 };
@@ -1649,6 +1736,11 @@ document.addEventListener("DOMContentLoaded", function () {
     });
     document.querySelectorAll('input[type="file"]').forEach((input) => {
       input.addEventListener("change", async function (event) {
+        if (this.files && this.files.length > 0) {
+          this.classList.add("selected");
+        } else {
+          this.classList.remove("selected");
+        }
         fadeIn(preloader);
         const file = event.target.files[0];
         if (file) {
@@ -1684,7 +1776,7 @@ document.addEventListener("DOMContentLoaded", function () {
               inputWrapper.appendChild(newInput);
             }
             icon.className = ""; // Elimina todas las clases
-            icon.classList.add("acuarela", "acuarela-Nota"); // Agrega las nuevas clases
+            icon.classList.add("acuarela", "acuarela-Aceptar"); // Agrega las nuevas clases
             fadeOut(preloader);
           } catch (error) {
             console.error(
@@ -1710,3 +1802,13 @@ document.addEventListener("DOMContentLoaded", function () {
   getInfoNewGroup();
   getInfoNewAsistente();
 });
+
+const changeValuesForMultipleContainers = (event, selectors) => {
+  const value = event.target.value;
+  for (const [selector, valueTemplate] of Object.entries(selectors)) {
+    const containers = document.querySelectorAll(selector);
+    containers.forEach((container) => {
+      container.innerText = valueTemplate.replace("{value}", value);
+    });
+  }
+};

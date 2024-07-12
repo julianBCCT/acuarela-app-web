@@ -62,6 +62,7 @@
             right: 20px;
             width: 21px;
             height: 21px;
+            z-index: 2;
 
             i {
               color: var(--gris3);
@@ -147,6 +148,10 @@
   main {
     padding: 0;
 
+    .navtabs:has(.navtab.active[data-target="resumen"])+.content button[id="next"] {
+      display: none;
+    }
+
     .content {
       padding: 40px clamp(20px, 3vw, 80px) 120px;
 
@@ -154,6 +159,29 @@
         margin: 0 8px;
         font-weight: bold;
       }
+
+      h5 {
+        color: var(--gris1, #140A4C);
+        font-size: 11px;
+        font-style: normal;
+        font-weight: 700;
+        margin-bottom: 16px;
+        line-height: 16px;
+      }
+
+      span.name {
+        margin: 0 8px;
+      }
+
+      .splide__arrow {
+        background: transparent;
+
+        i {
+          font-size: 32px;
+          color: var(--cielo);
+        }
+      }
+
 
       form {
         #family {

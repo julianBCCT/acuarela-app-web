@@ -31,6 +31,7 @@ class FormValidator {
   }
 
   ajaxSubmit() {
+    fadeIn(preloader);
     // Serialize form data
     const formData = new FormData(this.form);
 
@@ -144,8 +145,21 @@ if (createAsistenteForm) {
     "ciudad",
   ];
   // Función de manejo de respuesta dinámica Login
-  function handleResponse(data) {
-    fadeIn(preloader);
+  async function handleResponse(data) {
+    let { id, lastname, mail, name, phone } = data.entity;
+    let requestOptions = {
+      method: "GET",
+    };
+    const baseLink = `https://acuarelacore.com/asistentes/register/${id}/${name}/${lastname}/${mail}/${phone}`;
+    const emailAsistentes = await fetch(
+      `https://bilingualchildcaretraining.com/s/emailAsistentes/?name=${`${name} ${lastname}`}&daycare=${daycareName}&email=${mail}&link=${baseLink}`,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        fadeOut(preloader);
+      })
+      .catch((error) => console.log("error", error));
     window.location.href = "/miembros/acuarela-app-web/asistentes";
   }
   const validator = new FormValidator(
@@ -162,7 +176,7 @@ if (createGroup) {
   const createGroupFields = ["acuarelauser", "edades", "shift"];
   // Función de manejo de respuesta dinámica Login
   function handleResponse(data) {
-    fadeIn(preloader);
+    fadeOut(preloader);
     window.location.href = "/miembros/acuarela-app-web/grupos";
   }
   const validator = new FormValidator(
@@ -180,7 +194,7 @@ if (Comment) {
 
   // Función de manejo de respuesta dinámica Login
   function handleResponse(data) {
-    fadeIn(preloader);
+    fadeOut(preloader);
     window.location.href = "/miembros/acuarela-app-web/grupos";
   }
   const validator = new FormValidator(Comment, CommentFields, handleResponse);

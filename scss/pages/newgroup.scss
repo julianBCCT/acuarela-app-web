@@ -72,6 +72,16 @@
               opacity: 0.5;
 
             }
+
+            &:disabled {
+              background: none;
+              cursor: default;
+              pointer-events: none;
+
+              &+label {
+                opacity: 0.5;
+              }
+            }
           }
 
           &:hover {

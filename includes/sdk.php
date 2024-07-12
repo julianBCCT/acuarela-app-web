@@ -1,4 +1,5 @@
 <?php
+require_once 'src/Mandrill.php';
 class Acuarela {
     public $domain = "https://acuarelacore.com/api/";
     public $domainWP = "https://application.bilingualchildcaretraining.com/wp-json/wp/v2";
@@ -114,7 +115,7 @@ class Acuarela {
             return $resp;
         }else{
             $respInscripcion = $this->queryStrapi("inscripciones", $data, "POST");
-            $data->inscripcion = $respInscripcion->id;
+            $data['inscripcion'] = $respInscripcion->id;
             $respInscripcionComplete = $this->queryStrapi("inscripciones/complete", $data, "POST");
             return $respInscripcionComplete;
         }
@@ -190,6 +191,103 @@ class Acuarela {
         $resp = $this->queryStrapi("checkouts", $data, "POST");
         return $resp;
     }
+	function transformMergeVars($vars){
+		$mergeVars = array();
+		foreach ($vars as $key => $value) {
+			array_push($mergeVars, ['name'=>$key,'content'=>$value]);
+		}
+		return $mergeVars;
+	}
+	
+
+    function send_notification($from,$to,$toname,$mergevariables,$subject,$template,$mandrillApiKey,$fromName="Mandrill Message",$async=false){
+		$result = '';
+		try {
+			if($from==""){
+				$from='info@acuarela.app';
+			}
+			$mandrill = new Mandrill($mandrillApiKey);
+	
+			$template_name = $template;
+			$template_content = array(
+				array(
+					'name' => $fromName,
+					'content' => $subject
+				)
+			);
+	
+			$message = array(
+				'html' => '<p>Example HTML content</p>',
+				'text' => 'Example text content',
+				'subject' => $subject,
+				'from_email' => $from,
+				'from_name' => $fromName,
+				'to' => array(
+					array(
+						'email' => $to,
+						'name' =>  $toname,
+						'type' => 'to'
+					)
+				),
+	
+				'headers' => array('Reply-To' => $from),
+				'important' => false,
+				'track_opens' => null,
+				'track_clicks' => null,
+				'auto_text' => null,
+				'auto_html' => null,
+				'inline_css' => null,
+				'url_strip_qs' => null,
+				'preserve_recipients' => null,
+				'view_content_link' => null,
+				'tracking_domain' => null,
+				'signing_domain' => null,
+				'return_path_domain' => null,
+				'merge' => true,
+				'merge_language' => 'mailchimp',
+				'global_merge_vars' => $mergevariables,
+				'merge_vars' => array(
+					array(
+						'rcpt' => $to,
+						'vars' => $mergevariables
+					)
+				)
+			);
+	
+			$ip_pool = 'Main Pool';
+			$send_at = date("Y-m-d");
+			$result = $mandrill->messages->sendTemplate($template_name, $template_content, $message, $async, $ip_pool, $send_at);
+			$answer = true;
+		} catch(Mandrill_Error $e) {
+			$result = 'Error de envío: ' . get_class($e) . ' - ' . $e->getMessage();
+			$answer = false;
+			throw $e;
+		}
+		return $result;
+	}
+
+    function sendCheckin($nameKid,$nameParent,$nameDaycare,$nameAcudiente,$time,$date,$mail,$subject = 'Check in'){
+		$mergeVars = [
+			'NOMBRENINO' => $nameKid,
+			'NOMBREPADRE' => $nameParent,
+			'NOMBREDAYCARE' => $nameDaycare,
+			'NOMBREACUDIENTE' => $nameAcudiente,
+			'HORA' => $time,
+			'FECHA' => $date
+		];
+		return $this->send_notification('info@acuarela.app',$mail,$nameParent,$this->transformMergeVars($mergeVars),$subject,'check-in','maRkSStgpCapJoSmwHOZDg',"Acuarela");
+	}
+	function sendCheckout($nameKid,$nameParent,$nameDaycare,$nameAcudiente,$time,$date,$mail,$subject = 'Check out'){
+		$mergeVars = [
+			'NOMBRENINO' => $nameKid,
+			'NOMBREPADRE' => $nameParent,
+			'NOMBREDAYCARE' => $nameDaycare,
+			'NOMBREACUDIENTE' => $nameAcudiente,
+			'HORA' => $time,
+			'FECHA' => $date
+		];
+		return $this->send_notification('info@acuarela.app',$mail,$nameParent,$this->transformMergeVars($mergeVars),$subject,'check-out','maRkSStgpCapJoSmwHOZDg',"Acuarela");
+	}
     function getMovements($initialDate = null, $finalDate = null, $type = null) {
         if (is_null($initialDate)) {
             $initialDate = $this->defaultInitialDate;

@@ -201,6 +201,23 @@
           background: var(--Fondos-Blanco, #FBFCFE);
           border-radius: 8px;
           box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.20);
+          position: relative;
+          cursor: pointer;
+
+          button.addActivity {
+            position: absolute;
+            top: 30%;
+            left: 75%;
+
+            i {
+              margin: 0;
+
+              font-size: 20px;
+
+            }
+
+
+          }
 
           h3 {
             color: var(--Gris-Gris-1, #140A4C);

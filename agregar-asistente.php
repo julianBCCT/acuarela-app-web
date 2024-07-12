@@ -69,10 +69,11 @@
                     <input type="text" name="depto-unidad" id="depto-unidad">
                      <span class="error-message"></span>
                 </span>
+            
                 <span>
                     <i class="acuarela acuarela-Localizacion"></i>
-                    <label for="name">Código postal</label>
-                    <input type="text" name="codigo-postal" id="codigo-postal">
+                    <label for="name">Ciudad</label>
+                    <input type="text" name="ciudad" id="ciudad">
                      <span class="error-message"></span>
                 </span>
                 <span>
@@ -83,10 +84,11 @@
                 </span>
                 <span>
                     <i class="acuarela acuarela-Localizacion"></i>
-                    <label for="name">Ciudad</label>
-                    <input type="text" name="ciudad" id="ciudad">
+                    <label for="name">Código postal</label>
+                    <input type="text" name="codigo-postal" id="codigo-postal">
                      <span class="error-message"></span>
                 </span>
+               
             </fieldset>
             <div class="wrapper photo">
                 <input type="file" id="photo" accept="image/png, image/jpeg" />

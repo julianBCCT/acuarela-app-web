@@ -32,10 +32,7 @@
     let foundDaycare = findDaycareById(daycares, "<?=$a->daycareID?>");
     document.addEventListener("DOMContentLoaded", function () {
       if (foundDaycare) {
-        console.log("Daycare found:", foundDaycare);
         document.querySelector('#daycareName').innerText = foundDaycare.name;
-      } else {
-        console.log("Daycare not found");
       }
     })
   </script>

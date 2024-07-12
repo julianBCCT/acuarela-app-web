@@ -188,6 +188,8 @@ if (document.getElementById("photo")) {
   document
     .getElementById("photo")
     .addEventListener("change", async function (event) {
+      const wrapper = document.querySelector(".wrapper.photo label");
+      wrapper.classList.add("loading");
       const file = event.target.files[0];
       if (file) {
         const reader = new FileReader();
@@ -207,8 +209,8 @@ if (document.getElementById("photo")) {
           }
           const result = await response.json();
           document.querySelector("#photoID").value = result[0].id;
-          const wrapper = document.querySelector(".wrapper.photo label");
           wrapper.style.backgroundImage = `url(https://acuarelacore.com/api${result[0].url})`;
+          wrapper.classList.remove("loading");
         } catch (error) {
           console.error("Error occurred while making network request: ", error);
           // handle the error
@@ -234,7 +236,6 @@ async function fetchAllUrls(urls) {
     const results = await Promise.all(fetchPromises);
 
     // Handle the results
-    console.log("All data fetched successfully:", results);
     return results;
   } catch (error) {
     // Handle errors
@@ -290,6 +291,15 @@ function fadeIn(element) {
   // Iniciar el desvanecimiento
   increaseOpacity();
 }
+
+const formatTime = (date) => {
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // La hora '0' debe ser '12'
+  return `${String(hours).padStart(2, "0")}:${minutes} ${ampm}`;
+};
 
 function get_alias(str) {
   str = str.replace(/¡/g, "", str); //Signo de exclamación abierta.&iexcl;
