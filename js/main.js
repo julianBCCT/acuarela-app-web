@@ -186,8 +186,8 @@ const handleInscripcion = async () => {
       guardian_relationship: formValues.guardian1_relationship,
       guardian_phone: formValues.guardian1_phone,
       guardian_email: formValues.guardian1_email,
-      guardian_pickup: formValues.guardian1_emergency == 'on'? true : false,
-      guardian_emergency: formValues.guardian1_pickup == 'on'? true : false,
+      guardian_pickup: formValues.guardian1_emergency == 'on' ? true : false,
+      guardian_emergency: formValues.guardian1_pickup == 'on' ? true : false,
       guardian_lastname: formValues.guardian1_lastname,
     },
     {
@@ -195,8 +195,8 @@ const handleInscripcion = async () => {
       guardian_relationship: formValues.guardian2_relationship,
       guardian_phone: formValues.guardian2_phone,
       guardian_email: formValues.guardian2_email,
-      guardian_pickup: formValues.guardian2_emergency == 'on'? true : false,
-      guardian_emergency: formValues.guardian2_pickup == 'on'? true : false,
+      guardian_pickup: formValues.guardian2_emergency == 'on' ? true : false,
+      guardian_emergency: formValues.guardian2_pickup == 'on' ? true : false,
       guardian_lastname: formValues.guardian2_lastname,
     },
   ];
@@ -334,10 +334,10 @@ const fetchToken = async (endpoint, data, method = "GET") => {
     method === "GET"
       ? { method, headers }
       : {
-          method,
-          headers,
-          body: JSON.stringify(data),
-        };
+        method,
+        headers,
+        body: JSON.stringify(data),
+      };
 
   try {
     const response = await fetch(url, options);
@@ -421,6 +421,84 @@ const showReactions = (element) => {
   let postArticle = document.getElementById(element);
   postArticle.querySelector(".reactions-box").classList.toggle("active");
 };
+
+
+const toggleShareMenu = (index) => {
+  const shareMenu = document.getElementById(`share_menu-${index}`);
+  if (shareMenu.style.display === "none" || shareMenu.style.display === "") {
+    shareMenu.style.display = "block";
+  } else {
+    shareMenu.style.display = "none";
+  }
+};
+
+// Función para copiar el enlace público al portapapeles
+const sharePost = (postId) => {
+  const publicUrl = `https://dev.bilingualchildcaretraining.com/miembros/sharePost/${postId}`;
+  navigator.clipboard
+    .writeText(publicUrl)
+    .then(() => {
+      alert("Enlace copiado al portapapeles");
+    })
+    .catch((err) => {
+      console.error("Error al copiar el enlace: ", err);
+    });
+};
+
+// Función para compartir en redes sociales
+const sharePostToPlatform = (platform, postId) => {
+  const publicUrl = `https://dev.bilingualchildcaretraining.com/miembros/sharePost/${postId}`;
+  let shareUrl = "";
+
+  switch (platform) {
+    case "whatsapp":
+      shareUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(
+        publicUrl
+      )}`;
+      break;
+    case "facebook":
+      shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        publicUrl
+      )}`;
+      break;
+    case "twitter":
+      shareUrl = `https://twitter.com/intent/tweet?url=${encodeURIComponent(
+        publicUrl
+      )}`;
+      break;
+    case "linkedin":
+      shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+        publicUrl
+      )}`;
+      break;
+    case "link":
+      shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(
+        publicUrl
+      )}`;
+      break;
+  }
+
+  window.open(shareUrl, "_blank");
+};
+
+// Añadir event listeners a los botones de compartir
+document.addEventListener("click", (event) => {
+  const shareBtn = event.target.closest(".btn_share");
+  if (shareBtn) {
+    const index = shareBtn.id.split("-")[1];
+    toggleShareMenu(index);
+  }
+
+  const shareLink = event.target.closest(".share-link");
+  if (shareLink) {
+    event.preventDefault();
+    const platform = shareLink.dataset.platform;
+    const postId = shareLink.dataset.postId;
+    sharePostToPlatform(platform, postId);
+  }
+});
+
+
 const requestposts = async () => {
   if (document.querySelector(".social")) {
     // Evitar solicitudes duplicadas si ya se está realizando una
@@ -464,32 +542,28 @@ const requestposts = async () => {
         reactions.map((reaction) => {
           reactionsList += `<button type="button" onclick="addReaction({post: '${post.id}',type: ${reaction.id},acuarelauser: '65d7d5c68cf368c869172f18'}, '${post.id}')"><img src="${reaction.icon}" alt="happy"><small>${reaction.name}</small></button>`;
         });
-        let dialog = `<div id="comments-${
-          post.id
-        }" style="display:none;max-width:768px;" class="formcomments"><div class="content_box">
+        let dialog = `<div id="comments-${post.id
+          }" style="display:none;max-width:768px;" class="formcomments"><div class="content_box">
         <div class="comments-list">
             <h3>Comentarios</h3>
             <ul>
             ${post.comments
-              .map((comment) => {
-                return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment?.acuarelauser?.photo?.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
+            .map((comment) => {
+              return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment?.acuarelauser?.photo?.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
               <strong>${comment.acuarelauser.name}</strong>
               <p>${comment.content}</p>
               </div></li>`;
-              })
-              .join("")}
+            })
+            .join("")}
                
             </ul>
         </div>
         <form id="add-comment">
-            <span><input type="text" id="comment-${post.id}" name="comment-${
-          post.id
-        }" placeholder="Escribe tu mensaje"></span>
-            <button type="button"  onclick="addComment({post: '${
-              post.id
-            }'}, '#comment-${
-          post.id
-        }')"><svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.7347 5.57296L1.95145 0.216402C1.45504 -0.00928566 0.894225 0.0899957 0.487894 0.475371C0.0815634 0.860808 -0.0883852 1.45468 0.0444246 2.02521L1.09324 6.53121H6.22838C6.46468 6.53121 6.65628 6.74109 6.65628 7C6.65628 7.25887 6.4647 7.46878 6.22838 7.46878H1.09324L0.0444246 11.9747C-0.0883852 12.5453 0.0815349 13.1392 0.487894 13.5246C0.895052 13.9107 1.45593 14.0088 1.95148 13.7836L13.7348 8.42703C14.2712 8.18315 14.6045 7.63634 14.6045 7C14.6045 6.36365 14.2712 5.81681 13.7347 5.57296Z" fill="#FBFCFE"/></svg></button>
+            <span><input type="text" id="comment-${post.id}" name="comment-${post.id
+          }" placeholder="Escribe tu mensaje"></span>
+            <button type="button"  onclick="addComment({post: '${post.id
+          }'}, '#comment-${post.id
+          }')"><svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.7347 5.57296L1.95145 0.216402C1.45504 -0.00928566 0.894225 0.0899957 0.487894 0.475371C0.0815634 0.860808 -0.0883852 1.45468 0.0444246 2.02521L1.09324 6.53121H6.22838C6.46468 6.53121 6.65628 6.74109 6.65628 7C6.65628 7.25887 6.4647 7.46878 6.22838 7.46878H1.09324L0.0444246 11.9747C-0.0883852 12.5453 0.0815349 13.1392 0.487894 13.5246C0.895052 13.9107 1.45593 14.0088 1.95148 13.7836L13.7348 8.42703C14.2712 8.18315 14.6045 7.63634 14.6045 7C14.6045 6.36365 14.2712 5.81681 13.7347 5.57296Z" fill="#FBFCFE"/></svg></button>
             </form>
             </div>
             </div>`;
@@ -498,15 +572,13 @@ const requestposts = async () => {
         let template = `
           <article class="post-list__item" id="${post.id}">
               <div class="post-list__item-header">
-                  <img loading="lazy" class="lazyload" data-src="${
-                    post.acuarelauser && post.acuarelauser.photo
-                      ? `https://acuarelacore.com/api${post?.acuarelauser?.photo?.url}`
-                      : "img/placeholder.png"
-                  }"
+                  <img loading="lazy" class="lazyload" data-src="${post.acuarelauser && post.acuarelauser.photo
+            ? `https://acuarelacore.com/api${post?.acuarelauser?.photo?.url}`
+            : "img/placeholder.png"
+          }"
                       alt="UserName" src="img/placeholder.png">
-                  <span class="name">${
-                    post.acuarelauser && post.acuarelauser.name
-                  }</span>
+                  <span class="name">${post.acuarelauser && post.acuarelauser.name
+          }</span>
               </div>
               <div class="post-list__item-photos">
                   <section class="splide splidePots">
@@ -520,64 +592,67 @@ const requestposts = async () => {
               <div class="post-list__item-footer">
                   <div class="post-list__item-footer-actions">
                       <div class="reactions-actions">
-                        <button type="button" onclick="showReactions('${
-                          post.id
-                        }')">
-                        ${
-                          activeUserReactions
-                            ? `<img src="${
-                                reactions.find(
-                                  (reaction) =>
-                                    reaction.id == activeUserReactions.type
-                                ).icon
-                              }" alt="${
-                                reactions.find(
-                                  (reaction) =>
-                                    reaction.id == activeUserReactions.type
-                                ).name
-                              }">`
-                            : `<i class="acuarela acuarela-Anadir_reaccion"></i>`
-                        }
+                        <button type="button" onclick="showReactions('${post.id
+          }')">
+                        ${activeUserReactions
+            ? `<img src="${reactions.find(
+              (reaction) =>
+                reaction.id == activeUserReactions.type
+            ).icon
+            }" alt="${reactions.find(
+              (reaction) =>
+                reaction.id == activeUserReactions.type
+            ).name
+            }">`
+            : `<i class="acuarela acuarela-Anadir_reaccion"></i>`
+          }
                         </button>
                         <div class="reactions-box">${reactionsList}</div>
                       </div>
-                      <button type="button" data-fancybox data-src="#comments-${
-                        post.id
-                      }"><i class="acuarela acuarela-Habla"></i></button>
+                      <button type="button" data-fancybox data-src="#comments-${post.id
+          }"><i class="acuarela acuarela-Habla"></i></button>
+
+
+                      <!--Botón para obtener id de la publicación -->
+      <button type="button" class="btn_share" onclick="toggleShareMenu(${index})"><img src="img/caras/share.svg" alt="link"></button>
+      <div class="share_menu" id="share_menu-${index}" style="display: none;">
+                <a href="#" class="share-link" data-platform="whatsapp" data-post-id="${post._id
+          }"><img src="img/caras/whatsapp.svg" alt="whatsapp"></a>
+                <a href="#" class="share-link" data-platform="facebook" data-post-id="${post._id
+          }"><img src="img/caras/facebook.svg" alt="facebook"></a>
+                <a href="#" class="share-link" data-platform="twitter" data-post-id="${post._id
+          }"><img src="img/caras/twitter-x.svg" alt="twitter"></a>
+                <a href="#" class="share-link" data-platform="linkedin" data-post-id="${post._id
+          }"><img src="img/caras/linkedin.svg" alt="linkedin"></a>
+          <button type="button" onclick="sharePost('${post._id}')"><i class="acuarela acuarela-Link"></i></button>
+      </div>
                       
                   </div>
-                  ${
-                    post.reactions.length > 0 && post.comments.length > 0
-                      ? `
+                  ${post.reactions.length > 0 && post.comments.length > 0
+            ? `
                     <div class="post-list__item-footer-counters">
-                        <div class="reactions"><img src="" alt="">${
-                          post.reactions.length > 0
-                            ? `${post.reactions.length} ${
-                                post.reactions.length === 1
-                                  ? "Rección"
-                                  : "Reacciones"
-                              }`
-                            : ""
-                        }</div>
-                        <div class="comments">${
-                          post.comments.length > 0
-                            ? `${post.comments.length} ${
-                                post.comments.length === 1
-                                  ? "comentario"
-                                  : "comentarios"
-                              }`
-                            : ""
-                        }</div>
+                        <div class="reactions"><img src="" alt="">${post.reactions.length > 0
+              ? `${post.reactions.length} ${post.reactions.length === 1
+                ? "Rección"
+                : "Reacciones"
+              }`
+              : ""
+            }</div>
+                        <div class="comments">${post.comments.length > 0
+              ? `${post.comments.length} ${post.comments.length === 1
+                ? "comentario"
+                : "comentarios"
+              }`
+              : ""
+            }</div>
                     </div>
                     `
-                      : ``
-                  }
+            : ``
+          }
                   <div class="post-list__item-footer-caption">
-                      <p><strong>${
-                        post.acuarelauser && post.acuarelauser.name
-                      }</strong><span>${
-          post.classactivity ? post.classactivity.type : ""
-        }</span></p>
+                      <p><strong>${post.acuarelauser && post.acuarelauser.name
+          }</strong><span>${post.classactivity ? post.classactivity.type : ""
+          }</span></p>
                       <p>${post.content}</p>
                   </div>
               </div>
@@ -613,17 +688,15 @@ const requestinscripciones = async () => {
               <span id="options">
                 <i class="acuarela acuarela-Opciones"></i>
                 <ul>
-                 ${
-                   percentaje >= 100
-                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/editar-ninxs/${child.id}">Editar ninx</a> </li>`
-                     : ``
-                 }
+                 ${percentaje >= 100
+                ? ` <li><a id="profile" href="/miembros/acuarela-app-web/editar-ninxs/${child.id}">Editar ninx</a> </li>`
+                : ``
+              }
                   <li>
-                  ${
-                    percentaje >= 100
-                      ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">Ver perfil</a>`
-                      : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar inscripción</a>`
-                  }
+                  ${percentaje >= 100
+                ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">Ver perfil</a>`
+                : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar inscripción</a>`
+              }
                     
                   </li>
                   <li>
@@ -634,9 +707,8 @@ const requestinscripciones = async () => {
               <h3>${name} ${lastname}</h3>
               <small>Estado inscripción: ${status}</small>
               <div class="progress">
-                <small><span>Has completado el</span> <strong>${
-                  percentaje >= 100 ? 100 : percentaje
-                }%</strong></small>
+                <small><span>Has completado el</span> <strong>${percentaje >= 100 ? 100 : percentaje
+              }%</strong></small>
                 <div class="bar"><div class="barpro" style="width: ${percentaje}%"></div></div>
               </div>
             </li>`;
@@ -646,11 +718,10 @@ const requestinscripciones = async () => {
               <i class="acuarela acuarela-Opciones"></i>
               <ul>
                 <li>
-                ${
-                  percentaje >= 100
-                    ? `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
-                    : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
-                }
+                ${percentaje >= 100
+                ? `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
+                : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
+              }
                   
                 </li>
                 <li>
@@ -661,8 +732,7 @@ const requestinscripciones = async () => {
             <h3>${name} ${lastname}</h3>
             <small>Estado inscripción: ${status}</small>
             <div class="progress">
-              <small><span>Has completado el</span> <strong>${
-                percentaje >= 100 ? 100 : percentaje
+              <small><span>Has completado el</span> <strong>${percentaje >= 100 ? 100 : percentaje
               }%</strong></small>
               <div class="bar"><div class="barpro" style="width: ${percentaje}%"></div></div>
             </div>
@@ -786,22 +856,19 @@ const getChildren = async () => {
       <i class="acuarela acuarela-Opciones"></i>
       <ul>
         <li>
-          <button type="button" id="desactivar" onclick="updateKid('${
-            kid.id
-          }', {'status': false})">Desactivar</button>
+          <button type="button" id="desactivar" onclick="updateKid('${kid.id
+      }', {'status': false})">Desactivar</button>
         </li>
         <li>
-          <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${
-            kid.id
-          }");'>Eliminar</button>
+          <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${kid.id
+      }");'>Eliminar</button>
         </li>
       </ul>
     </div>
     <div class="image">
-      ${
-        kid.photo
-          ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
-          : `
+      ${kid.photo
+        ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
+        : `
       ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
       ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
       ${kid.gender === "X" ? `<img src="img/Nonbinary.png" alt="">` : ""}
@@ -811,26 +878,23 @@ const getChildren = async () => {
       <div class="acuarelausers-buttons"></div>
     </div>
     <span class="name">${kid.name}</span>
-    <a href="/miembros/acuarela-app-web/ninxs/${
-      kid.id
-    }" class="btn btn-action-primary enfasis btn-small">Ver perfil</a>`;
+    <a href="/miembros/acuarela-app-web/ninxs/${kid.id
+      }" class="btn btn-action-primary enfasis btn-small">Ver perfil</a>`;
 
     const createKidInaciveTemplate = (kid, iconClass) => `
         <div class="image">
-          ${
-            kid.photo
-              ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
-              : `
+          ${kid.photo
+        ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
+        : `
           ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
           ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
           ${kid.gender === "X" ? `<img src="img/Nonbinary.png" alt="">` : ""}
           `
-          }
+      }
         </div>
         <span class="name">${kid.name}</span>
-        <button type="button" class="btn btn-action-tertiary enfasis" onclick="updateKid('${
-          kid.id
-        }', {'status': true})">Activar</button>`;
+        <button type="button" class="btn btn-action-tertiary enfasis" onclick="updateKid('${kid.id
+      }', {'status': true})">Activar</button>`;
 
     const renderAcuarelaUserButtons = (
       acuarelausers,
@@ -849,11 +913,10 @@ const getChildren = async () => {
         const y = -Math.cos(angleInRadians) * radius + totalOffset;
         const x = Math.sin(angleInRadians) * radius + totalOffset;
         const buttonTemplate = `
-       <img loading="lazy" class="lazyload" data-src="${
-         acuarelauser && acuarelauser.photo
-           ? `https://acuarelacore.com/api$?{acuarelauser?.photo?.url}`
-           : "img/placeholder.png"
-       }"
+       <img loading="lazy" class="lazyload" data-src="${acuarelauser && acuarelauser.photo
+            ? `https://acuarelacore.com/api$?{acuarelauser?.photo?.url}`
+            : "img/placeholder.png"
+          }"
                       alt="UserName" src="img/placeholder.png">
               <span class="acuarelauser-name">${acuarelauser.name}</span>
             `;
@@ -1154,21 +1217,18 @@ const getAsistentes = async () => {
         <i class="acuarela acuarela-Opciones"></i>
         <ul>
           <li>
-            <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","acuarelausers","${
-              asistente.id
-            }");'>Eliminar</button>
+            <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","acuarelausers","${asistente.id
+        }");'>Eliminar</button>
           </li>
         </ul>
       </div>
          <a href="/miembros/acuarela-app-web/asistente/${asistente.id}" >
           <div class="image">
-            ${
-              asistente.photo
-                ? `<img src='${getSmallestImageUrl(asistente.photo)}' alt='${
-                    asistente.name
-                  }'>`
-                : `<img src="img/placeholder.png" alt="placeholder">`
-            }
+            ${asistente.photo
+          ? `<img src='${getSmallestImageUrl(asistente.photo)}' alt='${asistente.name
+          }'>`
+          : `<img src="img/placeholder.png" alt="placeholder">`
+        }
             <i class="acuarela ${iconClass}"></i>
           </div>
           <span class="name">${asistente.name}</span>
@@ -1259,7 +1319,7 @@ const getInfoNewGroup = () => {
         let childrenGroup = [];
         let acuarelauser = document.querySelector("main").dataset.acuarelauser;
         let edades = document.querySelector("main").dataset.edades;
-        if(document.querySelector("main").dataset.children){
+        if (document.querySelector("main").dataset.children) {
           childrenGroup = JSON.parse(
             document.querySelector("main").dataset.children
           );
@@ -1269,23 +1329,20 @@ const getInfoNewGroup = () => {
         asistentes.forEach((asistente) => {
           if (acuarelauser) {
             let { name, id } = asistente;
-            document.querySelector("#acuarelauser").innerHTML += `<option ${
-              acuarelauser == id ? `selected` : ``
-            } value="${id}">${name}</option>`;
+            document.querySelector("#acuarelauser").innerHTML += `<option ${acuarelauser == id ? `selected` : ``
+              } value="${id}">${name}</option>`;
           } else {
             if (!asistente.group) {
               let { name, id } = asistente;
-              document.querySelector("#acuarelauser").innerHTML += `<option ${
-                acuarelauser == id ? `selected` : ``
-              } value="${id}">${name}</option>`;
+              document.querySelector("#acuarelauser").innerHTML += `<option ${acuarelauser == id ? `selected` : ``
+                } value="${id}">${name}</option>`;
             }
           }
         });
         ageGroups.forEach((ageGroup) => {
           let { name } = ageGroup;
-          document.querySelector("#edades").innerHTML += `<option ${
-            edades == name ? `selected` : ``
-          } value="${name}">${name}</option>`;
+          document.querySelector("#edades").innerHTML += `<option ${edades == name ? `selected` : ``
+            } value="${name}">${name}</option>`;
         });
         let childrenNoGroup = children.response;
         childrenNoGroup.forEach((kid) => {
@@ -1295,27 +1352,22 @@ const getInfoNewGroup = () => {
             url = photo.url;
           }
           document.querySelector(".children").innerHTML += `<li >
-                        <input type="checkbox" name="${id}" id="${id}" ${
-            group && !acuarelauser ? `disabled` : ``
-          } ${childrenGroup.includes(id) ? `checked` : ``}>
+                        <input type="checkbox" name="${id}" id="${id}" ${group && !acuarelauser ? `disabled` : ``
+            } ${childrenGroup.includes(id) ? `checked` : ``}>
                         <label for="${id}">
-                             ${
-                               photo
-                                 ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
-                                 : `${
-                                     kid.gender === "Masculino"
-                                       ? `<img src="img/mal.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "Femenino"
-                                       ? `<img src="img/fem.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "X"
-                                       ? `<img src="img/Nonbinary.png" alt="">`
-                                       : ""
-                                   }`
-                             }
+                             ${photo
+              ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
+              : `${kid.gender === "Masculino"
+                ? `<img src="img/mal.png" alt="">`
+                : ""
+              }${kid.gender === "Femenino"
+                ? `<img src="img/fem.png" alt="">`
+                : ""
+              }${kid.gender === "X"
+                ? `<img src="img/Nonbinary.png" alt="">`
+                : ""
+              }`
+            }
                             <span>${name}</span>
                         </label>
                     </li>`;
@@ -1501,10 +1553,9 @@ if (document.querySelector(".actividadescontainer")) {
         activityElement.className = "activity";
         activityElement.innerHTML = `
         <div class="left">
-        <i class="acuarela ${
-          activitiesList.find((actList) => actList.id == activity.classactivity)
+        <i class="acuarela ${activitiesList.find((actList) => actList.id == activity.classactivity)
             .iconClass
-        }"></i>
+          }"></i>
         <div class="txt">
         <div class="activity-title">${activity.name}</div>
         <div class="activity-desc">
@@ -1515,8 +1566,8 @@ if (document.querySelector(".actividadescontainer")) {
         </div>
                   </div>
                   <div class="activity-time">${formatFechaAmigable(
-                    activity.date
-                  )}</div>
+            activity.date
+          )}</div>
               `;
         activitiesListContainer.appendChild(activityElement);
       });
@@ -1632,7 +1683,7 @@ function showActivityLightbox(showNextStep = false) {
     }
     document
       .querySelectorAll("#createActicity .step")
-      [activeStepNo].classList.add("active");
+    [activeStepNo].classList.add("active");
     onceOpen = false;
   }
   lightbox.style.display = "flex";
@@ -1648,7 +1699,7 @@ function showActivityLightbox(showNextStep = false) {
     }
     document
       .querySelectorAll("#createActicity .step")
-      [activeStepNo].classList.add("active");
+    [activeStepNo].classList.add("active");
     closeButton.removeEventListener("click", closeHandler);
   };
   closeButton.addEventListener("click", closeHandler);
@@ -1675,7 +1726,7 @@ const nextStep = () => {
   }
   document
     .querySelectorAll("#createActicity .step")
-    [activeStepNo].classList.add("active");
+  [activeStepNo].classList.add("active");
 };
 
 const sendActivity = async () => {
@@ -1757,17 +1808,13 @@ const generateReport = async () => {
   const finalFilterDate = document.getElementById("end-date").value;
   const daycareId = document.getElementById("daycare").value;
 
-  let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${
-    formValuesInspeccion.fichasNinos
-  }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${
-    formValuesInspeccion.registroAsistencia
-  }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${
-    formValuesInspeccion.ingresos
-  }&gastos=${formValuesInspeccion.gastos}&visitas=${
-    formValuesInspeccion.visitas
-  }&payrolls=${formValuesInspeccion.payrolls}&from=${new Date(
-    initialFilterDate
-  )}&to=${new Date(finalFilterDate)}&user=${userMainT}`;
+  let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${formValuesInspeccion.fichasNinos
+    }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${formValuesInspeccion.registroAsistencia
+    }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${formValuesInspeccion.ingresos
+    }&gastos=${formValuesInspeccion.gastos}&visitas=${formValuesInspeccion.visitas
+    }&payrolls=${formValuesInspeccion.payrolls}&from=${new Date(
+      initialFilterDate
+    )}&to=${new Date(finalFilterDate)}&user=${userMainT}`;
 
   await sendInspectionModeMail(userNameAdmin, emailAdmin, link);
 };
@@ -1902,7 +1949,7 @@ const changeValuesForMultipleContainers = (event, selectors) => {
 
 
 const getAllCategories = async () => {
-    const resp = await fetchToken("categories");
-    const body = await resp.json();
-    console.log(body);
+  const resp = await fetchToken("categories");
+  const body = await resp.json();
+  console.log(body);
 };
