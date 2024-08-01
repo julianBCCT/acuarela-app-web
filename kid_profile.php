@@ -1,6 +1,7 @@
-<?php $classBody ="kid_profile"; include "includes/header.php"; $kid = $a->getChildren($_GET['id']); ?>
+<?php $classBody ="kid_profile"; include "includes/header.php"; $kid = $a->getChildren($_GET['id']);
+?>
 <script>
-    let activities = <?= json_encode($kid -> childrenactivities) ?>;
+    let activities = <?= json_encode($kid->childrenactivities) ?>;
 </script>
 <main>
     <?php
@@ -61,6 +62,27 @@
                 <?php 
                     for ($i=0; $i < count($kid->acuarelausers); $i++) { 
                         $parent = $kid->acuarelausers[$i];
+                ?>
+                <li>
+                    <div class="image">
+                        <?= $parent->photo
+                      ? "<img src='https://acuarelacore.com/api/{$parent->photo->formats->small->url}' alt='{$parent->name}'>"
+                      : "<i class='acuarela acuarela-Camara'></i>" ?>
+
+
+                    </div>
+                    <?php if(  $parent->is_principal){ ?>
+                    <i class="acuarela acuarela-Estrella"></i>
+                    <?php } ?>
+                    <span class="name"><?=$parent->name?> <?=$parent->lastname?></span>
+                </li>
+                <?php } ?>
+            </ul>
+            <h3>Responsables</h3>
+            <ul>
+                <?php 
+                    for ($i=0; $i < count($kid->guardians); $i++) { 
+                        $guardian = $kid->guardians[$i];
                 ?>
                 <li>
                     <div class="image">

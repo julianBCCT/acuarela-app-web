@@ -218,7 +218,22 @@ if (document.getElementById("photo")) {
       }
     });
 }
+// Función para obtener la URL de la imagen más pequeña disponible
+function getSmallestImageUrl(image) {
+  if (image.formats) {
+    const formats = image.formats;
+    const sizes = ["thumbnail", "small", "medium", "large"];
 
+    for (const size of sizes) {
+      if (formats[size]) {
+        return "https://acuarelacore.com/api" + formats[size].url;
+      }
+    }
+  }
+
+  // Si no hay formatos, devuelve la URL principal
+  return "https://acuarelacore.com/api" + image.url;
+}
 // Function to fetch all URLs
 async function fetchAllUrls(urls) {
   try {
@@ -462,3 +477,20 @@ function get_alias(str) {
 
   return str;
 }
+
+document.querySelectorAll('.calendar-icon').forEach(button => {
+  button.addEventListener('click', function() {
+    // Encuentra el input asociado al botón actual
+    let input = button.previousElementSibling;
+    if (input && input.type === 'date') {
+      input.focus();
+      // Crear y disparar un evento de clic en el input
+      let event = new MouseEvent('click', {
+        'view': window,
+        'bubbles': true,
+        'cancelable': true
+      });
+      input.dispatchEvent(event);
+    }
+  });
+});

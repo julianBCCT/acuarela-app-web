@@ -12,9 +12,11 @@
 
   &-content {
     max-width: 640px;
-    max-height: 400px;
+    min-height: 400px;
+    max-height: 90%;
     position: relative;
     border-radius: 16px;
+    width: 100%;
     text-align: center;
     padding: 60px 70px;
     background: var(--White, #fbfcfe);
@@ -55,8 +57,8 @@
     padding: 12px;
   }
 
-
-
+  .close-button,
+  #activities-close-button,
   #asistente-close-button,
   #parent-close-button,
   #info-close-button {

@@ -19,6 +19,7 @@
     let userNameAdmin = "<?=$_SESSION["user"]->name?>";
     let emailAdmin = "<?=$_SESSION["user"]->email?>";
     let daycareName = "<?=$_SESSION["user"]->daycares[0]->name?>";
+    let daycareActiveId = "<?=$a->daycareID?>";
     // Assuming the daycares array is available in the session
     let daycares = <?php echo json_encode($_SESSION["user"]->daycares); ?>;
 
@@ -33,6 +34,7 @@
     document.addEventListener("DOMContentLoaded", function () {
       if (foundDaycare) {
         document.querySelector('#daycareName').innerText = foundDaycare.name;
+        document.querySelector('.logout a').href = `/miembros/daycare/<?=$a->get_alias($_SESSION["user"]->daycares[0]->name)?>/<?=$a->daycareID?>`;
       }
     })
   </script>

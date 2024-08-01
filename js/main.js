@@ -180,6 +180,26 @@ const handleInscripcion = async () => {
       work_phone: formValues.parent_phone2,
     },
   ];
+  const guardians = [
+    {
+      guardian_name: formValues.guardian1_name,
+      guardian_relationship: formValues.guardian1_relationship,
+      guardian_phone: formValues.guardian1_phone,
+      guardian_email: formValues.guardian1_email,
+      guardian_pickup: formValues.guardian1_emergency == 'on'? true : false,
+      guardian_emergency: formValues.guardian1_pickup == 'on'? true : false,
+      guardian_lastname: formValues.guardian1_lastname,
+    },
+    {
+      guardian_name: formValues.guardian2_name,
+      guardian_relationship: formValues.guardian2_relationship,
+      guardian_phone: formValues.guardian2_phone,
+      guardian_email: formValues.guardian2_email,
+      guardian_pickup: formValues.guardian2_emergency == 'on'? true : false,
+      guardian_emergency: formValues.guardian2_pickup == 'on'? true : false,
+      guardian_lastname: formValues.guardian2_lastname,
+    },
+  ];
 
   let dataToSend = {
     name: formValues.name,
@@ -189,6 +209,7 @@ const handleInscripcion = async () => {
     daycare: formValues.daycare,
     files: files.filter((file) => file.file),
     parents: parents.filter((parent) => parent.email),
+    guardians,
     payment: {
       time: formValues.paymentTime,
       price: formValues.paymentPrice,
@@ -219,7 +240,7 @@ const handleInscripcion = async () => {
         async function sendEmailsToParents(parents, daycare, formValues) {
           const emailPromises = parents.map((parent) => {
             return sendRegisterEmail(
-              parent.parent_type,
+              "Padre",
               daycare,
               parent.email,
               `https://acuarelacore.com/auth/register/${parent.id}`,
@@ -394,6 +415,7 @@ const addComment = async (body, inputID) => {
   });
   const reactionData = await commentResponse.json();
   Fancybox.close();
+  location.reload();
 };
 const showReactions = (element) => {
   let postArticle = document.getElementById(element);
@@ -450,7 +472,7 @@ const requestposts = async () => {
             <ul>
             ${post.comments
               .map((comment) => {
-                return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment.acuarelauser.photo.formats.small.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
+                return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment?.acuarelauser?.photo?.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
               <strong>${comment.acuarelauser.name}</strong>
               <p>${comment.content}</p>
               </div></li>`;
@@ -478,7 +500,7 @@ const requestposts = async () => {
               <div class="post-list__item-header">
                   <img loading="lazy" class="lazyload" data-src="${
                     post.acuarelauser && post.acuarelauser.photo
-                      ? `https://acuarelacore.com/api${post.acuarelauser.photo.formats.small.url}`
+                      ? `https://acuarelacore.com/api${post?.acuarelauser?.photo?.url}`
                       : "img/placeholder.png"
                   }"
                       alt="UserName" src="img/placeholder.png">
@@ -778,7 +800,7 @@ const getChildren = async () => {
     <div class="image">
       ${
         kid.photo
-          ? `<img src='https://acuarelacore.com/api/${kid.photo.formats.small.url}' alt='${kid.name}'>`
+          ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
           : `
       ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
       ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
@@ -797,7 +819,7 @@ const getChildren = async () => {
         <div class="image">
           ${
             kid.photo
-              ? `<img src='https://acuarelacore.com/api/${kid.photo.formats.small.url}' alt='${kid.name}'>`
+              ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
               : `
           ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
           ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
@@ -829,7 +851,7 @@ const getChildren = async () => {
         const buttonTemplate = `
        <img loading="lazy" class="lazyload" data-src="${
          acuarelauser && acuarelauser.photo
-           ? `https://acuarelacore.com/api${acuarelauser.photo.formats.small.url}`
+           ? `https://acuarelacore.com/api$?{acuarelauser?.photo?.url}`
            : "img/placeholder.png"
        }"
                       alt="UserName" src="img/placeholder.png">
@@ -1072,7 +1094,7 @@ const getChildren = async () => {
           buttonManual.setAttribute("type", "button");
           buttonQR.setAttribute("type", "button");
 
-          buttonManual.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_1_40804)"><path d="M119.93 56.8962L97.288 32.0102C95.2378 29.9782 91.7544 29.9722 89.6013 32.1131C88.525 33.1894 87.9563 34.5683 87.9563 36.0379C87.9563 37.5074 88.5309 38.8923 89.571 39.9326L89.831 40.1926C91.0102 41.3719 91.0102 43.2891 89.831 44.4684C88.6758 45.6295 86.8011 45.6536 85.6159 44.5287C85.6159 44.5287 85.6159 44.5228 85.6099 44.5228H85.604C85.604 44.5228 85.604 44.5228 85.598 44.5168L85.5921 44.5109C85.5921 44.5109 85.598 44.5109 85.5861 44.5049L79.2421 38.1609C77.1012 36.02 73.5996 36.02 71.4588 38.1609C69.2757 40.344 69.2757 43.8336 71.4225 45.9804L77.7302 52.2882C78.323 52.881 78.6133 53.6549 78.6133 54.4291C78.6133 55.2033 78.317 55.9772 77.7302 56.5699C76.551 57.7492 74.6338 57.7492 73.4545 56.5699L61.0992 44.2087C58.9583 42.0678 55.4568 42.0678 53.3159 44.2087C51.1328 46.3918 51.1328 49.8814 53.2796 52.0283L65.6349 64.3835C66.2277 64.9763 66.518 65.7502 66.518 66.5244C66.518 67.2986 66.2217 68.0725 65.6349 68.6653C64.4556 69.8445 62.5384 69.8445 61.3591 68.6653L31.1091 38.4086C30.0327 37.3323 28.6235 36.7939 27.2143 36.7939C25.8051 36.7939 24.3962 37.3323 23.3195 38.4027C21.1424 40.5858 21.1424 44.0814 23.2892 46.2282L68.6645 91.6035C69.4687 92.4077 69.7531 93.5992 69.4024 94.6756C69.0455 95.7582 68.1202 96.5503 66.9953 96.7257L36.6664 101.491C32.9834 102.017 30.2379 105.18 30.2379 108.857C30.2379 110.527 31.5927 111.881 33.2618 111.881H90.2848C97.5541 111.881 104.388 109.051 109.528 103.911L119.041 94.3978C124.176 89.2631 127 82.4414 127 75.1842C127 68.4047 124.484 61.9096 119.93 56.8962Z" fill="#0CB5C3" /><path d="M51.9852 31.1637C47.5828 21.4209 37.8582 15.1191 27.2143 15.1191C12.2101 15.1191 0 27.3293 0 42.3334C0 52.9773 6.30153 62.7019 16.0442 67.1106C16.4493 67.292 16.8729 67.3768 17.2901 67.3768C18.4391 67.3768 19.5399 66.7115 20.0479 65.5988C20.7313 64.0748 20.0538 62.2846 18.536 61.5952C10.9523 58.1662 6.04781 50.6066 6.04781 42.3334C6.04781 30.6616 15.5425 21.1667 27.2146 21.1667C35.4877 21.1667 43.0473 26.0712 46.4763 33.6549C47.1598 35.1789 48.956 35.8624 50.4737 35.1667C51.9974 34.4776 52.6747 32.6877 51.9852 31.1637Z" fill="#0CB5C3" /></g><defs><clipPath id="clip0_1_40804"><rect width="127" height="127" fill="white" /></clipPath></defs></svg><span>Registro manual</span><div class="info"><i class="acuarela acuarela-Informacion"></i><p>Menos seguro</p></div>`;
+          buttonManual.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_1_40804)"><path d="M119.93 56.8962L97.288 32.0102C95.2378 29.9782 91.7544 29.9722 89.6013 32.1131C88.525 33.1894 87.9563 34.5683 87.9563 36.0379C87.9563 37.5074 88.5309 38.8923 89.571 39.9326L89.831 40.1926C91.0102 41.3719 91.0102 43.2891 89.831 44.4684C88.6758 45.6295 86.8011 45.6536 85.6159 44.5287C85.6159 44.5287 85.6159 44.5228 85.6099 44.5228H85.604C85.604 44.5228 85.604 44.5228 85.598 44.5168L85.5921 44.5109C85.5921 44.5109 85.598 44.5109 85.5861 44.5049L79.2421 38.1609C77.1012 36.02 73.5996 36.02 71.4588 38.1609C69.2757 40.344 69.2757 43.8336 71.4225 45.9804L77.7302 52.2882C78.323 52.881 78.6133 53.6549 78.6133 54.4291C78.6133 55.2033 78.317 55.9772 77.7302 56.5699C76.551 57.7492 74.6338 57.7492 73.4545 56.5699L61.0992 44.2087C58.9583 42.0678 55.4568 42.0678 53.3159 44.2087C51.1328 46.3918 51.1328 49.8814 53.2796 52.0283L65.6349 64.3835C66.2277 64.9763 66.518 65.7502 66.518 66.5244C66.518 67.2986 66.2217 68.0725 65.6349 68.6653C64.4556 69.8445 62.5384 69.8445 61.3591 68.6653L31.1091 38.4086C30.0327 37.3323 28.6235 36.7939 27.2143 36.7939C25.8051 36.7939 24.3962 37.3323 23.3195 38.4027C21.1424 40.5858 21.1424 44.0814 23.2892 46.2282L68.6645 91.6035C69.4687 92.4077 69.7531 93.5992 69.4024 94.6756C69.0455 95.7582 68.1202 96.5503 66.9953 96.7257L36.6664 101.491C32.9834 102.017 30.2379 105.18 30.2379 108.857C30.2379 110.527 31.5927 111.881 33.2618 111.881H90.2848C97.5541 111.881 104.388 109.051 109.528 103.911L119.041 94.3978C124.176 89.2631 127 82.4414 127 75.1842C127 68.4047 124.484 61.9096 119.93 56.8962Z" fill="#0CB5C3" /><path d="M51.9852 31.1637C47.5828 21.4209 37.8582 15.1191 27.2143 15.1191C12.2101 15.1191 0 27.3293 0 42.3334C0 52.9773 6.30153 62.7019 16.0442 67.1106C16.4493 67.292 16.8729 67.3768 17.2901 67.3768C18.4391 67.3768 19.5399 66.7115 20.0479 65.5988C20.7313 64.0748 20.0538 62.2846 18.536 61.5952C10.9523 58.1662 6.04781 50.6066 6.04781 42.3334C6.04781 30.6616 15.5425 21.1667 27.2146 21.1667C35.4877 21.1667 43.0473 26.0712 46.4763 33.6549C47.1598 35.1789 48.956 35.8624 50.4737 35.1667C51.9974 34.4776 52.6747 32.6877 51.9852 31.1637Z" fill="#0CB5C3" /></g><defs><clipPath id="clip0_1_40804"><rect width="127" height="127" fill="white" /></clipPath></defs></svg><span>Registro manual</span>`;
           buttonQR.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_1_40802)"><path d="M3.7207 29.7656C1.66588 29.7656 0 28.0997 0 26.0449V3.7207C0 1.66588 1.66588 0 3.7207 0H26.0449C28.0997 0 29.7656 1.66588 29.7656 3.7207C29.7656 5.77552 28.0997 7.44141 26.0449 7.44141H7.44141V26.0449C7.44141 28.0997 5.77552 29.7656 3.7207 29.7656Z" fill="#0CB5C3" /><path d="M123.279 29.7656C121.224 29.7656 119.559 28.0997 119.559 26.0449V7.44141H100.955C98.9003 7.44141 97.2344 5.77552 97.2344 3.7207C97.2344 1.66588 98.9003 0 100.955 0H123.279C125.334 0 127 1.66588 127 3.7207V26.0449C127 28.0997 125.334 29.7656 123.279 29.7656Z" fill="#0CB5C3" /><path d="M26.0449 127H3.7207C1.66588 127 0 125.334 0 123.279V100.955C0 98.9003 1.66588 97.2344 3.7207 97.2344C5.77552 97.2344 7.44141 98.9003 7.44141 100.955V119.559H26.0449C28.0997 119.559 29.7656 121.224 29.7656 123.279C29.7656 125.334 28.0997 127 26.0449 127Z" fill="#0CB5C3" /><path d="M123.279 127H100.955C98.9003 127 97.2344 125.334 97.2344 123.279C97.2344 121.224 98.9003 119.559 100.955 119.559H119.559V100.955C119.559 98.9003 121.224 97.2344 123.279 97.2344C125.334 97.2344 127 98.9003 127 100.955V123.279C127 125.334 125.334 127 123.279 127Z" fill="#0CB5C3" /><path d="M74.6621 52.3379H96.9863V30.0137H74.6621V52.3379ZM85.8242 37.4551C87.879 37.4551 89.5449 39.121 89.5449 41.1758C89.5449 43.2306 87.879 44.8965 85.8242 44.8965C83.7694 44.8965 82.1035 43.2306 82.1035 41.1758C82.1035 39.121 83.7694 37.4551 85.8242 37.4551Z" fill="#0CB5C3" /><path d="M74.6621 89.5449H82.1035V96.9863H74.6621V89.5449Z" fill="#0CB5C3" /><path d="M30.0137 96.9863H52.3379V74.6621H30.0137V96.9863ZM41.1758 82.1035C43.2306 82.1035 44.8965 83.7694 44.8965 85.8242C44.8965 87.879 43.2306 89.5449 41.1758 89.5449C39.121 89.5449 37.4551 87.879 37.4551 85.8242C37.4551 83.7694 39.121 82.1035 41.1758 82.1035Z" fill="#0CB5C3" /><path d="M30.0137 52.3379H52.3379V30.0137H30.0137V52.3379ZM41.1758 37.4551C43.2306 37.4551 44.8965 39.121 44.8965 41.1758C44.8965 43.2306 43.2306 44.8965 41.1758 44.8965C39.121 44.8965 37.4551 43.2306 37.4551 41.1758C37.4551 39.121 39.121 37.4551 41.1758 37.4551Z" fill="#0CB5C3" /><path d="M100.707 15.1309H26.293C20.1283 15.1309 15.1309 20.1283 15.1309 26.293V100.707C15.1309 106.872 20.1283 111.869 26.293 111.869H100.707C106.872 111.869 111.869 106.872 111.869 100.707V26.293C111.869 20.1283 106.872 15.1309 100.707 15.1309ZM59.7793 100.707C59.7793 102.762 58.1134 104.428 56.0586 104.428H26.293C24.2381 104.428 22.5723 102.762 22.5723 100.707V70.9414C22.5723 68.8866 24.2381 67.2207 26.293 67.2207H56.0586C58.1134 67.2207 59.7793 68.8866 59.7793 70.9414V100.707ZM59.7793 56.0586C59.7793 58.1134 58.1134 59.7793 56.0586 59.7793H26.293C24.2381 59.7793 22.5723 58.1134 22.5723 56.0586V26.293C22.5723 24.2381 24.2381 22.5723 26.293 22.5723H56.0586C58.1134 22.5723 59.7793 24.2381 59.7793 26.293V56.0586ZM89.5449 100.707C89.5449 102.762 87.879 104.428 85.8242 104.428H70.9414C68.8866 104.428 67.2207 102.762 67.2207 100.707V85.8242C67.2207 83.7694 68.8866 82.1035 70.9414 82.1035H85.8242C87.879 82.1035 89.5449 83.7694 89.5449 85.8242V100.707ZM104.428 100.707C104.428 102.762 102.762 104.428 100.707 104.428C98.6522 104.428 96.9863 102.762 96.9863 100.707V95.7461C96.9863 93.6913 98.6522 92.0254 100.707 92.0254C102.762 92.0254 104.428 93.6913 104.428 95.7461V100.707ZM104.428 80.8633C104.428 82.9181 102.762 84.584 100.707 84.584C98.6522 84.584 96.9863 82.9181 96.9863 80.8633V74.6621H70.9414C68.8866 74.6621 67.2207 72.9962 67.2207 70.9414C67.2207 68.8866 68.8866 67.2207 70.9414 67.2207H100.707C102.762 67.2207 104.428 68.8866 104.428 70.9414V80.8633ZM104.428 56.0586C104.428 58.1134 102.762 59.7793 100.707 59.7793H70.9414C68.8866 59.7793 67.2207 58.1134 67.2207 56.0586V26.293C67.2207 24.2381 68.8866 22.5723 70.9414 22.5723H100.707C102.762 22.5723 104.428 24.2381 104.428 26.293V56.0586Z" fill="#0CB5C3" /></g><defs><clipPath id="clip0_1_40802"><rect width="127" height="127" fill="white" /></clipPath></defs></svg><span>Registro por QR</span>`;
 
           buttonQR.addEventListener("click", qrHandle);
@@ -1142,7 +1164,9 @@ const getAsistentes = async () => {
           <div class="image">
             ${
               asistente.photo
-                ? `<img src='https://acuarelacore.com/api/${asistente.photo.url}' alt='${asistente.name}'>`
+                ? `<img src='${getSmallestImageUrl(asistente.photo)}' alt='${
+                    asistente.name
+                  }'>`
                 : `<img src="img/placeholder.png" alt="placeholder">`
             }
             <i class="acuarela ${iconClass}"></i>
@@ -1232,20 +1256,36 @@ const getInfoNewGroup = () => {
   if (document.querySelector(".newgroup")) {
     fetchAllUrls(["g/getAsistentes/", "g/getAgeGroups/", "g/getChildren/"])
       .then(([asistentes, ageGroups, children]) => {
+        let childrenGroup = [];
+        let acuarelauser = document.querySelector("main").dataset.acuarelauser;
+        let edades = document.querySelector("main").dataset.edades;
+        if(document.querySelector("main").dataset.children){
+          childrenGroup = JSON.parse(
+            document.querySelector("main").dataset.children
+          );
+          childrenGroup = childrenGroup.map((kid) => kid.id);
+        }
         // Do something with the fetched data
         asistentes.forEach((asistente) => {
-          if (!asistente.group) {
+          if (acuarelauser) {
             let { name, id } = asistente;
-            document.querySelector(
-              "#acuarelauser"
-            ).innerHTML += `<option value="${id}">${name}</option>`;
+            document.querySelector("#acuarelauser").innerHTML += `<option ${
+              acuarelauser == id ? `selected` : ``
+            } value="${id}">${name}</option>`;
+          } else {
+            if (!asistente.group) {
+              let { name, id } = asistente;
+              document.querySelector("#acuarelauser").innerHTML += `<option ${
+                acuarelauser == id ? `selected` : ``
+              } value="${id}">${name}</option>`;
+            }
           }
         });
         ageGroups.forEach((ageGroup) => {
           let { name } = ageGroup;
-          document.querySelector(
-            "#edades"
-          ).innerHTML += `<option value="${name}">${name}</option>`;
+          document.querySelector("#edades").innerHTML += `<option ${
+            edades == name ? `selected` : ``
+          } value="${name}">${name}</option>`;
         });
         let childrenNoGroup = children.response;
         childrenNoGroup.forEach((kid) => {
@@ -1254,11 +1294,10 @@ const getInfoNewGroup = () => {
           if (photo) {
             url = photo.url;
           }
-
           document.querySelector(".children").innerHTML += `<li >
                         <input type="checkbox" name="${id}" id="${id}" ${
-            group ? `disabled` : ``
-          }>
+            group && !acuarelauser ? `disabled` : ``
+          } ${childrenGroup.includes(id) ? `checked` : ``}>
                         <label for="${id}">
                              ${
                                photo
@@ -1290,7 +1329,10 @@ const getInfoNewGroup = () => {
   }
 };
 const getInfoNewAsistente = () => {
-  if (document.querySelector(".newasistente")) {
+  if (
+    document.querySelector(".newasistente") ||
+    document.querySelector("#estado")
+  ) {
     fetchAllUrls(["g/getEstadosCiudades/"])
       .then(([body]) => {
         var estados = Object.keys(body.all_states);
@@ -1562,10 +1604,54 @@ function showInfoLightbox(title, content) {
 
   closeButton.addEventListener("click", closeHandler);
 }
+function openEditAsistente() {
+  const infoLightbox = document.getElementById("editasistente-lightbox");
+  infoLightbox.style.display = "flex";
+  const closeButton = document.getElementById("editasistente-close-button");
+  const closeHandler = () => {
+    infoLightbox.style.display = "none";
+    closeButton.removeEventListener("click", closeHandler);
+  };
 
-function showActivityLightbox() {
+  closeButton.addEventListener("click", closeHandler);
+}
+
+let onceOpen = false;
+let activeStepNo = 0;
+
+function showActivityLightbox(showNextStep = false) {
   const lightbox = document.getElementById("lightbox-activities");
+  if (showNextStep && !onceOpen) {
+    nextStep();
+    onceOpen = true;
+  } else if (!showNextStep && onceOpen) {
+    activeStepNo = 0;
+    let activeStep = document.querySelector(".step.active");
+    if (activeStep) {
+      activeStep.classList.remove("active");
+    }
+    document
+      .querySelectorAll("#createActicity .step")
+      [activeStepNo].classList.add("active");
+    onceOpen = false;
+  }
   lightbox.style.display = "flex";
+  const closeButton = document.getElementById("activities-close-button");
+  const closeHandler = () => {
+    lightbox.style.display = "none";
+    document.querySelector("#createActicity").reset();
+    activeStepNo = 0;
+
+    let activeStep = document.querySelector(".step.active");
+    if (activeStep) {
+      activeStep.classList.remove("active");
+    }
+    document
+      .querySelectorAll("#createActicity .step")
+      [activeStepNo].classList.add("active");
+    closeButton.removeEventListener("click", closeHandler);
+  };
+  closeButton.addEventListener("click", closeHandler);
 }
 
 function updateIconClass(newClass, newName) {
@@ -1573,19 +1659,20 @@ function updateIconClass(newClass, newName) {
   var name = document.querySelectorAll(".typeSelectedName");
   icon.forEach((icon) => {
     icon.className = ""; // Elimina todas las clases
-    icon.classList.add("acuarela", newClass); // Agrega las nuevas clases
+    icon.classList.add("acuarela", newClass, "typeSelectedIcon"); // Agrega las nuevas clases
   });
   name.forEach((name) => {
     name.innerHTML = newName;
   });
 }
 
-let activeStepNo = 0;
 let totalSteps = document.querySelectorAll("#createActicity .step").length;
 const nextStep = () => {
   activeStepNo++;
   let activeStep = document.querySelector(".step.active");
-  activeStep.classList.remove("active");
+  if (activeStep) {
+    activeStep.classList.remove("active");
+  }
   document
     .querySelectorAll("#createActicity .step")
     [activeStepNo].classList.add("active");
@@ -1811,4 +1898,11 @@ const changeValuesForMultipleContainers = (event, selectors) => {
       container.innerText = valueTemplate.replace("{value}", value);
     });
   }
+};
+
+
+const getAllCategories = async () => {
+    const resp = await fetchToken("categories");
+    const body = await resp.json();
+    console.log(body);
 };

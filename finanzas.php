@@ -1,7 +1,11 @@
 <?php 
     $classBody ="finanzas"; 
     include "includes/header.php";
-    $movements = $a->getMovements();
+    $date = new DateTime();
+    $date_formateada = isset($_GET['desde-reporte']) ? $_GET['desde-reporte'] : $date->format('Y-m-d');
+    $date->modify('+7 day'); 
+    $future_formateada = isset($_GET['hasta-reporte']) ? $_GET['hasta-reporte'] : $date->format('Y-m-d');
+    $movements = $a->getMovements($date_formateada,$future_formateada);
     $text = array("0" => "PAGO RECHAZADO","1" => "PAGO APROBADO","2" => "PAGO PENDIENTE");
     $color = array("0" => "#eb5d5e", "1"=> "#3fb072","2" => "#f5aa16");
     // Suponiendo que $movements es tu array de objetos
@@ -47,17 +51,22 @@ $balance = $ingresosTotal - $gastosTotal;
         <div class="underline"></div>
     </div>
     <div class="content">
-        <form action="" id="filterReporte" method="get">
+        <form action="" id="filterReporte" method="GET">
             <span class="calendar">
-                <label for="desde">Desde</label>
-                <input type="date" name="desde" id="desde" />
+                <label for="desde-reporte">Desde</label>
+                <input type="date" name="desde-reporte" id="desde-reporte" value="<?=$date_formateada?>" />
+                <button type="button" class="calendar-icon" aria-label="Mostrar calendario"></button>
             </span>
             <span class="calendar">
-                <label for="hasta">Hasta</label>
-                <input type="date" name="hasta" id="hasta" />
+                <label for="hasta-reporte">Hasta</label>
+                <input type="date" name="hasta-reporte" id="hasta-reporte" value="<?=$future_formateada?>" />
+                <button type="button" class="calendar-icon" aria-label="Mostrar calendario"></button>
             </span>
+            <button type="submit" class="btn btn-action-primary enfasis btn-big">Aplicar filtros</button>
         </form>
         <div id="reporte" class="tab-content active">
+            <div class="tab-content-header">
+            </div>
             <div class="cardsFinanza">
                 <div class="cardFinanza">
                     <div class="txt">
@@ -83,41 +92,81 @@ $balance = $ingresosTotal - $gastosTotal;
             </div>
             <table>
                 <tbody>
-                    
+                    <?php 
+                    if(count($movements) == 0){
+                    ?>
+                     <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron registros en estas fechas</p>
+                        </td>
+                     </tr>
+                    <?php 
+                    }else{
+                    ?>
                     <?php 
                         for ($i=0; $i < count($movements); $i++) { 
                         $movement = $movements[$i];
                     ?>
-                            <tr>
-                            <td><h4><?=$movement->name?></h4></td>
-                            <td><span class="status" style="color:<?=$color[$movement->type]?>;"><?=$text[$movement->type]?></span></td>
-                            <td><span class="date">
-                            <?php
-                            // Crea un objeto DateTime desde la cadena ISO 8601
-                            $movementDate = new DateTime($movement->date);
-                            // Formatea la fecha al formato MM-DD-YYYY
-                            $payDate_formateada = $movementDate->format('m-d-Y');
-                            echo $payDate_formateada;
-                            ?>
+                    <tr>
+                        <td><h4><?=$movement->name?></h4></td>
+                        <td><span class="status" style="color:<?=$color[$movement->type]?>;"><?=$text[$movement->type]?></span></td>
+                        <td><span class="date">
+                        <?php
+                        // Crea un objeto DateTime desde la cadena ISO 8601
+                        $movementDate = new DateTime($movement->date);
+                        // Formatea la fecha al formato MM-DD-YYYY
+                        $payDate_formateada = $movementDate->format('m-d-Y');
+                        echo $payDate_formateada;
+                        ?>
                         </span></td>
-                            <td>  <span class="amount">
-                            $<?=$movement->amount?>
+                        <td>  <span class="amount">
+                        $<?=$movement->amount?>
                         </span></td>
-                        </tr>
+                    </tr>
                     <?php } ?>
-
+                    <?php 
+                    }
+                    ?>
                 </tbody>
             </table>
         </div>
         <div id="ingresos" class="tab-content">
+            <div class="tab-content-header">
+            <button type="button" class="btn btn-action-primary enfasis btn-big">Agregar ingreso</button>
+            </div>
+            <div class="card lg ingresos-categories">
+                <div class="card__header">
+                <div class="card__header-title">Categorías</div>
+                <div class="card__header-actions">
+                <button type="button" class="btn btn-action-tertiary enfasis"><i class="acuarela acuarela-Editar"></i> Editar categorías</button>
+                </div>
+                </div>
+                <div class="card__body">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                    veniam.
+                </p>
+                </div>
+            </div>
             <table>
                 <tbody>
-                    
                     <?php 
+                    if(count($ingresos) == 0){
+                    ?>
+                    <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron ingresos en estas fechas</p>
+                        </td>
+                    </tr>
+                    <?php 
+                    }else{
+                    ?>
+                     <?php 
                         for ($i=0; $i < count($ingresos); $i++) { 
                         $ingreso = $ingresos[$i];
                     ?>
-                            <tr>
+                        <tr>
                             <td><h4><?=$ingreso->name?></h4></td>
                             <td><span class="status" style="color:<?=$color[$ingreso->type]?>;"><?=$text[$ingreso->type]?></span></td>
                             <td><span class="date">
@@ -128,20 +177,52 @@ $balance = $ingresosTotal - $gastosTotal;
                             $payDate_formateada = $ingresoDate->format('m-d-Y');
                             echo $payDate_formateada;
                             ?>
-                        </span></td>
-                            <td>  <span class="amount">
-                            $<?=$ingreso->amount?>
-                        </span></td>
+                            </span></td>
+                                <td>  <span class="amount">
+                                $<?=$ingreso->amount?>
+                            </span></td>
                         </tr>
                     <?php } ?>
+                    <?php 
+                    }
+                    ?>
+                   
 
                 </tbody>
             </table>
         </div>
         <div id="gastos" class="tab-content">
+            <div class="tab-content-header">
+            <button type="button" class="btn btn-action-primary enfasis btn-big">Agregar gasto</button>
+            </div>
+            <div class="card lg gastos-categories">
+                <div class="card__header">
+                <div class="card__header-title">Categorías</div>
+                <div class="card__header-actions">
+                    <button type="button"><i class="acuarela acuarela-Editar"></i>Editar categorías</button>
+                </div>
+                </div>
+                <div class="card__body">
+                <p>
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                    tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                    veniam.
+                </p>
+                </div>
+            </div>
             <table>
                 <tbody>
-                    
+                <?php 
+                    if(count($gastos) == 0){
+                    ?>
+                    <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron gastos en estas fechas</p>
+                        </td>
+                    </tr>
+                    <?php 
+                    }else{
+                    ?>
                     <?php 
                         for ($i=0; $i < count($gastos); $i++) { 
                         $gasto = $gastos[$i];
@@ -163,14 +244,30 @@ $balance = $ingresosTotal - $gastosTotal;
                         </span></td>
                         </tr>
                     <?php } ?>
+                    <?php 
+                    }
+                    ?>
 
                 </tbody>
             </table>
         </div>
         <div id="pendientes" class="tab-content">
+            <div class="tab-content-header">
+               
+            </div>
             <table>
                 <tbody>
-                    
+                <?php 
+                    if(count($pendientes) == 0){
+                    ?>
+                    <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron pagos pendiente en estas fechas</p>
+                        </td>
+                    </tr>
+                    <?php 
+                    }else{
+                    ?>
                     <?php 
                         for ($i=0; $i < count($pendientes); $i++) { 
                         $pendiente = $pendientes[$i];
@@ -192,6 +289,9 @@ $balance = $ingresosTotal - $gastosTotal;
                         </span></td>
                         </tr>
                     <?php } ?>
+                    <?php 
+                    }
+                    ?>
 
                 </tbody>
             </table>

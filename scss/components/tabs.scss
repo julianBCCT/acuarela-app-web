@@ -4,6 +4,12 @@
     display: block;
   }
 }
+.tab-content-header{
+  display: flex;
+  padding: 20px;
+  align-items: center;
+  justify-content: flex-end;
+}
 .underline {
   position: absolute;
   bottom: 0;

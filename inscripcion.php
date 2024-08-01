@@ -34,7 +34,8 @@
         <span>
           <i class="acuarela acuarela-Usuario"></i>
           <label for="name">Nombre</label>
-          <input type="text" name="name" id="name" / value="<?=$inscripcion != "" ? $inscripcion->name : ""?>" required oninput="changeValuesForMultipleContainers(event, {'span.name': ' {value}', '#resname strong': '{value}'})">
+          <input type="text" name="name" id="name" / value="<?=$inscripcion != "" ? $inscripcion->name : ""?>" required
+            oninput="changeValuesForMultipleContainers(event, {'span.name': ' {value}', '#resname strong': '{value}'})">
         </span>
         <span>
           <i class="acuarela acuarela-Usuario"></i>
@@ -47,12 +48,14 @@
             <i class="acuarela acuarela-Calendario"></i>
             <label for="birthdate">Fecha de nacimiento</label>
             <input type="date" name="birthdate" id="birthdate" /
-              value="<?=$inscripcion != "" ? $inscripcion->birthdate : ""?>" required onchange="changeValuesForMultipleContainers(event, {'#resbirthday strong': '{value}'})">
+              value="<?=$inscripcion != "" ? $inscripcion->birthdate : ""?>" required
+              onchange="changeValuesForMultipleContainers(event, {'#resbirthday strong': '{value}'})">
           </span>
           <span>
             <i class="acuarela acuarela-Nino"></i>
             <label for="genero">Género</label>
-            <select name="genero" id="genero" <?=$inscripcion !="" ? $inscripcion->gender : ""?> onchange="changeValuesForMultipleContainers(event, {'#resgender strong': '{value}'})">
+            <select name="genero" id="genero" <?=$inscripcion !="" ? $inscripcion->gender : ""?>
+              onchange="changeValuesForMultipleContainers(event, {'#resgender strong': '{value}'})">
               <option <?=$inscripcion !="" && $inscripcion->gender == "Masculino" ? "selected" : ""?>
                 value="Masculino">Masculino</option>
               <option <?=$inscripcion !="" && $inscripcion->gender == "Femenino" ? "selected" : ""?>
@@ -64,6 +67,7 @@
       </div>
       <div id="familia" class="tab-content">
         <section class="splide" id="family" aria-label="Splide Basic HTML Example">
+          <h2>Información de padres</h2>
           <div class="splide__track">
             <ul class="splide__list">
               <li class="splide__slide">
@@ -72,7 +76,8 @@
                   <span>
                     <i class="acuarela acuarela-Familia"></i>
                     <label for="parent_type1">Parentesco</label>
-                    <select name="parent_type1" id="parent_type1" onchange="changeValuesForMultipleContainers(event, {'#resparenttype strong': '{value}'})">
+                    <select name="parent_type1" id="parent_type1"
+                      onchange="changeValuesForMultipleContainers(event, {'#resparenttype strong': '{value}'})">
                       <option value="Mamá">Mamá</option>
                       <option value="Papá">Papá</option>
                     </select>
@@ -89,7 +94,8 @@
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_name1">Nombres</label>
                     <input type="text" autocomplete="off" name="parent_name1" id="parent_name1"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->name : ""?>" required  oninput="changeValuesForMultipleContainers(event, { '#resparentname strong': '{value}'})" />
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->name : ""?>" required
+                      oninput="changeValuesForMultipleContainers(event, { '#resparentname strong': '{value}'})" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
@@ -101,7 +107,8 @@
                     <i class="acuarela acuarela-Telefono"></i>
                     <label for="parent_phone1">Celular</label>
                     <input type="text" autocomplete="off" name="parent_phone1" id="parent_phone1"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->phone : ""?>" required  oninput="changeValuesForMultipleContainers(event, { '#resparenttel strong': '{value}'})" />
+                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->phone : ""?>" required
+                      oninput="changeValuesForMultipleContainers(event, { '#resparenttel strong': '{value}'})" />
                   </span>
                 </fieldset>
               </li>
@@ -154,6 +161,105 @@
               aria-controls="splide01-track">
               <i class="acuarela acuarela-Flecha_derecha"></i>
             </button>
+          </div>
+        </section>
+        <section id="responsables-list">
+          <h2>Agrega 2 contactos responsables distintos a los padres </h2>
+          <div class="responsables">
+            <fieldset class="responsables-card">
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Parentesco</label>
+                <select name="guardian1_relationship" id="parent_type1">
+                      <option value="Hermana/o">Hermana/o</option>
+                      <option value="Prima/o">Prima/o</option>
+                      <option value="Abuela/o">Abuela/o</option>
+                      <option value="Tia/o">Tia/o</option>
+                      <option value="Otra/o">Otra/o</option>
+                    </select>
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Nombres</label>
+                <input type="text" name="guardian1_name" id="guardian1_name" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardian_name : ""?>" required />
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Apellidos</label>
+                <input type="text" name="guardian1_lastname" id="guardian1_lastname" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardian_latname : ""?>" required />
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Celular</label>
+                <input type="text" name="guardian1_phone" id="guardian1_phone" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardianphone : ""?>" required />
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Correo electrónico</label>
+                <input type="text" name="guardian1_email" id="guardian1_email" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardianemail : ""?>" required />
+              </span>
+              <span>
+                <div class="cntr-check">
+                  <input checked type="checkbox" id="guardian1_emergency" name="guardian1_emergency" class="hidden-xs-up" />
+                  <label for="guardian1_emergency" class="cbx"></label>
+                  <span> Marcar como contacto de emergencia</span>
+                </div>
+              </span>
+              <span>
+                <div class="cntr-check">
+                  <input checked type="checkbox" id="guardian1_pickup" name="guardian1_pickup" class="hidden-xs-up" />
+                  <label for="guardian1_pickup" class="cbx"></label>
+                  <span> Puede entregar o recibir al niño</span>
+                </div>
+              </span>
+            </fieldset>
+            <fieldset class="responsables-card">
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Parentesco</label>
+                <select name="guardian2_relationship" id="parent_type1">
+                      <option value="Hermana/o">Hermana/o</option>
+                      <option value="Prima/o">Prima/o</option>
+                      <option value="Abuela/o">Abuela/o</option>
+                      <option value="Tia/o">Tia/o</option>
+                      <option value="Otra/o">Otra/o</option>
+                    </select>
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Nombres</label>
+                <input type="text" name="guardian2_name" id="guardian2_name" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardian_name : ""?>" required />
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Apellidos</label>
+                <input type="text" name="guardian2_lastname" id="guardian2_lastname" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardian_latname : ""?>" required />
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Celular</label>
+                <input type="text" name="guardian2_phone" id="guardian2_phone" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardianphone : ""?>" required />
+              </span>
+              <span>
+                <i class="acuarela acuarela-"></i>
+                <label for="">Correo electrónico</label>
+                <input type="text" name="guardian2_email" id="guardian2_email" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardianemail : ""?>" required />
+              </span>
+              <span>
+                <div class="cntr-check">
+                  <input  type="checkbox" id="guardian2_emergency" name="guardian2_emergency" class="hidden-xs-up" />
+                  <label for="guardian2_emergency" class="cbx"></label>
+                  <span> Marcar como contacto de emergencia</span>
+                </div>
+              </span>
+              <span>
+                <div class="cntr-check">
+                  <input  type="checkbox" id="guardian2_pickup" name="guardian2_pickup" class="hidden-xs-up" />
+                  <label for="guardian2_pickup" class="cbx"></label>
+                  <span> Puede entregar o recibir al niño</span>
+                </div>
+              </span>
+            </fieldset>
           </div>
         </section>
       </div>

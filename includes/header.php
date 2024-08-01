@@ -37,7 +37,7 @@
             ><small>Notificaciones</small>
         </li> -->
         <li class="logout">
-            <a href="/miembros/cerrar-sesion"><i class="acuarela acuarela-Cerrar_sesion"></i></a>
+            <a href=""><i class="acuarela acuarela-Cerrar_sesion"></i></a>
         </li>
         </ul>
     </div>

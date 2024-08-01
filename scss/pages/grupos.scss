@@ -170,8 +170,6 @@
 }
 
 .grupo {
-
-
   main {
     padding: 0;
 
@@ -203,6 +201,17 @@
           box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.20);
           position: relative;
           cursor: pointer;
+          transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+
+          &:hover {
+            transform: scale(1.1);
+
+          }
+
+          label {
+            cursor: pointer;
+
+          }
 
           button.addActivity {
             position: absolute;
@@ -319,6 +328,21 @@
         }
       }
 
+      /* Color para el primer radio button */
+      #rate-6690c556ffe9cb949a3e37e8-0:checked~label[for="rate-6690c556ffe9cb949a3e37e8-0"] .acuarela {
+        background-color: red;
+      }
+
+      /* Color para el segundo radio button */
+      #rate-6690c556ffe9cb949a3e37e8-1:checked~label[for="rate-6690c556ffe9cb949a3e37e8-1"] .acuarela {
+        background-color: yellow;
+      }
+
+      /* Color para el tercer radio button */
+      #rate-6690c556ffe9cb949a3e37e8-2:checked~label[for="rate-6690c556ffe9cb949a3e37e8-2"] .acuarela {
+        background-color: green;
+      }
+
 
     }
   }
@@ -345,6 +369,7 @@
   .types {
     display: flex;
     gap: 20px;
+    justify-content: center;
 
     li {
       cursor: pointer;
@@ -416,7 +441,7 @@
 
         label {
           position: absolute;
-          z-index: 2;
+          z-index: 5;
           font-size: 16px;
           background: #FFF;
           width: 30px;
@@ -478,6 +503,84 @@
           line-height: 20px;
           display: block;
 
+        }
+
+        &:has(.rate-0:checked) {
+
+
+          &::after {
+            content: "";
+            position: absolute;
+            width: 115px;
+            height: 115px;
+            z-index: 2;
+            background-color: var(--cielo);
+            opacity: .5;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+          }
+
+          label {
+            background-color: #FFF;
+            opacity: 0.5;
+
+            &::after {
+              content: none;
+            }
+          }
+        }
+
+        &:has(.rate-1:checked) {
+
+
+          &::after {
+            content: "";
+            position: absolute;
+            width: 115px;
+            height: 115px;
+            z-index: 2;
+            background-color: var(--pollito);
+            opacity: .5;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+          }
+
+          label {
+            background-color: #FFF;
+            opacity: 0.5;
+
+            &::after {
+              content: none;
+            }
+          }
+        }
+
+        &:has(.rate-2:checked) {
+
+
+          &::after {
+            content: "";
+            position: absolute;
+            width: 115px;
+            height: 115px;
+            z-index: 2;
+            background-color: var(--sandia);
+            opacity: .5;
+            top: 0;
+            left: 0;
+            border-radius: 50%;
+          }
+
+          label {
+            background-color: #FFF;
+            opacity: 0.5;
+
+            &::after {
+              content: none;
+            }
+          }
         }
       }
 

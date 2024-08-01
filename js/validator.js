@@ -170,6 +170,32 @@ if (createAsistenteForm) {
 
   validator.initialize();
 }
+const editAsistenteForm = document.querySelector("#editAsistente");
+if (editAsistenteForm) {
+  const editAsistenteFormFields = [
+    "nombres",
+    "apellidos",
+    "fecha-de-nacimiento",
+    "telefono",
+    "calle",
+    "depto-unidad",
+    "codigo-postal",
+    "estado",
+    "ciudad",
+  ];
+  // Función de manejo de respuesta dinámica Login
+  async function handleResponse(data) {
+    fadeOut(preloader);
+    // window.location.reload();
+  }
+  const validator = new FormValidator(
+    editAsistenteForm,
+    editAsistenteFormFields,
+    handleResponse
+  );
+
+  validator.initialize();
+}
 
 const createGroup = document.querySelector("#createGroup");
 if (createGroup) {
@@ -182,6 +208,26 @@ if (createGroup) {
   const validator = new FormValidator(
     createGroup,
     createGroupFields,
+    handleResponse
+  );
+
+  validator.initialize();
+}
+
+const editGroup = document.querySelector("#editGroup");
+if (editGroup) {
+  const editGroupFields = ["acuarelauser", "edades", "shift"];
+  // Función de manejo de respuesta dinámica Login
+  function handleResponse(data) {
+    console.log(data);
+    fadeOut(preloader);
+    window.location.href = `/miembros/acuarela-app-web/grupo/${
+      document.querySelector("main").dataset.groupid
+    }`;
+  }
+  const validator = new FormValidator(
+    editGroup,
+    editGroupFields,
     handleResponse
   );
 
