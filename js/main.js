@@ -437,7 +437,7 @@ const toggleShareMenu = (index) => {
 
 // Función para copiar el enlace público al portapapeles
 const sharePost = (postId) => {
-  const publicUrl = `https://dev.bilingualchildcaretraining.com/miembros/sharePost/${postId}`;
+  const publicUrl = `https://bilingualchildcaretraining.com/miembros/sharePost/${postId}`;
   navigator.clipboard
     .writeText(publicUrl)
     .then(() => {
@@ -450,7 +450,7 @@ const sharePost = (postId) => {
 
 // Función para compartir en redes sociales
 const sharePostToPlatform = (platform, postId) => {
-  const publicUrl = `https://dev.bilingualchildcaretraining.com/miembros/sharePost/${postId}`;
+  const publicUrl = `https://bilingualchildcaretraining.com/miembros/sharePost/${postId}`;
   let shareUrl = "";
 
   switch (platform) {
