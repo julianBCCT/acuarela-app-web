@@ -170,13 +170,18 @@
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Parentesco</label>
-                <select name="guardian1_relationship" id="parent_type1">
+                <select name="guardian1_relationship" id="parent_type1"  onchange="checkOtherOption(this)">
                       <option value="Hermana/o">Hermana/o</option>
                       <option value="Prima/o">Prima/o</option>
                       <option value="Abuela/o">Abuela/o</option>
                       <option value="Tia/o">Tia/o</option>
                       <option value="Otra/o">Otra/o</option>
                     </select>
+              </span>
+              <span class="other_relationship_span" style="display:none;">
+              <i class="acuarela acuarela-"></i>
+                <label for="other_relationship2">Especifique el parentesco</label>
+                <input type="text" name="other_relationship2" />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
@@ -217,13 +222,18 @@
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Parentesco</label>
-                <select name="guardian2_relationship" id="parent_type1">
+                <select name="guardian2_relationship" id="parent_type1" onchange="checkOtherOption(this)">
                       <option value="Hermana/o">Hermana/o</option>
                       <option value="Prima/o">Prima/o</option>
                       <option value="Abuela/o">Abuela/o</option>
                       <option value="Tia/o">Tia/o</option>
                       <option value="Otra/o">Otra/o</option>
                     </select>
+              </span>
+              <span class="other_relationship_span" style="display:none;">
+              <i class="acuarela acuarela-"></i>
+                <label for="other_relationship2">Especifique el parentesco</label>
+                <input type="text" name="other_relationship2" />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
@@ -268,6 +278,8 @@
           <i class="acuarela acuarela-Nino"></i>
           <label for="paymentTime">Cada cuánto se cobra:</label>
           <select name="paymentTime" id="paymentTime">
+            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Hora" ? "selected" : ""?>
+              value="Hora">Hora</option>
             <option <?=$inscripcion !="" && $inscripcion->payment->time == "Diario" ? "selected" : ""?>
               value="Diario">Diario</option>
             <option <?=$inscripcion !="" && $inscripcion->payment->time == "Semanal" ? "selected" : ""?>

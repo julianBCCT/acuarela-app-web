@@ -132,13 +132,13 @@ $balance = $ingresosTotal - $gastosTotal;
         </div>
         <div id="ingresos" class="tab-content">
             <div class="tab-content-header">
-            <button type="button" class="btn btn-action-primary enfasis btn-big">Agregar ingreso</button>
+            <button type="button"  class="btn btn-action-primary enfasis btn-big">Agregar ingreso</button>
             </div>
             <div class="card lg ingresos-categories">
                 <div class="card__header">
                 <div class="card__header-title">Categorías</div>
                 <div class="card__header-actions">
-                <button type="button" class="btn btn-action-tertiary enfasis"><i class="acuarela acuarela-Editar"></i> Editar categorías</button>
+                <button type="button" class="btn btn-action-tertiary enfasis" onclick="fadeIn(document.querySelector('#lightbox-categories-ingresos'))"><i class="acuarela acuarela-Editar"></i> Editar categorías</button>
                 </div>
                 </div>
                 <div class="card__body">
@@ -190,6 +190,13 @@ $balance = $ingresosTotal - $gastosTotal;
 
                 </tbody>
             </table>
+            <div id="lightbox-categories-ingresos" class="lightbox">
+                <div class="lightbox-content">
+                    <form action="" method="POST" id="addCategoriesIngresos">
+                    </form>
+                    <button id="activities-close-button" onclick="fadeOut(document.querySelector('#lightbox-categories-ingresos'))" class="lightbox-button"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="15.5" stroke="#E1E4E9"/><g clip-path="url(#clip0_1_41059)"><path d="M23.3796 20.3855L18.9948 16.0006L23.3796 11.6157C24.2066 10.7888 24.2066 9.44797 23.3796 8.62104C22.5527 7.79411 21.2119 7.79411 20.385 8.62104L15.9997 13.0059L11.6149 8.62069C10.7876 7.79376 9.44677 7.79376 8.6202 8.62069C7.79327 9.44797 7.79327 10.7888 8.6202 11.6153L13.0054 16.0002L8.6202 20.3851C7.79327 21.2124 7.79327 22.5532 8.6202 23.3798C9.03419 23.7934 9.57559 23.9999 10.1177 23.9999C10.6595 23.9999 11.2016 23.7931 11.6152 23.3798L15.9997 18.9952L20.385 23.3801C20.799 23.7934 21.3404 24.0002 21.8825 24.0002C22.4246 24.0002 22.9663 23.7934 23.38 23.3801C24.2066 22.5532 24.2066 21.2127 23.3796 20.3855Z" fill="#98A2B7"/></g><defs><clipPath id="clip0_1_41059"><rect width="16" height="16" fill="white" transform="translate(8 8)"/></clipPath></defs></svg></button>
+                </div>
+            </div>
         </div>
         <div id="gastos" class="tab-content">
             <div class="tab-content-header">
@@ -199,7 +206,7 @@ $balance = $ingresosTotal - $gastosTotal;
                 <div class="card__header">
                 <div class="card__header-title">Categorías</div>
                 <div class="card__header-actions">
-                    <button type="button"><i class="acuarela acuarela-Editar"></i>Editar categorías</button>
+                    <button type="button" class="btn btn-action-tertiary enfasis" onclick="fadeIn(document.querySelector('#lightbox-categories-gastos'))"><i class="acuarela acuarela-Editar"></i>Editar categorías</button>
                 </div>
                 </div>
                 <div class="card__body">
@@ -250,6 +257,13 @@ $balance = $ingresosTotal - $gastosTotal;
 
                 </tbody>
             </table>
+            <div id="lightbox-categories-gastos" class="lightbox">
+                <div class="lightbox-content">
+                    <form action="" method="POST" id="addCategoriesGastos">
+                    </form>
+                    <button id="activities-close-button"  onclick="fadeOut(document.querySelector('#lightbox-categories-gastos'))" class="lightbox-button"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="15.5" stroke="#E1E4E9"/><g clip-path="url(#clip0_1_41059)"><path d="M23.3796 20.3855L18.9948 16.0006L23.3796 11.6157C24.2066 10.7888 24.2066 9.44797 23.3796 8.62104C22.5527 7.79411 21.2119 7.79411 20.385 8.62104L15.9997 13.0059L11.6149 8.62069C10.7876 7.79376 9.44677 7.79376 8.6202 8.62069C7.79327 9.44797 7.79327 10.7888 8.6202 11.6153L13.0054 16.0002L8.6202 20.3851C7.79327 21.2124 7.79327 22.5532 8.6202 23.3798C9.03419 23.7934 9.57559 23.9999 10.1177 23.9999C10.6595 23.9999 11.2016 23.7931 11.6152 23.3798L15.9997 18.9952L20.385 23.3801C20.799 23.7934 21.3404 24.0002 21.8825 24.0002C22.4246 24.0002 22.9663 23.7934 23.38 23.3801C24.2066 22.5532 24.2066 21.2127 23.3796 20.3855Z" fill="#98A2B7"/></g><defs><clipPath id="clip0_1_41059"><rect width="16" height="16" fill="white" transform="translate(8 8)"/></clipPath></defs></svg></button>
+                </div>
+            </div>
         </div>
         <div id="pendientes" class="tab-content">
             <div class="tab-content-header">

@@ -264,7 +264,7 @@ var preloader = document.querySelector(".preloader");
 function fadeOut(element) {
   var opacity = 1;
   var interval = 50; // intervalo de tiempo en milisegundos
-  var duration = 500; // duración total del desvanecimiento en milisegundos
+  var duration = 300; // duración total del desvanecimiento en milisegundos
 
   // Función recursiva para ajustar la opacidad en cada paso del intervalo
   function decreaseOpacity() {
@@ -287,7 +287,7 @@ function fadeOut(element) {
 function fadeIn(element) {
   var opacity = 0;
   var interval = 50; // intervalo de tiempo en milisegundos
-  var duration = 500; // duración total del desvanecimiento en milisegundos
+  var duration = 300; // duración total del desvanecimiento en milisegundos
 
   // Mostrar el elemento antes de comenzar el desvanecimiento
   element.style.display = "flex";
@@ -494,3 +494,12 @@ document.querySelectorAll('.calendar-icon').forEach(button => {
     }
   });
 });
+function checkOtherOption(selectElement) {
+  var otherSpan = selectElement.parentNode.nextElementSibling;
+
+  if (selectElement.value === "Otra/o") {
+      otherSpan.style.display = "flex";
+  } else {
+      otherSpan.style.display = "none";
+  }
+}

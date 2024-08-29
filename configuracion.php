@@ -23,13 +23,13 @@
                             class="acuarela acuarela-Usuario"></i><span>Nombre</span><strong><?=$_SESSION["userAll"]->name ." ". $_SESSION["userAll"]->lastname?></strong>
                     </p>
                     <p><i
-                            class="acuarela acuarela-Mensajes"></i><span>E-mail</span><strong><?=$_SESSION["userAll"]->mail?></strong>
+                            class="acuarela acuarela-Mensajes"></i><span>E-mail</span><strong><?=$_SESSION["userAll"]->email?></strong>
                     </p>
                     <p><i
                             class="acuarela acuarela-Telefono"></i><span>Teléfono</span><strong><?=$_SESSION["userAll"]->phone?></strong>
                     </p>
                 </div>
-                <a href="" class="btn btn-action-primary enfasis btn-big">Editar perfil</a>
+                <a href="/miembros/editar-perfil" target="_blank" class="btn btn-action-primary enfasis btn-big">Editar perfil</a>
             </div>
         </div>
         <div id="daycares" class="tab-content">

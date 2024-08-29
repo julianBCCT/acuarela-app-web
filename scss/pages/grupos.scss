@@ -352,7 +352,10 @@
   }
 
   .steps {
-    .btn-action-primary {
+    .btnactions{
+      display: flex;
+      align-items: center;justify-content: center;
+      gap: 20px;
       margin: 20px auto 0;
     }
 

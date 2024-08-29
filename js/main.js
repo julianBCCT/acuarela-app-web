@@ -699,7 +699,7 @@ const requestinscripciones = async () => {
                 <i class="acuarela acuarela-Opciones"></i>
                 <ul>
                  ${percentaje >= 100
-                ? ` <li><a id="profile" href="/miembros/acuarela-app-web/editar-ninxs/${child.id}">Editar ninx</a> </li>`
+                ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.id}">Editar ninx</a> </li>`
                 : ``
               }
                   <li>
@@ -867,7 +867,7 @@ const getChildren = async () => {
       <ul>
         <li>
           <button type="button" id="desactivar" onclick="updateKid('${kid.id
-      }', {'status': false})">Desactivar</button>
+      }', {'status': false, 'indaycare': false})">Desactivar</button>
         </li>
         <li>
           <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${kid.id
@@ -1738,6 +1738,19 @@ const nextStep = () => {
     .querySelectorAll("#createActicity .step")
   [activeStepNo].classList.add("active");
 };
+const prevStep = () => {
+  if (activeStepNo > 0) {
+    activeStepNo--;
+    let activeStep = document.querySelector(".step.active");
+    if (activeStep) {
+      activeStep.classList.remove("active");
+    }
+    document
+      .querySelectorAll("#createActicity .step")
+    [activeStepNo].classList.add("active");
+  }
+};
+
 
 const sendActivity = async () => {
   fadeIn(preloader);
@@ -1814,17 +1827,27 @@ document
   });
 
 const generateReport = async () => {
+  fadeIn(preloader)
   const initialFilterDate = document.getElementById("start-date").value;
   const finalFilterDate = document.getElementById("end-date").value;
   const daycareId = document.getElementById("daycare").value;
+
+  function convertDate(dateString) {
+    // Split the input date by the dash separator
+    let dateParts = dateString.split('-');
+
+    // Rearrange the date parts from YYYY-MM-DD to DD-MM-YYYY
+    let formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
+
+    return formattedDate;
+}
 
   let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${formValuesInspeccion.fichasNinos
     }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${formValuesInspeccion.registroAsistencia
     }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${formValuesInspeccion.ingresos
     }&gastos=${formValuesInspeccion.gastos}&visitas=${formValuesInspeccion.visitas
-    }&payrolls=${formValuesInspeccion.payrolls}&from=${new Date(
-      initialFilterDate
-    )}&to=${new Date(finalFilterDate)}&user=${userMainT}`;
+    }&payrolls=${formValuesInspeccion.payrolls}&from=${
+      convertDate(initialFilterDate)}&to=${convertDate(finalFilterDate)}&user=${userMainT}`;
 
   await sendInspectionModeMail(userNameAdmin, emailAdmin, link);
 };
@@ -1849,7 +1872,7 @@ const sendInspectionModeMail = async (userName, email, link) => {
     requestOptions
   )
     .then((response) => response.json())
-    .then((result) => console.log(result))
+    .then((result) =>   fadeOut(preloader)  )
     .catch((error) => console.log("error", error));
   return true;
 };
@@ -1929,6 +1952,8 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             // handle the error
           }
+        }else{
+          fadeOut(preloader);
         }
       });
     });

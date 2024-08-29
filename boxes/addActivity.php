@@ -48,7 +48,9 @@
                 </label>
               </li>
             </ul>
-            <button type="button" onclick="nextStep()" class="btn btn-action-primary enfasis btn-big">Siguiente</button>
+            <div class="btnactions">
+              <button type="button" onclick="nextStep()" class="btn btn-action-primary enfasis btn-big">Siguiente</button>
+            </div>
           </fieldset>
         </div>
         <div class="step step-2">
@@ -101,7 +103,10 @@
             </li>
             <?php } ?>
           </ul>
-          <button type="button" onclick="nextStep()" class="btn btn-action-primary enfasis btn-big">Siguiente</button>
+          <div class="btnactions">
+            <button type="button" onclick="prevStep()" class="btn btn-action-secondary enfasis btn-big">Atras</button>
+            <button type="button" onclick="nextStep()" class="btn btn-action-primary enfasis btn-big">Siguiente</button>
+          </div>
         </div>
         <div class="step step-3">
           <div class="typeSelected">
@@ -115,7 +120,10 @@
               name="title" id="title"></span>
           <span><i class="acuarela acuarela-"></i><label for="">Descripción</label><textarea name="description"
               id="description"></textarea></span>
-              <button type="button" onclick="sendActivity()" class="btn btn-action-primary enfasis btn-big">Guardar</button>
+              <div class="btnactions">
+                <button type="button" onclick="prevStep()" class="btn btn-action-secondary enfasis btn-big">Atras</button>
+                <button type="button" onclick="sendActivity()" class="btn btn-action-primary enfasis btn-big">Guardar</button>
+              </div>
         </div>
       </div>
       <input type="hidden" name="group" id="group" value="<?=$grupo->id?>">

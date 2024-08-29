@@ -42,7 +42,7 @@
                 <label for="fichasAsistentes" class="cbx"></label>
                 <span> Fichas de asistentes</span>
             </div>
-            <div class="cntr-check">
+            <!-- <div class="cntr-check">
                 <input type="checkbox" class="hidden-xs-up" id="ingresos">
                 <label for="ingresos" class="cbx"></label>
                 <span> Ingresos</span>
@@ -56,7 +56,7 @@
                 <input type="checkbox" class="hidden-xs-up" id="payrolls">
                 <label for="payrolls" class="cbx"></label>
                 <span> Payrolls</span>
-            </div>
+            </div> -->
         </div>
         <input type="hidden" name="daycare" id="daycare" value="<?=$a->daycareID?>">
     </div>

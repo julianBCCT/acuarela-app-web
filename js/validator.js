@@ -139,7 +139,6 @@ if (createAsistenteForm) {
     "fecha-de-nacimiento",
     "telefono",
     "calle",
-    "depto-unidad",
     "codigo-postal",
     "estado",
     "ciudad",
@@ -178,7 +177,6 @@ if (editAsistenteForm) {
     "fecha-de-nacimiento",
     "telefono",
     "calle",
-    "depto-unidad",
     "codigo-postal",
     "estado",
     "ciudad",
@@ -199,7 +197,7 @@ if (editAsistenteForm) {
 
 const createGroup = document.querySelector("#createGroup");
 if (createGroup) {
-  const createGroupFields = ["acuarelauser", "edades", "shift"];
+  const createGroupFields = ["acuarelauser", "edades", "shift", "name"];
   // Función de manejo de respuesta dinámica Login
   function handleResponse(data) {
     fadeOut(preloader);
