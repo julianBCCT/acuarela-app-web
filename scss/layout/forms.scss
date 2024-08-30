@@ -19,6 +19,9 @@ form {
   .row {
     display: flex;
     gap: 16px;
+    @media only screen and (max-width: 768px) {
+      flex-direction: column;
+    }
 
     span {
       flex: 1;
