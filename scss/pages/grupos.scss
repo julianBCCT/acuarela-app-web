@@ -302,30 +302,33 @@
 
       #integrantes {
         margin: 30px auto;
-
-        li {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-
-          img {
-            border: 4px solid;
-            height: 115px;
-            width: 115px;
-            border-radius: 50%;
-          }
-
-          span {
-            color: var(--gris1, #140A4C);
-            text-align: center;
-            font-size: 15px;
-            font-style: normal;
-            font-weight: 700;
-            line-height: 20px;
-            /* 133.333% */
+        ul {
+          justify-content: space-evenly;
+          li {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+  
+            img {
+              border: 4px solid;
+              height: 115px;
+              width: 115px;
+              border-radius: 50%;
+            }
+  
+            span {
+              color: var(--gris1, #140A4C);
+              text-align: center;
+              font-size: 15px;
+              font-style: normal;
+              font-weight: 700;
+              line-height: 20px;
+              /* 133.333% */
+            }
           }
         }
+
       }
 
       /* Color para el primer radio button */
@@ -373,6 +376,9 @@
     display: flex;
     gap: 20px;
     justify-content: center;
+    @media only screen and (max-width: 768px) {
+      flex-wrap: wrap;
+    }
 
     li {
       cursor: pointer;
@@ -424,6 +430,9 @@
   .participaron {
     display: flex;
     gap: 30px;
+    @media only screen and (max-width: 768px) {
+      justify-content: center;                
+    }
 
     li {
       position: relative;

@@ -100,9 +100,10 @@ aside {
         }
 
         @media only screen and (max-width: 768px) {
+          pointer-events: none;
           position: absolute;
-          top: -16px;
-          right: -18px;
+          top: 22px;
+          right: 5px;
           min-width: 35px;
           height: 35px;
           padding: 0 7px;
