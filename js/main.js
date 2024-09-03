@@ -426,7 +426,7 @@ const showReactions = (element) => {
 const toggleShareMenu = (index) => {
   console.log(index);
   console.log(`share_menu-${index}`);
-  
+
   const shareMenu = document.getElementById(`share_menu-${index}`);
   if (shareMenu.style.display === "none" || shareMenu.style.display === "") {
     shareMenu.style.display = "flex";
@@ -487,7 +487,7 @@ const sharePostToPlatform = (platform, postId) => {
 // Añadir event listeners a los botones de compartir
 document.addEventListener("click", (event) => {
   // console.log(event.target);
-  
+
   // const shareBtn = event.target.closest(".btn_share");
   // if (shareBtn) {
   //   const index = shareBtn.id.split("-")[1];
@@ -1840,14 +1840,13 @@ const generateReport = async () => {
     let formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
 
     return formattedDate;
-}
+  }
 
   let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${formValuesInspeccion.fichasNinos
     }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${formValuesInspeccion.registroAsistencia
     }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${formValuesInspeccion.ingresos
     }&gastos=${formValuesInspeccion.gastos}&visitas=${formValuesInspeccion.visitas
-    }&payrolls=${formValuesInspeccion.payrolls}&from=${
-      convertDate(initialFilterDate)}&to=${convertDate(finalFilterDate)}&user=${userMainT}`;
+    }&payrolls=${formValuesInspeccion.payrolls}&from=${convertDate(initialFilterDate)}&to=${convertDate(finalFilterDate)}&user=${userMainT}`;
 
   await sendInspectionModeMail(userNameAdmin, emailAdmin, link);
 };
@@ -1872,7 +1871,7 @@ const sendInspectionModeMail = async (userName, email, link) => {
     requestOptions
   )
     .then((response) => response.json())
-    .then((result) =>   fadeOut(preloader)  )
+    .then((result) => fadeOut(preloader))
     .catch((error) => console.log("error", error));
   return true;
 };
@@ -1952,7 +1951,7 @@ document.addEventListener("DOMContentLoaded", function () {
             );
             // handle the error
           }
-        }else{
+        } else {
           fadeOut(preloader);
         }
       });
@@ -1970,6 +1969,117 @@ document.addEventListener("DOMContentLoaded", function () {
   getGrupos();
   getInfoNewGroup();
   getInfoNewAsistente();
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const asideMensajeria = document.getElementById("mesajeria-menu");
+  const mensajeButton = document.getElementById("mainButton");
+  const divMensajeButton = document.querySelector(".mensajeria-content")
+  const buscarMensajeria = document.getElementById("buscar-mensajeria");
+  const buscadorMensajeria = document.getElementById("chats-buscados");
+  const agregarButton = document.getElementById("agregar-mensajeria");
+  const agregarMensajeria = document.getElementById("chats-agregados");
+  const chatButton = document.querySelectorAll(".chat-icon");
+  const chatMensajeria = document.querySelector(".chat-individual");
+  const opcionesMensajeria = document.getElementById("opcines-mensajeria");
+
+
+  mensajeButton.addEventListener('click', function () {
+
+    if (divMensajeButton.classList.contains('active')) {
+      divMensajeButton.classList.remove('active');
+    } else {
+      divMensajeButton.classList.add('active');
+    }
+    if (asideMensajeria.style.display === 'none') {
+      asideMensajeria.style.display = 'block';
+    } else {
+      asideMensajeria.style.display = 'none';
+    }
+  })
+
+  agregarButton.addEventListener('click', function () {
+
+    if (agregarButton.classList.contains('active')) {
+      agregarButton.classList.remove('active');
+      buscarMensajeria.classList.remove('inactive');
+      opcionesMensajeria.classList.remove('inactive');
+      chatButton.forEach(boton => {
+        boton.classList.remove('inactive');
+      });
+    } else {
+      agregarButton.classList.add('active');
+      buscarMensajeria.classList.add('inactive');
+      opcionesMensajeria.classList.add('inactive');
+      chatButton.forEach(boton => {
+        boton.classList.add('inactive');
+      });
+    }
+
+    if (agregarMensajeria.style.display === 'none') {
+      agregarMensajeria.style.display = 'block';
+    } else {
+      agregarMensajeria.style.display = 'none';
+    }
+  });
+
+  buscarMensajeria.addEventListener('click', function () {
+    // console.log("Hola desde buscar");
+    if (buscarMensajeria.classList.contains('active')) {
+      buscarMensajeria.classList.remove('active');
+      agregarButton.classList.remove('inactive');
+      opcionesMensajeria.classList.remove('inactive');
+      chatButton.forEach(boton => {
+        boton.classList.remove('inactive');
+      });
+    } else {
+      buscarMensajeria.classList.add('active');
+      agregarButton.classList.add('inactive');
+      opcionesMensajeria.classList.add('inactive');
+      chatButton.forEach(boton => {
+        boton.classList.add('inactive');
+      });
+    }
+
+    if (buscadorMensajeria.style.display === 'none') {
+      buscadorMensajeria.style.display = 'block';
+    } else {
+      buscadorMensajeria.style.display = 'none';
+    }
+  })
+
+
+  chatButton.forEach(boton => {
+    // console.log("Hola desde botón");
+    // boton.classList.add('active');
+    boton.addEventListener('click', () => {
+      chatButton.forEach(btn => {
+        btn.classList.add('inactive');
+        btn.classList.remove('active');
+      });
+
+
+      boton.classList.remove('inactive');
+      boton.classList.add('active');
+
+      if (chatMensajeria.style.display === 'none') {
+        chatMensajeria.style.display = 'block';
+      } else {
+        chatMensajeria.style.display = 'none';
+      }
+    });
+
+  });
+
+  // chatButton.addEventListener('click', function () {
+  //   console.log("Hola desde chat");
+  //   if (chatMensajeria.style.display === 'none') {
+  //     chatMensajeria.style.display = 'block';
+  //   } else {
+  //     chatMensajeria.style.display = 'none';
+  //   }
+  // })
+
 });
 
 const changeValuesForMultipleContainers = (event, selectors) => {
