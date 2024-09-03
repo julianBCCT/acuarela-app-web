@@ -2053,14 +2053,53 @@ document.addEventListener("DOMContentLoaded", function () {
     // console.log("Hola desde botón");
     // boton.classList.add('active');
     boton.addEventListener('click', () => {
-      chatButton.forEach(btn => {
-        btn.classList.add('inactive');
-        btn.classList.remove('active');
-      });
+
+      if (boton.classList.contains('active')) {
+        // Si el botón ya está activo, lo inactivamos
+        boton.classList.remove('active');
+        boton.classList.add('inactive');
+        buscarMensajeria.classList.remove('inactive');
+        agregarButton.classList.remove('inactive');
+        opcionesMensajeria.classList.remove('inactive');
+
+        // Restauramos la opacidad de todos los botones
+        chatButton.forEach(btn => btn.classList.remove('inactive'));
+      } else {
+        // Si el botón no está activo, inactivamos todos los botones y activamos el clicado
+        chatButton.forEach(btn => {
+          btn.classList.remove('active');
+          btn.classList.add('inactive');
+          buscarMensajeria.classList.add('inactive');
+          agregarButton.classList.add('inactive');
+          opcionesMensajeria.classList.add('inactive');
+        });
+
+        // Activamos solo el botón clicado
+        boton.classList.remove('inactive');
+        boton.classList.add('active');
+      }
 
 
-      boton.classList.remove('inactive');
-      boton.classList.add('active');
+
+      // chatButton.forEach(btn => {
+      //   btn.classList.add('inactive');
+      //   btn.classList.remove('active');
+      // });
+
+      // boton.classList.remove('inactive');
+      // boton.classList.add('active');
+
+      // if (boton.classList.contains('active')) {
+      //   // boton.classList.remove('active')
+      //   buscarMensajeria.classList.add('inactive');
+      //   agregarButton.classList.add('inactive');
+      //   opcionesMensajeria.classList.add('inactive');
+      // } else {
+      //   // boton.classList.add('active');
+      //   buscarMensajeria.classList.remove('inactive');
+      //   agregarButton.classList.remove('inactive');
+      //   opcionesMensajeria.classList.remove('inactive');
+      // }
 
       if (chatMensajeria.style.display === 'none') {
         chatMensajeria.style.display = 'block';
