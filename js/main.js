@@ -186,8 +186,8 @@ const handleInscripcion = async () => {
       guardian_relationship: formValues.guardian1_relationship,
       guardian_phone: formValues.guardian1_phone,
       guardian_email: formValues.guardian1_email,
-      guardian_pickup: formValues.guardian1_emergency == 'on' ? true : false,
-      guardian_emergency: formValues.guardian1_pickup == 'on' ? true : false,
+      guardian_pickup: formValues.guardian1_emergency == "on" ? true : false,
+      guardian_emergency: formValues.guardian1_pickup == "on" ? true : false,
       guardian_lastname: formValues.guardian1_lastname,
     },
     {
@@ -195,8 +195,8 @@ const handleInscripcion = async () => {
       guardian_relationship: formValues.guardian2_relationship,
       guardian_phone: formValues.guardian2_phone,
       guardian_email: formValues.guardian2_email,
-      guardian_pickup: formValues.guardian2_emergency == 'on' ? true : false,
-      guardian_emergency: formValues.guardian2_pickup == 'on' ? true : false,
+      guardian_pickup: formValues.guardian2_emergency == "on" ? true : false,
+      guardian_emergency: formValues.guardian2_pickup == "on" ? true : false,
       guardian_lastname: formValues.guardian2_lastname,
     },
   ];
@@ -334,10 +334,10 @@ const fetchToken = async (endpoint, data, method = "GET") => {
     method === "GET"
       ? { method, headers }
       : {
-        method,
-        headers,
-        body: JSON.stringify(data),
-      };
+          method,
+          headers,
+          body: JSON.stringify(data),
+        };
 
   try {
     const response = await fetch(url, options);
@@ -422,7 +422,6 @@ const showReactions = (element) => {
   postArticle.querySelector(".reactions-box").classList.toggle("active");
 };
 
-
 const toggleShareMenu = (index) => {
   console.log(index);
   console.log(`share_menu-${index}`);
@@ -503,7 +502,6 @@ document.addEventListener("click", (event) => {
   }
 });
 
-
 const requestposts = async () => {
   if (document.querySelector(".social")) {
     // Evitar solicitudes duplicadas si ya se está realizando una
@@ -547,28 +545,32 @@ const requestposts = async () => {
         reactions.map((reaction) => {
           reactionsList += `<button type="button" onclick="addReaction({post: '${post.id}',type: ${reaction.id},acuarelauser: '65d7d5c68cf368c869172f18'}, '${post.id}')"><img src="${reaction.icon}" alt="happy"><small>${reaction.name}</small></button>`;
         });
-        let dialog = `<div id="comments-${post.id
-          }" style="display:none;max-width:768px;" class="formcomments"><div class="content_box">
+        let dialog = `<div id="comments-${
+          post.id
+        }" style="display:none;max-width:768px;" class="formcomments"><div class="content_box">
         <div class="comments-list">
             <h3>Comentarios</h3>
             <ul>
             ${post.comments
-            .map((comment) => {
-              return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment?.acuarelauser?.photo?.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
+              .map((comment) => {
+                return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment?.acuarelauser?.photo?.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
               <strong>${comment.acuarelauser.name}</strong>
               <p>${comment.content}</p>
               </div></li>`;
-            })
-            .join("")}
+              })
+              .join("")}
                
             </ul>
         </div>
         <form id="add-comment">
-            <span><input type="text" id="comment-${post.id}" name="comment-${post.id
-          }" placeholder="Escribe tu mensaje"></span>
-            <button type="button"  onclick="addComment({post: '${post.id
-          }'}, '#comment-${post.id
-          }')"><svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.7347 5.57296L1.95145 0.216402C1.45504 -0.00928566 0.894225 0.0899957 0.487894 0.475371C0.0815634 0.860808 -0.0883852 1.45468 0.0444246 2.02521L1.09324 6.53121H6.22838C6.46468 6.53121 6.65628 6.74109 6.65628 7C6.65628 7.25887 6.4647 7.46878 6.22838 7.46878H1.09324L0.0444246 11.9747C-0.0883852 12.5453 0.0815349 13.1392 0.487894 13.5246C0.895052 13.9107 1.45593 14.0088 1.95148 13.7836L13.7348 8.42703C14.2712 8.18315 14.6045 7.63634 14.6045 7C14.6045 6.36365 14.2712 5.81681 13.7347 5.57296Z" fill="#FBFCFE"/></svg></button>
+            <span><input type="text" id="comment-${post.id}" name="comment-${
+          post.id
+        }" placeholder="Escribe tu mensaje"></span>
+            <button type="button"  onclick="addComment({post: '${
+              post.id
+            }'}, '#comment-${
+          post.id
+        }')"><svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.7347 5.57296L1.95145 0.216402C1.45504 -0.00928566 0.894225 0.0899957 0.487894 0.475371C0.0815634 0.860808 -0.0883852 1.45468 0.0444246 2.02521L1.09324 6.53121H6.22838C6.46468 6.53121 6.65628 6.74109 6.65628 7C6.65628 7.25887 6.4647 7.46878 6.22838 7.46878H1.09324L0.0444246 11.9747C-0.0883852 12.5453 0.0815349 13.1392 0.487894 13.5246C0.895052 13.9107 1.45593 14.0088 1.95148 13.7836L13.7348 8.42703C14.2712 8.18315 14.6045 7.63634 14.6045 7C14.6045 6.36365 14.2712 5.81681 13.7347 5.57296Z" fill="#FBFCFE"/></svg></button>
             </form>
             </div>
             </div>`;
@@ -577,13 +579,15 @@ const requestposts = async () => {
         let template = `
           <article class="post-list__item" id="${post.id}">
               <div class="post-list__item-header">
-                  <img loading="lazy" class="lazyload" data-src="${post.acuarelauser && post.acuarelauser.photo
-            ? `https://acuarelacore.com/api${post?.acuarelauser?.photo?.url}`
-            : "img/placeholder.png"
-          }"
+                  <img loading="lazy" class="lazyload" data-src="${
+                    post.acuarelauser && post.acuarelauser.photo
+                      ? `https://acuarelacore.com/api${post?.acuarelauser?.photo?.url}`
+                      : "img/placeholder.png"
+                  }"
                       alt="UserName" src="img/placeholder.png">
-                  <span class="name">${post.acuarelauser && post.acuarelauser.name
-          }</span>
+                  <span class="name">${
+                    post.acuarelauser && post.acuarelauser.name
+                  }</span>
               </div>
               <div class="post-list__item-photos">
                   <section class="splide splidePots">
@@ -597,72 +601,90 @@ const requestposts = async () => {
               <div class="post-list__item-footer">
                   <div class="post-list__item-footer-actions">
                       <div class="reactions-actions">
-                        <button type="button" onclick="showReactions('${post.id
-          }')">
-                        ${activeUserReactions
-            ? `<img src="${reactions.find(
-              (reaction) =>
-                reaction.id == activeUserReactions.type
-            ).icon
-            }" alt="${reactions.find(
-              (reaction) =>
-                reaction.id == activeUserReactions.type
-            ).name
-            }">`
-            : `<i class="acuarela acuarela-Anadir_reaccion"></i>`
-          }
+                        <button type="button" onclick="showReactions('${
+                          post.id
+                        }')">
+                        ${
+                          activeUserReactions
+                            ? `<img src="${
+                                reactions.find(
+                                  (reaction) =>
+                                    reaction.id == activeUserReactions.type
+                                ).icon
+                              }" alt="${
+                                reactions.find(
+                                  (reaction) =>
+                                    reaction.id == activeUserReactions.type
+                                ).name
+                              }">`
+                            : `<i class="acuarela acuarela-Anadir_reaccion"></i>`
+                        }
                         </button>
                         <div class="reactions-box">${reactionsList}</div>
                       </div>
-                      <button type="button" data-fancybox data-src="#comments-${post.id
-          }"><i class="acuarela acuarela-Habla"></i></button>
+                      <button type="button" data-fancybox data-src="#comments-${
+                        post.id
+                      }"><i class="acuarela acuarela-Habla"></i></button>
 
 
                       <!--Botón para obtener id de la publicación -->
       <button type="button" class="btn_share" onclick="toggleShareMenu(${index})"><i class="acuarela acuarela-Compartir"></i>
       <div class="share_menu" id="share_menu-${index}" style="display: none;">
-                <a href="#" class="share-link" data-platform="whatsapp" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+                <a href="#" class="share-link" data-platform="whatsapp" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
           </a>
-                <a href="#" class="share-link" data-platform="facebook" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/></svg>
+                <a href="#" class="share-link" data-platform="facebook" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/></svg>
           </a>
-                <a href="#" class="share-link" data-platform="twitter" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+                <a href="#" class="share-link" data-platform="twitter" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
           </a>
-                <a href="#" class="share-link" data-platform="linkedin" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">  <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></svg>
+                <a href="#" class="share-link" data-platform="linkedin" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">  <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></svg>
           </a>
-          <div onclick="sharePost('${post._id}')"><i class="acuarela acuarela-Link"></i></div>
+          <div onclick="sharePost('${
+            post._id
+          }')"><i class="acuarela acuarela-Link"></i></div>
           </div>
           </button>
                       
                   </div>
-                  ${post.reactions.length > 0 && post.comments.length > 0
-            ? `
+                  ${
+                    post.reactions.length > 0 && post.comments.length > 0
+                      ? `
                     <div class="post-list__item-footer-counters">
-                        <div class="reactions"><img src="" alt="">${post.reactions.length > 0
-              ? `${post.reactions.length} ${post.reactions.length === 1
-                ? "Rección"
-                : "Reacciones"
-              }`
-              : ""
-            }</div>
-                        <div class="comments">${post.comments.length > 0
-              ? `${post.comments.length} ${post.comments.length === 1
-                ? "comentario"
-                : "comentarios"
-              }`
-              : ""
-            }</div>
+                        <div class="reactions"><img src="" alt="">${
+                          post.reactions.length > 0
+                            ? `${post.reactions.length} ${
+                                post.reactions.length === 1
+                                  ? "Rección"
+                                  : "Reacciones"
+                              }`
+                            : ""
+                        }</div>
+                        <div class="comments">${
+                          post.comments.length > 0
+                            ? `${post.comments.length} ${
+                                post.comments.length === 1
+                                  ? "comentario"
+                                  : "comentarios"
+                              }`
+                            : ""
+                        }</div>
                     </div>
                     `
-            : ``
-          }
+                      : ``
+                  }
                   <div class="post-list__item-footer-caption">
-                      <p><strong>${post.acuarelauser && post.acuarelauser.name
-          }</strong><span>${post.classactivity ? post.classactivity.type : ""
-          }</span></p>
+                      <p><strong>${
+                        post.acuarelauser && post.acuarelauser.name
+                      }</strong><span>${
+          post.classactivity ? post.classactivity.type : ""
+        }</span></p>
                       <p>${post.content}</p>
                   </div>
               </div>
@@ -698,15 +720,17 @@ const requestinscripciones = async () => {
               <span id="options">
                 <i class="acuarela acuarela-Opciones"></i>
                 <ul>
-                 ${percentaje >= 100
-                ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.id}">Editar ninx</a> </li>`
-                : ``
-              }
+                 ${
+                   percentaje >= 100
+                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.id}">Editar ninx</a> </li>`
+                     : ``
+                 }
                   <li>
-                  ${percentaje >= 100
-                ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">Ver perfil</a>`
-                : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar inscripción</a>`
-              }
+                  ${
+                    percentaje >= 100
+                      ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">Ver perfil</a>`
+                      : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar inscripción</a>`
+                  }
                     
                   </li>
                   <li>
@@ -717,8 +741,9 @@ const requestinscripciones = async () => {
               <h3>${name} ${lastname}</h3>
               <small>Estado inscripción: ${status}</small>
               <div class="progress">
-                <small><span>Has completado el</span> <strong>${percentaje >= 100 ? 100 : percentaje
-              }%</strong></small>
+                <small><span>Has completado el</span> <strong>${
+                  percentaje >= 100 ? 100 : percentaje
+                }%</strong></small>
                 <div class="bar"><div class="barpro" style="width: ${percentaje}%"></div></div>
               </div>
             </li>`;
@@ -728,10 +753,11 @@ const requestinscripciones = async () => {
               <i class="acuarela acuarela-Opciones"></i>
               <ul>
                 <li>
-                ${percentaje >= 100
-                ? `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
-                : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
-              }
+                ${
+                  percentaje >= 100
+                    ? `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
+                    : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
+                }
                   
                 </li>
                 <li>
@@ -742,7 +768,8 @@ const requestinscripciones = async () => {
             <h3>${name} ${lastname}</h3>
             <small>Estado inscripción: ${status}</small>
             <div class="progress">
-              <small><span>Has completado el</span> <strong>${percentaje >= 100 ? 100 : percentaje
+              <small><span>Has completado el</span> <strong>${
+                percentaje >= 100 ? 100 : percentaje
               }%</strong></small>
               <div class="bar"><div class="barpro" style="width: ${percentaje}%"></div></div>
             </div>
@@ -866,19 +893,22 @@ const getChildren = async () => {
       <i class="acuarela acuarela-Opciones"></i>
       <ul>
         <li>
-          <button type="button" id="desactivar" onclick="updateKid('${kid.id
-      }', {'status': false, 'indaycare': false})">Desactivar</button>
+          <button type="button" id="desactivar" onclick="updateKid('${
+            kid.id
+          }', {'status': false, 'indaycare': false})">Desactivar</button>
         </li>
         <li>
-          <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${kid.id
-      }");'>Eliminar</button>
+          <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${
+            kid.id
+          }");'>Eliminar</button>
         </li>
       </ul>
     </div>
     <div class="image">
-      ${kid.photo
-        ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
-        : `
+      ${
+        kid.photo
+          ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
+          : `
       ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
       ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
       ${kid.gender === "X" ? `<img src="img/Nonbinary.png" alt="">` : ""}
@@ -888,23 +918,26 @@ const getChildren = async () => {
       <div class="acuarelausers-buttons"></div>
     </div>
     <span class="name">${kid.name}</span>
-    <a href="/miembros/acuarela-app-web/ninxs/${kid.id
-      }" class="btn btn-action-primary enfasis btn-small">Ver perfil</a>`;
+    <a href="/miembros/acuarela-app-web/ninxs/${
+      kid.id
+    }" class="btn btn-action-primary enfasis btn-small">Ver perfil</a>`;
 
     const createKidInaciveTemplate = (kid, iconClass) => `
         <div class="image">
-          ${kid.photo
-        ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
-        : `
+          ${
+            kid.photo
+              ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
+              : `
           ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
           ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
           ${kid.gender === "X" ? `<img src="img/Nonbinary.png" alt="">` : ""}
           `
-      }
+          }
         </div>
         <span class="name">${kid.name}</span>
-        <button type="button" class="btn btn-action-tertiary enfasis" onclick="updateKid('${kid.id
-      }', {'status': true})">Activar</button>`;
+        <button type="button" class="btn btn-action-tertiary enfasis" onclick="updateKid('${
+          kid.id
+        }', {'status': true})">Activar</button>`;
 
     const renderAcuarelaUserButtons = (
       acuarelausers,
@@ -923,10 +956,11 @@ const getChildren = async () => {
         const y = -Math.cos(angleInRadians) * radius + totalOffset;
         const x = Math.sin(angleInRadians) * radius + totalOffset;
         const buttonTemplate = `
-       <img loading="lazy" class="lazyload" data-src="${acuarelauser && acuarelauser.photo
-            ? `https://acuarelacore.com/api$?{acuarelauser?.photo?.url}`
-            : "img/placeholder.png"
-          }"
+       <img loading="lazy" class="lazyload" data-src="${
+         acuarelauser && acuarelauser.photo
+           ? `https://acuarelacore.com/api$?{acuarelauser?.photo?.url}`
+           : "img/placeholder.png"
+       }"
                       alt="UserName" src="img/placeholder.png">
               <span class="acuarelauser-name">${acuarelauser.name}</span>
             `;
@@ -1125,13 +1159,61 @@ const getChildren = async () => {
           fragment.appendChild(extraContent);
           showInfoLightbox("Método por QR no disponible", fragment);
         };
-        const manualHandle = async (parentId, parentName, parentEmail) => {
+        // Función que abre la ventana para ingresar el código y procesa el registro
+        const manualHandle = (parentId, parentName, parentEmail) => {
+          // Abrir la ventana para ingresar el código
+          abriVentanaCodigo((code) => {
+            // Validar el código ingresado
+            validateAndProcessCheckout(parentId, parentName, parentEmail, code);
+          });
+        };
+
+        // Función para validar el código y proceder con el registro de salida
+        const validateAndProcessCheckout = async (
+          parentId,
+          parentName,
+          parentEmail,
+          codeInput
+        ) => {
           fadeIn(preloader);
 
+          try {
+            const response = await fetch(
+              `https://app.acuarelaschool.com.co/wp-json/ac/v1/getCodeAcudiente?codigo=${codeInput}`
+            );
+            const data = await response.json();
+
+            if (data && data[0] && data[0].id === parentId) {
+              // El código es correcto, registrar la salida
+              await processCheckout(
+                parentId,
+                parentName,
+                parentEmail,
+                codeInput
+              );
+            } else {
+              // El código no es correcto
+              alert("Código incorrecto, por favor intenta nuevamente.");
+            }
+          } catch (error) {
+            console.error("Error validando el código:", error);
+          } finally {
+            fadeOut(preloader);
+          }
+        };
+
+        // Función para procesar el registro de salida
+        const processCheckout = async (
+          parentId,
+          parentName,
+          parentEmail,
+          code
+        ) => {
           let data = {
             children: [kid.id],
             datetime: today,
             acudiente: [parentId],
+            code, // Incluye el código si es necesario para el backend
           };
 
           const raw = JSON.stringify(data);
@@ -1140,24 +1222,56 @@ const getChildren = async () => {
             body: raw,
           };
 
-          fetch(`s/setAsistencia/?type=${typeCheck}`, requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
-              const infoLightbox = document.getElementById("info-lightbox");
-              infoLightbox.style.display = "none";
-              // Para enviar un email de check-in
-              sendEmailRegisterCheck(
-                kid.name,
-                parentName,
-                daycareName,
-                parentName,
-                parentEmail,
-                typeCheck
-              );
-              getChildren();
-            })
-            .catch((error) => console.error(error));
+          try {
+            const response = await fetch(
+              `s/setAsistencia/?type=checkout`,
+              requestOptions
+            );
+            const result = await response.json();
+
+            const infoLightbox = document.getElementById("info-lightbox");
+            infoLightbox.style.display = "none";
+
+            // Enviar correo de confirmación
+            sendEmailRegisterCheck(
+              kid.name,
+              parentName,
+              daycareName,
+              parentName,
+              parentEmail,
+              "checkout"
+            );
+
+            // Actualizar la lista de niños
+            getChildren();
+          } catch (error) {
+            console.error("Error registrando la salida:", error);
+          } finally {
+            fadeOut(preloader);
+          }
         };
+
+        // Función para abrir la ventana de ingreso del código
+        const abriVentanaCodigo = (callback) => {
+          // Aquí se manejará la ventana donde se ingresa el código.
+          const codeInputElement = document.querySelector("#codeNumbre_1");
+
+          // Agregar evento para cuando se ingresa el código completo
+          codeInputElement.addEventListener("input", () => {
+            const code = codeInputElement.value;
+
+            // Verificar si el código tiene la longitud esperada
+            if (code.length === 6) {
+              callback(code);
+            }
+          });
+
+          // Mostrar ventana para ingresar código (esto debería abrir el modal o lightbox)
+          // Ejemplo de código para mostrar la ventana:
+          document.querySelector("#code-lightbox").style.display = "block";
+        };
+
+        // Configura los botones de registro para cada padre/acudiente
         let handleButtonParent = (parentId, parentName, parentEmail) => {
           listItem.classList.toggle("active");
 
@@ -1167,13 +1281,15 @@ const getChildren = async () => {
           buttonManual.setAttribute("type", "button");
           buttonQR.setAttribute("type", "button");
 
-          buttonManual.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_1_40804)"><path d="M119.93 56.8962L97.288 32.0102C95.2378 29.9782 91.7544 29.9722 89.6013 32.1131C88.525 33.1894 87.9563 34.5683 87.9563 36.0379C87.9563 37.5074 88.5309 38.8923 89.571 39.9326L89.831 40.1926C91.0102 41.3719 91.0102 43.2891 89.831 44.4684C88.6758 45.6295 86.8011 45.6536 85.6159 44.5287C85.6159 44.5287 85.6159 44.5228 85.6099 44.5228H85.604C85.604 44.5228 85.604 44.5228 85.598 44.5168L85.5921 44.5109C85.5921 44.5109 85.598 44.5109 85.5861 44.5049L79.2421 38.1609C77.1012 36.02 73.5996 36.02 71.4588 38.1609C69.2757 40.344 69.2757 43.8336 71.4225 45.9804L77.7302 52.2882C78.323 52.881 78.6133 53.6549 78.6133 54.4291C78.6133 55.2033 78.317 55.9772 77.7302 56.5699C76.551 57.7492 74.6338 57.7492 73.4545 56.5699L61.0992 44.2087C58.9583 42.0678 55.4568 42.0678 53.3159 44.2087C51.1328 46.3918 51.1328 49.8814 53.2796 52.0283L65.6349 64.3835C66.2277 64.9763 66.518 65.7502 66.518 66.5244C66.518 67.2986 66.2217 68.0725 65.6349 68.6653C64.4556 69.8445 62.5384 69.8445 61.3591 68.6653L31.1091 38.4086C30.0327 37.3323 28.6235 36.7939 27.2143 36.7939C25.8051 36.7939 24.3962 37.3323 23.3195 38.4027C21.1424 40.5858 21.1424 44.0814 23.2892 46.2282L68.6645 91.6035C69.4687 92.4077 69.7531 93.5992 69.4024 94.6756C69.0455 95.7582 68.1202 96.5503 66.9953 96.7257L36.6664 101.491C32.9834 102.017 30.2379 105.18 30.2379 108.857C30.2379 110.527 31.5927 111.881 33.2618 111.881H90.2848C97.5541 111.881 104.388 109.051 109.528 103.911L119.041 94.3978C124.176 89.2631 127 82.4414 127 75.1842C127 68.4047 124.484 61.9096 119.93 56.8962Z" fill="#0CB5C3" /><path d="M51.9852 31.1637C47.5828 21.4209 37.8582 15.1191 27.2143 15.1191C12.2101 15.1191 0 27.3293 0 42.3334C0 52.9773 6.30153 62.7019 16.0442 67.1106C16.4493 67.292 16.8729 67.3768 17.2901 67.3768C18.4391 67.3768 19.5399 66.7115 20.0479 65.5988C20.7313 64.0748 20.0538 62.2846 18.536 61.5952C10.9523 58.1662 6.04781 50.6066 6.04781 42.3334C6.04781 30.6616 15.5425 21.1667 27.2146 21.1667C35.4877 21.1667 43.0473 26.0712 46.4763 33.6549C47.1598 35.1789 48.956 35.8624 50.4737 35.1667C51.9974 34.4776 52.6747 32.6877 51.9852 31.1637Z" fill="#0CB5C3" /></g><defs><clipPath id="clip0_1_40804"><rect width="127" height="127" fill="white" /></clipPath></defs></svg><span>Registro manual</span>`;
-          buttonQR.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_1_40802)"><path d="M3.7207 29.7656C1.66588 29.7656 0 28.0997 0 26.0449V3.7207C0 1.66588 1.66588 0 3.7207 0H26.0449C28.0997 0 29.7656 1.66588 29.7656 3.7207C29.7656 5.77552 28.0997 7.44141 26.0449 7.44141H7.44141V26.0449C7.44141 28.0997 5.77552 29.7656 3.7207 29.7656Z" fill="#0CB5C3" /><path d="M123.279 29.7656C121.224 29.7656 119.559 28.0997 119.559 26.0449V7.44141H100.955C98.9003 7.44141 97.2344 5.77552 97.2344 3.7207C97.2344 1.66588 98.9003 0 100.955 0H123.279C125.334 0 127 1.66588 127 3.7207V26.0449C127 28.0997 125.334 29.7656 123.279 29.7656Z" fill="#0CB5C3" /><path d="M26.0449 127H3.7207C1.66588 127 0 125.334 0 123.279V100.955C0 98.9003 1.66588 97.2344 3.7207 97.2344C5.77552 97.2344 7.44141 98.9003 7.44141 100.955V119.559H26.0449C28.0997 119.559 29.7656 121.224 29.7656 123.279C29.7656 125.334 28.0997 127 26.0449 127Z" fill="#0CB5C3" /><path d="M123.279 127H100.955C98.9003 127 97.2344 125.334 97.2344 123.279C97.2344 121.224 98.9003 119.559 100.955 119.559H119.559V100.955C119.559 98.9003 121.224 97.2344 123.279 97.2344C125.334 97.2344 127 98.9003 127 100.955V123.279C127 125.334 125.334 127 123.279 127Z" fill="#0CB5C3" /><path d="M74.6621 52.3379H96.9863V30.0137H74.6621V52.3379ZM85.8242 37.4551C87.879 37.4551 89.5449 39.121 89.5449 41.1758C89.5449 43.2306 87.879 44.8965 85.8242 44.8965C83.7694 44.8965 82.1035 43.2306 82.1035 41.1758C82.1035 39.121 83.7694 37.4551 85.8242 37.4551Z" fill="#0CB5C3" /><path d="M74.6621 89.5449H82.1035V96.9863H74.6621V89.5449Z" fill="#0CB5C3" /><path d="M30.0137 96.9863H52.3379V74.6621H30.0137V96.9863ZM41.1758 82.1035C43.2306 82.1035 44.8965 83.7694 44.8965 85.8242C44.8965 87.879 43.2306 89.5449 41.1758 89.5449C39.121 89.5449 37.4551 87.879 37.4551 85.8242C37.4551 83.7694 39.121 82.1035 41.1758 82.1035Z" fill="#0CB5C3" /><path d="M30.0137 52.3379H52.3379V30.0137H30.0137V52.3379ZM41.1758 37.4551C43.2306 37.4551 44.8965 39.121 44.8965 41.1758C44.8965 43.2306 43.2306 44.8965 41.1758 44.8965C39.121 44.8965 37.4551 43.2306 37.4551 41.1758C37.4551 39.121 39.121 37.4551 41.1758 37.4551Z" fill="#0CB5C3" /><path d="M100.707 15.1309H26.293C20.1283 15.1309 15.1309 20.1283 15.1309 26.293V100.707C15.1309 106.872 20.1283 111.869 26.293 111.869H100.707C106.872 111.869 111.869 106.872 111.869 100.707V26.293C111.869 20.1283 106.872 15.1309 100.707 15.1309ZM59.7793 100.707C59.7793 102.762 58.1134 104.428 56.0586 104.428H26.293C24.2381 104.428 22.5723 102.762 22.5723 100.707V70.9414C22.5723 68.8866 24.2381 67.2207 26.293 67.2207H56.0586C58.1134 67.2207 59.7793 68.8866 59.7793 70.9414V100.707ZM59.7793 56.0586C59.7793 58.1134 58.1134 59.7793 56.0586 59.7793H26.293C24.2381 59.7793 22.5723 58.1134 22.5723 56.0586V26.293C22.5723 24.2381 24.2381 22.5723 26.293 22.5723H56.0586C58.1134 22.5723 59.7793 24.2381 59.7793 26.293V56.0586ZM89.5449 100.707C89.5449 102.762 87.879 104.428 85.8242 104.428H70.9414C68.8866 104.428 67.2207 102.762 67.2207 100.707V85.8242C67.2207 83.7694 68.8866 82.1035 70.9414 82.1035H85.8242C87.879 82.1035 89.5449 83.7694 89.5449 85.8242V100.707ZM104.428 100.707C104.428 102.762 102.762 104.428 100.707 104.428C98.6522 104.428 96.9863 102.762 96.9863 100.707V95.7461C96.9863 93.6913 98.6522 92.0254 100.707 92.0254C102.762 92.0254 104.428 93.6913 104.428 95.7461V100.707ZM104.428 80.8633C104.428 82.9181 102.762 84.584 100.707 84.584C98.6522 84.584 96.9863 82.9181 96.9863 80.8633V74.6621H70.9414C68.8866 74.6621 67.2207 72.9962 67.2207 70.9414C67.2207 68.8866 68.8866 67.2207 70.9414 67.2207H100.707C102.762 67.2207 104.428 68.8866 104.428 70.9414V80.8633ZM104.428 56.0586C104.428 58.1134 102.762 59.7793 100.707 59.7793H70.9414C68.8866 59.7793 67.2207 58.1134 67.2207 56.0586V26.293C67.2207 24.2381 68.8866 22.5723 70.9414 22.5723H100.707C102.762 22.5723 104.428 24.2381 104.428 26.293V56.0586Z" fill="#0CB5C3" /></g><defs><clipPath id="clip0_1_40802"><rect width="127" height="127" fill="white" /></clipPath></defs></svg><span>Registro por QR</span>`;
+          buttonManual.innerHTML = `<svg ... >Registro manual</span>`;
+          buttonQR.innerHTML = `<svg ... >Registro por QR</span>`;
 
-          buttonQR.addEventListener("click", qrHandle);
+          // Escucha para el botón de registro manual
           buttonManual.addEventListener("click", () =>
             manualHandle(parentId, parentName, parentEmail)
           );
+
+          buttonQR.addEventListener("click", qrHandle);
 
           const contentContainer = document.createElement("div");
           contentContainer.classList.add("methods-register");
@@ -1185,6 +1301,8 @@ const getChildren = async () => {
             contentContainer
           );
         };
+
+        // Renderiza los botones de padres/acudientes
         renderAcuarelaUserButtons(
           kid.acuarelausers,
           acuarelaUsersContainer,
@@ -1227,18 +1345,21 @@ const getAsistentes = async () => {
         <i class="acuarela acuarela-Opciones"></i>
         <ul>
           <li>
-            <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","acuarelausers","${asistente.id
-        }");'>Eliminar</button>
+            <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","acuarelausers","${
+              asistente.id
+            }");'>Eliminar</button>
           </li>
         </ul>
       </div>
          <a href="/miembros/acuarela-app-web/asistente/${asistente.id}" >
           <div class="image">
-            ${asistente.photo
-          ? `<img src='${getSmallestImageUrl(asistente.photo)}' alt='${asistente.name
-          }'>`
-          : `<img src="img/placeholder.png" alt="placeholder">`
-        }
+            ${
+              asistente.photo
+                ? `<img src='${getSmallestImageUrl(asistente.photo)}' alt='${
+                    asistente.name
+                  }'>`
+                : `<img src="img/placeholder.png" alt="placeholder">`
+            }
             <i class="acuarela ${iconClass}"></i>
           </div>
           <span class="name">${asistente.name}</span>
@@ -1339,20 +1460,23 @@ const getInfoNewGroup = () => {
         asistentes.forEach((asistente) => {
           if (acuarelauser) {
             let { name, id } = asistente;
-            document.querySelector("#acuarelauser").innerHTML += `<option ${acuarelauser == id ? `selected` : ``
-              } value="${id}">${name}</option>`;
+            document.querySelector("#acuarelauser").innerHTML += `<option ${
+              acuarelauser == id ? `selected` : ``
+            } value="${id}">${name}</option>`;
           } else {
             if (!asistente.group) {
               let { name, id } = asistente;
-              document.querySelector("#acuarelauser").innerHTML += `<option ${acuarelauser == id ? `selected` : ``
-                } value="${id}">${name}</option>`;
+              document.querySelector("#acuarelauser").innerHTML += `<option ${
+                acuarelauser == id ? `selected` : ``
+              } value="${id}">${name}</option>`;
             }
           }
         });
         ageGroups.forEach((ageGroup) => {
           let { name } = ageGroup;
-          document.querySelector("#edades").innerHTML += `<option ${edades == name ? `selected` : ``
-            } value="${name}">${name}</option>`;
+          document.querySelector("#edades").innerHTML += `<option ${
+            edades == name ? `selected` : ``
+          } value="${name}">${name}</option>`;
         });
         let childrenNoGroup = children.response;
         childrenNoGroup.forEach((kid) => {
@@ -1362,22 +1486,27 @@ const getInfoNewGroup = () => {
             url = photo.url;
           }
           document.querySelector(".children").innerHTML += `<li >
-                        <input type="checkbox" name="${id}" id="${id}" ${group && !acuarelauser ? `disabled` : ``
-            } ${childrenGroup.includes(id) ? `checked` : ``}>
+                        <input type="checkbox" name="${id}" id="${id}" ${
+            group && !acuarelauser ? `disabled` : ``
+          } ${childrenGroup.includes(id) ? `checked` : ``}>
                         <label for="${id}">
-                             ${photo
-              ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
-              : `${kid.gender === "Masculino"
-                ? `<img src="img/mal.png" alt="">`
-                : ""
-              }${kid.gender === "Femenino"
-                ? `<img src="img/fem.png" alt="">`
-                : ""
-              }${kid.gender === "X"
-                ? `<img src="img/Nonbinary.png" alt="">`
-                : ""
-              }`
-            }
+                             ${
+                               photo
+                                 ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
+                                 : `${
+                                     kid.gender === "Masculino"
+                                       ? `<img src="img/mal.png" alt="">`
+                                       : ""
+                                   }${
+                                     kid.gender === "Femenino"
+                                       ? `<img src="img/fem.png" alt="">`
+                                       : ""
+                                   }${
+                                     kid.gender === "X"
+                                       ? `<img src="img/Nonbinary.png" alt="">`
+                                       : ""
+                                   }`
+                             }
                             <span>${name}</span>
                         </label>
                     </li>`;
@@ -1563,9 +1692,10 @@ if (document.querySelector(".actividadescontainer")) {
         activityElement.className = "activity";
         activityElement.innerHTML = `
         <div class="left">
-        <i class="acuarela ${activitiesList.find((actList) => actList.id == activity.classactivity)
+        <i class="acuarela ${
+          activitiesList.find((actList) => actList.id == activity.classactivity)
             .iconClass
-          }"></i>
+        }"></i>
         <div class="txt">
         <div class="activity-title">${activity.name}</div>
         <div class="activity-desc">
@@ -1576,8 +1706,8 @@ if (document.querySelector(".actividadescontainer")) {
         </div>
                   </div>
                   <div class="activity-time">${formatFechaAmigable(
-            activity.date
-          )}</div>
+                    activity.date
+                  )}</div>
               `;
         activitiesListContainer.appendChild(activityElement);
       });
@@ -1693,7 +1823,7 @@ function showActivityLightbox(showNextStep = false) {
     }
     document
       .querySelectorAll("#createActicity .step")
-    [activeStepNo].classList.add("active");
+      [activeStepNo].classList.add("active");
     onceOpen = false;
   }
   lightbox.style.display = "flex";
@@ -1709,7 +1839,7 @@ function showActivityLightbox(showNextStep = false) {
     }
     document
       .querySelectorAll("#createActicity .step")
-    [activeStepNo].classList.add("active");
+      [activeStepNo].classList.add("active");
     closeButton.removeEventListener("click", closeHandler);
   };
   closeButton.addEventListener("click", closeHandler);
@@ -1736,7 +1866,7 @@ const nextStep = () => {
   }
   document
     .querySelectorAll("#createActicity .step")
-  [activeStepNo].classList.add("active");
+    [activeStepNo].classList.add("active");
 };
 const prevStep = () => {
   if (activeStepNo > 0) {
@@ -1747,10 +1877,9 @@ const prevStep = () => {
     }
     document
       .querySelectorAll("#createActicity .step")
-    [activeStepNo].classList.add("active");
+      [activeStepNo].classList.add("active");
   }
 };
-
 
 const sendActivity = async () => {
   fadeIn(preloader);
@@ -1827,14 +1956,14 @@ document
   });
 
 const generateReport = async () => {
-  fadeIn(preloader)
+  fadeIn(preloader);
   const initialFilterDate = document.getElementById("start-date").value;
   const finalFilterDate = document.getElementById("end-date").value;
   const daycareId = document.getElementById("daycare").value;
 
   function convertDate(dateString) {
     // Split the input date by the dash separator
-    let dateParts = dateString.split('-');
+    let dateParts = dateString.split("-");
 
     // Rearrange the date parts from YYYY-MM-DD to DD-MM-YYYY
     let formattedDate = `${dateParts[2]}-${dateParts[1]}-${dateParts[0]}`;
@@ -1842,11 +1971,17 @@ const generateReport = async () => {
     return formattedDate;
   }
 
-  let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${formValuesInspeccion.fichasNinos
-    }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${formValuesInspeccion.registroAsistencia
-    }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${formValuesInspeccion.ingresos
-    }&gastos=${formValuesInspeccion.gastos}&visitas=${formValuesInspeccion.visitas
-    }&payrolls=${formValuesInspeccion.payrolls}&from=${convertDate(initialFilterDate)}&to=${convertDate(finalFilterDate)}&user=${userMainT}`;
+  let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${
+    formValuesInspeccion.fichasNinos
+  }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${
+    formValuesInspeccion.registroAsistencia
+  }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${
+    formValuesInspeccion.ingresos
+  }&gastos=${formValuesInspeccion.gastos}&visitas=${
+    formValuesInspeccion.visitas
+  }&payrolls=${formValuesInspeccion.payrolls}&from=${convertDate(
+    initialFilterDate
+  )}&to=${convertDate(finalFilterDate)}&user=${userMainT}`;
 
   await sendInspectionModeMail(userNameAdmin, emailAdmin, link);
 };
@@ -1976,10 +2111,9 @@ document.addEventListener("DOMContentLoaded", function () {
   // console.log(currentPath);
 
   if (currentPath == "/miembros/acuarela-app-web/") {
-
     const asideMensajeria = document.getElementById("mesajeria-menu");
     const mensajeButton = document.getElementById("mainButton");
-    const divMensajeButton = document.querySelector(".mensajeria-content")
+    const divMensajeButton = document.querySelector(".mensajeria-content");
     const buscarMensajeria = document.getElementById("buscar-mensajeria");
     const buscadorMensajeria = document.getElementById("chats-buscados");
     const agregarButton = document.getElementById("agregar-mensajeria");
@@ -1988,119 +2122,104 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatMensajeria = document.querySelector(".chat-individual");
     const opcionesMensajeria = document.getElementById("opcines-mensajeria");
 
-    mensajeButton.addEventListener('click', function () {
-
-      if (divMensajeButton.classList.contains('active')) {
-        divMensajeButton.classList.remove('active');
-      } else {
-        divMensajeButton.classList.add('active');
-      }
-      if (asideMensajeria.style.display === 'none') {
-        asideMensajeria.style.display = 'block';
-      } else {
-        asideMensajeria.style.display = 'none';
-      }
-    })
-
-    agregarButton.addEventListener('click', function () {
-
-      if (agregarButton.classList.contains('active')) {
-        agregarButton.classList.remove('active');
-        buscarMensajeria.classList.remove('inactive');
-        opcionesMensajeria.classList.remove('inactive');
-        chatButton.forEach(boton => {
-          boton.classList.remove('inactive');
+    document.addEventListener("DOMContentLoaded", function () {
+      const mensajeButton = document.getElementById("mensajeButton");
+      if (mensajeButton) {
+        mensajeButton.addEventListener("click", function () {
+          // Tu código aquí
         });
       } else {
-        agregarButton.classList.add('active');
-        buscarMensajeria.classList.add('inactive');
-        opcionesMensajeria.classList.add('inactive');
-        chatButton.forEach(boton => {
-          boton.classList.add('inactive');
-        });
-      }
-
-      if (agregarMensajeria.style.display === 'none') {
-        agregarMensajeria.style.display = 'block';
-      } else {
-        agregarMensajeria.style.display = 'none';
+        console.error(
+          'El elemento con ID "mensajeButton" no se encontró en el DOM.'
+        );
       }
     });
 
-    buscarMensajeria.addEventListener('click', function () {
+    agregarButton.addEventListener("click", function () {
+      if (agregarButton.classList.contains("active")) {
+        agregarButton.classList.remove("active");
+        buscarMensajeria.classList.remove("inactive");
+        opcionesMensajeria.classList.remove("inactive");
+        chatButton.forEach((boton) => {
+          boton.classList.remove("inactive");
+        });
+      } else {
+        agregarButton.classList.add("active");
+        buscarMensajeria.classList.add("inactive");
+        opcionesMensajeria.classList.add("inactive");
+        chatButton.forEach((boton) => {
+          boton.classList.add("inactive");
+        });
+      }
+
+      if (agregarMensajeria.style.display === "none") {
+        agregarMensajeria.style.display = "block";
+      } else {
+        agregarMensajeria.style.display = "none";
+      }
+    });
+
+    buscarMensajeria.addEventListener("click", function () {
       // console.log("Hola desde buscar");
-      if (buscarMensajeria.classList.contains('active')) {
-        buscarMensajeria.classList.remove('active');
-        agregarButton.classList.remove('inactive');
-        opcionesMensajeria.classList.remove('inactive');
-        chatButton.forEach(boton => {
-          boton.classList.remove('inactive');
+      if (buscarMensajeria.classList.contains("active")) {
+        buscarMensajeria.classList.remove("active");
+        agregarButton.classList.remove("inactive");
+        opcionesMensajeria.classList.remove("inactive");
+        chatButton.forEach((boton) => {
+          boton.classList.remove("inactive");
         });
       } else {
-        buscarMensajeria.classList.add('active');
-        agregarButton.classList.add('inactive');
-        opcionesMensajeria.classList.add('inactive');
-        chatButton.forEach(boton => {
-          boton.classList.add('inactive');
+        buscarMensajeria.classList.add("active");
+        agregarButton.classList.add("inactive");
+        opcionesMensajeria.classList.add("inactive");
+        chatButton.forEach((boton) => {
+          boton.classList.add("inactive");
         });
       }
 
-      if (buscadorMensajeria.style.display === 'none') {
-        buscadorMensajeria.style.display = 'block';
+      if (buscadorMensajeria.style.display === "none") {
+        buscadorMensajeria.style.display = "block";
       } else {
-        buscadorMensajeria.style.display = 'none';
+        buscadorMensajeria.style.display = "none";
       }
-    })
+    });
 
-
-    chatButton.forEach(boton => {
+    chatButton.forEach((boton) => {
       // console.log("Hola desde botón");
       // boton.classList.add('active');
-      boton.addEventListener('click', () => {
-
-        if (boton.classList.contains('active')) {
+      boton.addEventListener("click", () => {
+        if (boton.classList.contains("active")) {
           // Si el botón ya está activo, lo inactivamos
-          boton.classList.remove('active');
-          boton.classList.add('inactive');
-          buscarMensajeria.classList.remove('inactive');
-          agregarButton.classList.remove('inactive');
-          opcionesMensajeria.classList.remove('inactive');
+          boton.classList.remove("active");
+          boton.classList.add("inactive");
+          buscarMensajeria.classList.remove("inactive");
+          agregarButton.classList.remove("inactive");
+          opcionesMensajeria.classList.remove("inactive");
 
           // Restauramos la opacidad de todos los botones
-          chatButton.forEach(btn => btn.classList.remove('inactive'));
+          chatButton.forEach((btn) => btn.classList.remove("inactive"));
         } else {
           // Si el botón no está activo, inactivamos todos los botones y activamos el clicado
-          chatButton.forEach(btn => {
-            btn.classList.remove('active');
-            btn.classList.add('inactive');
-            buscarMensajeria.classList.add('inactive');
-            agregarButton.classList.add('inactive');
-            opcionesMensajeria.classList.add('inactive');
+          chatButton.forEach((btn) => {
+            btn.classList.remove("active");
+            btn.classList.add("inactive");
+            buscarMensajeria.classList.add("inactive");
+            agregarButton.classList.add("inactive");
+            opcionesMensajeria.classList.add("inactive");
           });
 
           // Activamos solo el botón clicado
-          boton.classList.remove('inactive');
-          boton.classList.add('active');
+          boton.classList.remove("inactive");
+          boton.classList.add("active");
         }
-        if (chatMensajeria.style.display === 'none') {
-          chatMensajeria.style.display = 'block';
+        if (chatMensajeria.style.display === "none") {
+          chatMensajeria.style.display = "block";
         } else {
-          chatMensajeria.style.display = 'none';
+          chatMensajeria.style.display = "none";
         }
       });
-
     });
-
-
-
   }
-
-
-
-
-
-
-
 });
 
 const changeValuesForMultipleContainers = (event, selectors) => {
@@ -2112,7 +2231,6 @@ const changeValuesForMultipleContainers = (event, selectors) => {
     });
   }
 };
-
 
 const getAllCategories = async () => {
   const resp = await fetchToken("categories");
