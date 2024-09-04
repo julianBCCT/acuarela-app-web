@@ -1972,152 +1972,134 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 document.addEventListener("DOMContentLoaded", function () {
-  const asideMensajeria = document.getElementById("mesajeria-menu");
-  const mensajeButton = document.getElementById("mainButton");
-  const divMensajeButton = document.querySelector(".mensajeria-content")
-  const buscarMensajeria = document.getElementById("buscar-mensajeria");
-  const buscadorMensajeria = document.getElementById("chats-buscados");
-  const agregarButton = document.getElementById("agregar-mensajeria");
-  const agregarMensajeria = document.getElementById("chats-agregados");
-  const chatButton = document.querySelectorAll(".chat-icon");
-  const chatMensajeria = document.querySelector(".chat-individual");
-  const opcionesMensajeria = document.getElementById("opcines-mensajeria");
+  const currentPath = window.location.pathname;
+  // console.log(currentPath);
 
+  if (currentPath == "/miembros/acuarela-app-web/") {
 
-  mensajeButton.addEventListener('click', function () {
+    const asideMensajeria = document.getElementById("mesajeria-menu");
+    const mensajeButton = document.getElementById("mainButton");
+    const divMensajeButton = document.querySelector(".mensajeria-content")
+    const buscarMensajeria = document.getElementById("buscar-mensajeria");
+    const buscadorMensajeria = document.getElementById("chats-buscados");
+    const agregarButton = document.getElementById("agregar-mensajeria");
+    const agregarMensajeria = document.getElementById("chats-agregados");
+    const chatButton = document.querySelectorAll(".chat-icon");
+    const chatMensajeria = document.querySelector(".chat-individual");
+    const opcionesMensajeria = document.getElementById("opcines-mensajeria");
 
-    if (divMensajeButton.classList.contains('active')) {
-      divMensajeButton.classList.remove('active');
-    } else {
-      divMensajeButton.classList.add('active');
-    }
-    if (asideMensajeria.style.display === 'none') {
-      asideMensajeria.style.display = 'block';
-    } else {
-      asideMensajeria.style.display = 'none';
-    }
-  })
+    mensajeButton.addEventListener('click', function () {
 
-  agregarButton.addEventListener('click', function () {
-
-    if (agregarButton.classList.contains('active')) {
-      agregarButton.classList.remove('active');
-      buscarMensajeria.classList.remove('inactive');
-      opcionesMensajeria.classList.remove('inactive');
-      chatButton.forEach(boton => {
-        boton.classList.remove('inactive');
-      });
-    } else {
-      agregarButton.classList.add('active');
-      buscarMensajeria.classList.add('inactive');
-      opcionesMensajeria.classList.add('inactive');
-      chatButton.forEach(boton => {
-        boton.classList.add('inactive');
-      });
-    }
-
-    if (agregarMensajeria.style.display === 'none') {
-      agregarMensajeria.style.display = 'block';
-    } else {
-      agregarMensajeria.style.display = 'none';
-    }
-  });
-
-  buscarMensajeria.addEventListener('click', function () {
-    // console.log("Hola desde buscar");
-    if (buscarMensajeria.classList.contains('active')) {
-      buscarMensajeria.classList.remove('active');
-      agregarButton.classList.remove('inactive');
-      opcionesMensajeria.classList.remove('inactive');
-      chatButton.forEach(boton => {
-        boton.classList.remove('inactive');
-      });
-    } else {
-      buscarMensajeria.classList.add('active');
-      agregarButton.classList.add('inactive');
-      opcionesMensajeria.classList.add('inactive');
-      chatButton.forEach(boton => {
-        boton.classList.add('inactive');
-      });
-    }
-
-    if (buscadorMensajeria.style.display === 'none') {
-      buscadorMensajeria.style.display = 'block';
-    } else {
-      buscadorMensajeria.style.display = 'none';
-    }
-  })
-
-
-  chatButton.forEach(boton => {
-    // console.log("Hola desde botón");
-    // boton.classList.add('active');
-    boton.addEventListener('click', () => {
-
-      if (boton.classList.contains('active')) {
-        // Si el botón ya está activo, lo inactivamos
-        boton.classList.remove('active');
-        boton.classList.add('inactive');
-        buscarMensajeria.classList.remove('inactive');
-        agregarButton.classList.remove('inactive');
-        opcionesMensajeria.classList.remove('inactive');
-
-        // Restauramos la opacidad de todos los botones
-        chatButton.forEach(btn => btn.classList.remove('inactive'));
+      if (divMensajeButton.classList.contains('active')) {
+        divMensajeButton.classList.remove('active');
       } else {
-        // Si el botón no está activo, inactivamos todos los botones y activamos el clicado
-        chatButton.forEach(btn => {
-          btn.classList.remove('active');
-          btn.classList.add('inactive');
-          buscarMensajeria.classList.add('inactive');
-          agregarButton.classList.add('inactive');
-          opcionesMensajeria.classList.add('inactive');
-        });
+        divMensajeButton.classList.add('active');
+      }
+      if (asideMensajeria.style.display === 'none') {
+        asideMensajeria.style.display = 'block';
+      } else {
+        asideMensajeria.style.display = 'none';
+      }
+    })
 
-        // Activamos solo el botón clicado
-        boton.classList.remove('inactive');
-        boton.classList.add('active');
+    agregarButton.addEventListener('click', function () {
+
+      if (agregarButton.classList.contains('active')) {
+        agregarButton.classList.remove('active');
+        buscarMensajeria.classList.remove('inactive');
+        opcionesMensajeria.classList.remove('inactive');
+        chatButton.forEach(boton => {
+          boton.classList.remove('inactive');
+        });
+      } else {
+        agregarButton.classList.add('active');
+        buscarMensajeria.classList.add('inactive');
+        opcionesMensajeria.classList.add('inactive');
+        chatButton.forEach(boton => {
+          boton.classList.add('inactive');
+        });
       }
 
-
-
-      // chatButton.forEach(btn => {
-      //   btn.classList.add('inactive');
-      //   btn.classList.remove('active');
-      // });
-
-      // boton.classList.remove('inactive');
-      // boton.classList.add('active');
-
-      // if (boton.classList.contains('active')) {
-      //   // boton.classList.remove('active')
-      //   buscarMensajeria.classList.add('inactive');
-      //   agregarButton.classList.add('inactive');
-      //   opcionesMensajeria.classList.add('inactive');
-      // } else {
-      //   // boton.classList.add('active');
-      //   buscarMensajeria.classList.remove('inactive');
-      //   agregarButton.classList.remove('inactive');
-      //   opcionesMensajeria.classList.remove('inactive');
-      // }
-
-      if (chatMensajeria.style.display === 'none') {
-        chatMensajeria.style.display = 'block';
+      if (agregarMensajeria.style.display === 'none') {
+        agregarMensajeria.style.display = 'block';
       } else {
-        chatMensajeria.style.display = 'none';
+        agregarMensajeria.style.display = 'none';
       }
     });
 
-  });
+    buscarMensajeria.addEventListener('click', function () {
+      // console.log("Hola desde buscar");
+      if (buscarMensajeria.classList.contains('active')) {
+        buscarMensajeria.classList.remove('active');
+        agregarButton.classList.remove('inactive');
+        opcionesMensajeria.classList.remove('inactive');
+        chatButton.forEach(boton => {
+          boton.classList.remove('inactive');
+        });
+      } else {
+        buscarMensajeria.classList.add('active');
+        agregarButton.classList.add('inactive');
+        opcionesMensajeria.classList.add('inactive');
+        chatButton.forEach(boton => {
+          boton.classList.add('inactive');
+        });
+      }
 
-  // chatButton.addEventListener('click', function () {
-  //   console.log("Hola desde chat");
-  //   if (chatMensajeria.style.display === 'none') {
-  //     chatMensajeria.style.display = 'block';
-  //   } else {
-  //     chatMensajeria.style.display = 'none';
-  //   }
-  // })
+      if (buscadorMensajeria.style.display === 'none') {
+        buscadorMensajeria.style.display = 'block';
+      } else {
+        buscadorMensajeria.style.display = 'none';
+      }
+    })
+
+
+    chatButton.forEach(boton => {
+      // console.log("Hola desde botón");
+      // boton.classList.add('active');
+      boton.addEventListener('click', () => {
+
+        if (boton.classList.contains('active')) {
+          // Si el botón ya está activo, lo inactivamos
+          boton.classList.remove('active');
+          boton.classList.add('inactive');
+          buscarMensajeria.classList.remove('inactive');
+          agregarButton.classList.remove('inactive');
+          opcionesMensajeria.classList.remove('inactive');
+
+          // Restauramos la opacidad de todos los botones
+          chatButton.forEach(btn => btn.classList.remove('inactive'));
+        } else {
+          // Si el botón no está activo, inactivamos todos los botones y activamos el clicado
+          chatButton.forEach(btn => {
+            btn.classList.remove('active');
+            btn.classList.add('inactive');
+            buscarMensajeria.classList.add('inactive');
+            agregarButton.classList.add('inactive');
+            opcionesMensajeria.classList.add('inactive');
+          });
+
+          // Activamos solo el botón clicado
+          boton.classList.remove('inactive');
+          boton.classList.add('active');
+        }
+        if (chatMensajeria.style.display === 'none') {
+          chatMensajeria.style.display = 'block';
+        } else {
+          chatMensajeria.style.display = 'none';
+        }
+      });
+
+    });
+
+
+
+  }
+
+
+
+
+
+
 
 });
 
