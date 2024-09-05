@@ -1159,48 +1159,118 @@ const getChildren = async () => {
           fragment.appendChild(extraContent);
           showInfoLightbox("Método por QR no disponible", fragment);
         };
-        // Validar código de seguridad antes de registrar la salida
+
+        const resetDialogStates = () => {
+          const dialogCode = document.getElementById('dialog-code');
+          const exitoCodigo = document.getElementById('exitoCodigo');
+          const errorCodigo = document.getElementById('errorCodigo');
+          const dialogContainer = document.querySelector('.dialog-container'); 
+        
+          dialogCode.style.display = 'flex';
+          exitoCodigo.style.display = 'none';
+          errorCodigo.style.display = 'none';
+        
+          dialogContainer.close();
+        };
+
         const validateAndProcessCheckout = async (
           parentId,
           parentName,
           parentEmail,
           codeInput
         ) => {
+          const dialogContainer = document.querySelector(".dialog-container");
           fadeIn(preloader);
 
           try {
             const response = await fetch(
-              `https://app.acuarelaschool.com.co/wp-json/ac/v1/getCodeAcudiente?codigo=${codeInput}`
+              `https://acuarelacore.com/api/acuarelausers/${parentId}`
             );
             const data = await response.json();
 
-            if (data && data[0] && data[0].id === parentId) {
-              // El código es correcto, procesar la salida del niño
-              await manualHandle(parentId, parentName, parentEmail, codeInput);
+            const dialogCode = document.getElementById("dialog-code");
+            const exitoCodigo = document.getElementById("exitoCodigo");
+            const errorCodigo = document.getElementById("errorCodigo");
+
+            if (data && data.id === parentId) {
+              const dynamicCode =
+                data.codigo_dinamico && data.codigo_dinamico.Codigo;
+
+              if (dynamicCode === codeInput) {
+                dialogContainer.showModal(); // Mostrar el dialog si aún no está visible
+                dialogCode.style.display = "none";
+                exitoCodigo.style.display = "flex";
+
+                setTimeout(async () => {
+                  exitoCodigo.style.display = "none";
+                  await manualHandle(
+                    parentId,
+                    parentName,
+                    parentEmail,
+                    codeInput
+                  );
+                  resetDialogStates(); // Restablecer estados iniciales
+                }, 3000);
+              } else {
+                dialogContainer.showModal(); // Mostrar el dialog si aún no está visible
+                dialogCode.style.display = "none";
+                errorCodigo.querySelector("h2").innerText = "Código Incorrecto";
+                errorCodigo.querySelector("p").innerText =
+                  "Por favor intenta nuevamente.";
+                errorCodigo.style.display = "flex";
+
+                setTimeout(() => {
+                  errorCodigo.style.display = "none";
+                  resetDialogStates(); // Restablecer estados iniciales
+                }, 3000);
+              }
             } else {
-              // El código no es correcto
-              alert("Código incorrecto, por favor intenta nuevamente.");
-              fadeOut(preloader);
+              dialogContainer.showModal(); // Mostrar el dialog si aún no está visible
+              dialogCode.style.display = "none";
+              errorCodigo.querySelector("h2").innerText =
+                "No se encontró el usuario";
+              errorCodigo.querySelector("p").innerText =
+                "Por favor intenta nuevamente.";
+              errorCodigo.style.display = "flex";
+
+              setTimeout(() => {
+                errorCodigo.style.display = "none";
+                resetDialogStates(); // Restablecer estados iniciales
+              }, 3000);
             }
+
+            fadeOut(preloader);
           } catch (error) {
             console.error("Error validando el código:", error);
             fadeOut(preloader);
           }
         };
 
-        // Función original manualHandle con el proceso de registro
         const manualHandle = async (
           parentId,
           parentName,
           parentEmail,
           code
         ) => {
-          let data = {
-            children: [kid.id],
-            datetime: today,
-            acudiente: [parentId],
-            code, // Incluye el código si es necesario para el backend
-          };
+          fadeIn(preloader);
+
+          let data = {};
+
+          // Verificar si el tipo de operación es checkout o no
+          if (typeCheck === "checkout") {
+            data = {
+              children: [kid.id],
+              datetime: today,
+              acudiente: [parentId],
+              code, // Incluir el código si es checkout
+            };
+          } else {
+            data = {
+              children: [kid.id],
+              datetime: today,
+              acudiente: [parentId],
+            };
+          }
 
           const raw = JSON.stringify(data);
           const requestOptions = {
@@ -1210,7 +1280,7 @@ const getChildren = async () => {
 
           try {
             const response = await fetch(
-              `s/setAsistencia/?type=checkout`,
+              `s/setAsistencia/?type=${typeCheck}`,
               requestOptions
             );
             const result = await response.json();
@@ -1218,20 +1288,20 @@ const getChildren = async () => {
             const infoLightbox = document.getElementById("info-lightbox");
             infoLightbox.style.display = "none";
 
-            // Enviar correo de confirmación
+            // Enviar correo de confirmación (basado en el tipo de registro: check-in o check-out)
             sendEmailRegisterCheck(
               kid.name,
               parentName,
               daycareName,
               parentName,
               parentEmail,
-              "checkout"
+              typeCheck
             );
 
             // Actualizar la lista de niños
             getChildren();
           } catch (error) {
-            console.error("Error registrando la salida:", error);
+            console.error("Error en el proceso de registro:", error);
           } finally {
             fadeOut(preloader);
           }
@@ -1295,16 +1365,21 @@ const getChildren = async () => {
           buttonQR.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><g clip-path="url(#clip0_1_40802)"><path d="M3.7207 29.7656C1.66588 29.7656 0 28.0997 0 26.0449V3.7207C0 1.66588 1.66588 0 3.7207 0H26.0449C28.0997 0 29.7656 1.66588 29.7656 3.7207C29.7656 5.77552 28.0997 7.44141 26.0449 7.44141H7.44141V26.0449C7.44141 28.0997 5.77552 29.7656 3.7207 29.7656Z" fill="#0CB5C3" /><path d="M123.279 29.7656C121.224 29.7656 119.559 28.0997 119.559 26.0449V7.44141H100.955C98.9003 7.44141 97.2344 5.77552 97.2344 3.7207C97.2344 1.66588 98.9003 0 100.955 0H123.279C125.334 0 127 1.66588 127 3.7207V26.0449C127 28.0997 125.334 29.7656 123.279 29.7656Z" fill="#0CB5C3" /><path d="M26.0449 127H3.7207C1.66588 127 0 125.334 0 123.279V100.955C0 98.9003 1.66588 97.2344 3.7207 97.2344C5.77552 97.2344 7.44141 98.9003 7.44141 100.955V119.559H26.0449C28.0997 119.559 29.7656 121.224 29.7656 123.279C29.7656 125.334 28.0997 127 26.0449 127Z" fill="#0CB5C3" /><path d="M123.279 127H100.955C98.9003 127 97.2344 125.334 97.2344 123.279C97.2344 121.224 98.9003 119.559 100.955 119.559H119.559V100.955C119.559 98.9003 121.224 97.2344 123.279 97.2344C125.334 97.2344 127 98.9003 127 100.955V123.279C127 125.334 125.334 127 123.279 127Z" fill="#0CB5C3" /><path d="M74.6621 52.3379H96.9863V30.0137H74.6621V52.3379ZM85.8242 37.4551C87.879 37.4551 89.5449 39.121 89.5449 41.1758C89.5449 43.2306 87.879 44.8965 85.8242 44.8965C83.7694 44.8965 82.1035 43.2306 82.1035 41.1758C82.1035 39.121 83.7694 37.4551 85.8242 37.4551Z" fill="#0CB5C3" /><path d="M74.6621 89.5449H82.1035V96.9863H74.6621V89.5449Z" fill="#0CB5C3" /><path d="M30.0137 96.9863H52.3379V74.6621H30.0137V96.9863ZM41.1758 82.1035C43.2306 82.1035 44.8965 83.7694 44.8965 85.8242C44.8965 87.879 43.2306 89.5449 41.1758 89.5449C39.121 89.5449 37.4551 87.879 37.4551 85.8242C37.4551 83.7694 39.121 82.1035 41.1758 82.1035Z" fill="#0CB5C3" /><path d="M30.0137 52.3379H52.3379V30.0137H30.0137V52.3379ZM41.1758 37.4551C43.2306 37.4551 44.8965 39.121 44.8965 41.1758C44.8965 43.2306 43.2306 44.8965 41.1758 44.8965C39.121 44.8965 37.4551 43.2306 37.4551 41.1758C37.4551 39.121 39.121 37.4551 41.1758 37.4551Z" fill="#0CB5C3" /><path d="M100.707 15.1309H26.293C20.1283 15.1309 15.1309 20.1283 15.1309 26.293V100.707C15.1309 106.872 20.1283 111.869 26.293 111.869H100.707C106.872 111.869 111.869 106.872 111.869 100.707V26.293C111.869 20.1283 106.872 15.1309 100.707 15.1309ZM59.7793 100.707C59.7793 102.762 58.1134 104.428 56.0586 104.428H26.293C24.2381 104.428 22.5723 102.762 22.5723 100.707V70.9414C22.5723 68.8866 24.2381 67.2207 26.293 67.2207H56.0586C58.1134 67.2207 59.7793 68.8866 59.7793 70.9414V100.707ZM59.7793 56.0586C59.7793 58.1134 58.1134 59.7793 56.0586 59.7793H26.293C24.2381 59.7793 22.5723 58.1134 22.5723 56.0586V26.293C22.5723 24.2381 24.2381 22.5723 26.293 22.5723H56.0586C58.1134 22.5723 59.7793 24.2381 59.7793 26.293V56.0586ZM89.5449 100.707C89.5449 102.762 87.879 104.428 85.8242 104.428H70.9414C68.8866 104.428 67.2207 102.762 67.2207 100.707V85.8242C67.2207 83.7694 68.8866 82.1035 70.9414 82.1035H85.8242C87.879 82.1035 89.5449 83.7694 89.5449 85.8242V100.707ZM104.428 100.707C104.428 102.762 102.762 104.428 100.707 104.428C98.6522 104.428 96.9863 102.762 96.9863 100.707V95.7461C96.9863 93.6913 98.6522 92.0254 100.707 92.0254C102.762 92.0254 104.428 93.6913 104.428 95.7461V100.707ZM104.428 80.8633C104.428 82.9181 102.762 84.584 100.707 84.584C98.6522 84.584 96.9863 82.9181 96.9863 80.8633V74.6621H70.9414C68.8866 74.6621 67.2207 72.9962 67.2207 70.9414C67.2207 68.8866 68.8866 67.2207 70.9414 67.2207H100.707C102.762 67.2207 104.428 68.8866 104.428 70.9414V80.8633ZM104.428 56.0586C104.428 58.1134 102.762 59.7793 100.707 59.7793H70.9414C68.8866 59.7793 67.2207 58.1134 67.2207 56.0586V26.293C67.2207 24.2381 68.8866 22.5723 70.9414 22.5723H100.707C102.762 22.5723 104.428 24.2381 104.428 26.293V56.0586Z" fill="#0CB5C3" /></g><defs><clipPath id="clip0_1_40802"><rect width="127" height="127" fill="white" /></clipPath></defs></svg><span>Registro por QR</span>`;
 
           buttonManual.addEventListener("click", () => {
-            abriVentanaCodigo((code) => {
-              console.log("Código ingresado:", code);
+            if (typeCheck === "checkout") {
+              abriVentanaCodigo((code) => {
+                console.log("Código ingresado:", code);
+                console.log("ParentID:", parentId);
 
-              validateAndProcessCheckout(
-                parentId,
-                parentName,
-                parentEmail,
-                code
-              );
-            });
+                validateAndProcessCheckout(
+                  parentId,
+                  parentName,
+                  parentEmail,
+                  code
+                );
+              });
+            } else {
+              manualHandle(parentId, parentName, parentEmail);
+            }
           });
 
           buttonQR.addEventListener("click", qrHandle);
