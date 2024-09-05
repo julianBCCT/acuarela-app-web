@@ -1,6 +1,142 @@
 .asistencia {
   main {
     padding: 0;
+    .dialog-container[open] {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .dialog-container {
+      display: none;
+      font-family: "Montserrat";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      text-align: center;
+      z-index: 999;
+
+      #dialog-code {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        background: white;
+        border-radius: 15px;
+        padding: 50px;
+        width: 550px;
+        height: 372px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+
+        @media (max-width: 768px) {
+          width: 80%;
+          height: max-content;
+        }
+
+        .dialog-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+
+          h2 {
+            color: #140a4c;
+            font-size: 24px;
+            margin: 0 20px;
+          }
+
+          .back-btn,
+          .close-btn {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #98a2b7;
+            background: none;
+            border: 1px solid #e1e4e9;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 1.5rem;
+            cursor: pointer;
+          }
+        }
+
+        .dialog-body {
+          margin-top: 20px;
+
+          .code-inputs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+
+            @media (max-width: 550px) {
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              gap: 10px;
+            }
+
+            input {
+              width: 50px;
+              height: 60px;
+              font-size: 2rem;
+              text-align: center;
+              border: 2px solid #ccc;
+              border-radius: 10px;
+              transition: border-color 0.3s;
+
+              @media (max-width: 550px) {
+                margin: 0 auto;
+              }
+
+              &::placeholder {
+                color: #ccc;
+              }
+
+              &:focus {
+                outline: none;
+                border-color: #00b0b9;
+              }
+
+              &::-webkit-outer-spin-button,
+              &::-webkit-inner-spin-button {
+                -webkit-appearance: none;
+                margin: 0;
+              }
+
+              &[type="number"] {
+                -moz-appearance: textfield;
+              }
+            }
+          }
+
+          p {
+            font-size: 15px;
+            color: #55637e;
+            line-height: 1.4;
+            margin: 20px 0 40px 0;
+            text-align: center;
+          }
+
+          .validate-btn {
+            font-family: "Montserrat";
+            display: block;
+            width: 100%;
+            background-color: #00b0b9;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 0;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+
+            &:hover {
+              background-color: #008a8f;
+            }
+          }
+        }
+      }
+    }
 
     .content {
       padding: 40px clamp(20px, 3vw, 80px) 120px;
@@ -90,14 +226,14 @@
           .image {
             position: relative;
 
-            &>img {
+            & > img {
               border: 4px solid;
               height: 115px;
               width: 115px;
               border-radius: 50%;
             }
 
-            &>i {
+            & > i {
               position: absolute;
               bottom: 0;
               right: 0;
@@ -147,8 +283,6 @@
               cursor: pointer;
               transition: transform 0.3s;
 
-
-
               img {
                 width: 100%;
                 height: 100%;
@@ -161,7 +295,7 @@
                 position: absolute;
                 top: 50%;
                 left: 110%;
-                color: var(--gris1, #140A4C);
+                color: var(--gris1, #140a4c);
                 font-size: 15px;
                 font-style: normal;
                 font-weight: 700;
@@ -185,15 +319,12 @@
           }
 
           &.active {
-
-
             .acuarelausers-buttons {
               transform: scale(1) translate(-50%, -50%);
             }
 
             .image {
-
-              &>i {
+              & > i {
                 display: none;
               }
             }
@@ -218,7 +349,7 @@
               border-color: var(--cielo);
             }
 
-            &>i {
+            & > i {
               background-color: var(--cielo);
             }
           }
@@ -232,7 +363,7 @@
               border-color: var(--pollito);
             }
 
-            &>i {
+            & > i {
               background-color: var(--pollito);
             }
           }
@@ -248,7 +379,7 @@
               border-color: var(--gris1);
             }
 
-            &>i {
+            & > i {
               background-color: var(--gris1);
             }
           }
@@ -285,7 +416,7 @@
     }
 
     span {
-      color: var(--gris2, #55637E);
+      color: var(--gris2, #55637e);
       text-align: center;
       font-size: 12px;
       display: block;
@@ -300,7 +431,7 @@
 
       p {
         margin: 0;
-        color: #FFF;
+        color: #fff;
       }
     }
 

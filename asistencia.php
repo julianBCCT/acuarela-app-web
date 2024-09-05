@@ -1,32 +1,66 @@
-<?php $classBody ="asistencia"; include "includes/header.php"; ?>
+<?php $classBody = "asistencia";
+include "includes/header.php"; ?>
 <main>
+    <dialog class="dialog-container">
+        <div id="dialog-code">
+            <div class="dialog-header">
+                <button class="back-btn"><i class="acuarela acuarela-Flecha_izquierda"></i></button>
+                <h2>Ingresa el código del padre</h2>
+                <button class="close-btn"><i class="acuarela acuarela-Cancelar"></i></button>
+            </div>
+            <div class="dialog-body">
+                <div class="code-inputs">
+                    <input type="number" id="input-1" maxlength="1" placeholder="0" />
+                    <input type="number" id="input-2" maxlength="1" placeholder="0" />
+                    <input type="number" id="input-3" maxlength="1" placeholder="0" />
+                    <input type="number" id="input-4" maxlength="1" placeholder="0" />
+                    <input type="number" id="input-5" maxlength="1" placeholder="0" />
+                    <input type="number" id="input-6" maxlength="1" placeholder="0" />
+                </div>
+                <p>
+                    Por favor, ingrese el código de seguridad del padre o tutor para
+                    autorizar la salida del niño.
+                </p>
+                <button class="validate-btn">Validar</button>
+            </div>
+        </div>
+    </dialog>
     <?php
     $mainHeaderTitle = "Asistencia";
     $action = '<a href="/miembros/acuarela-app-web/inspeccion" class="btn btn-action-primary enfasis btn-big"><i class="acuarela acuarela-Pago"></i>Generar informe</a>';
     include "templates/sectionHeader.php";
-?>
+    ?>
     <div class="content">
         <?php
-  // Define los nombres de los meses en español
-  $meses = [
-      1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-      5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-      9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
-  ];
+        // Define los nombres de los meses en español
+        $meses = [
+            1 => 'Enero',
+            2 => 'Febrero',
+            3 => 'Marzo',
+            4 => 'Abril',
+            5 => 'Mayo',
+            6 => 'Junio',
+            7 => 'Julio',
+            8 => 'Agosto',
+            9 => 'Septiembre',
+            10 => 'Octubre',
+            11 => 'Noviembre',
+            12 => 'Diciembre'
+        ];
 
-  // Crea un objeto DateTime para la fecha deseada
-  $fecha = new DateTime();
-  $fecha->modify('-1 day'); // Agregar un día
-  // Obtiene el día, mes y año
-  $dia = $fecha->format('d');
-  $mes = $meses[(int)$fecha->format('m')];
-  $anio = $fecha->format('Y');
+        // Crea un objeto DateTime para la fecha deseada
+        $fecha = new DateTime();
+        $fecha->modify('-1 day'); // Agregar un día
+        // Obtiene el día, mes y año
+        $dia = $fecha->format('d');
+        $mes = $meses[(int) $fecha->format('m')];
+        $anio = $fecha->format('Y');
 
-  // Forma la fecha en el formato deseado
-  $fecha_formateada = "$mes $dia, $anio";
-  ?>
+        // Forma la fecha en el formato deseado
+        $fecha_formateada = "$mes $dia, $anio";
+        ?>
         <h2>
-            <?= $fecha_formateada?>
+            <?= $fecha_formateada ?>
         </h2>
         <div class="info">
             <i class="acuarela acuarela-Informacion"></i>
@@ -40,7 +74,8 @@
         <ul class="indaycare"></ul>
         <hr />
         <h3>¿Quiénes están en casa?</h3>
-        <p class="emptyinhome">Todos los niños se encuentran contigo en el Daycare. No olvides registrar la salida y entregarlo al
+        <p class="emptyinhome">Todos los niños se encuentran contigo en el Daycare. No olvides registrar la salida y
+            entregarlo al
             responsable
             correspondiente.</p>
         <ul class="inhome"></ul>
