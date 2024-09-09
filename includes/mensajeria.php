@@ -94,9 +94,11 @@
             </div>
         </div>
         <div class="chat-barra-mensajes">
-            <input type="text">
-            <i class="acuarela acuarela-Enviar"></i>
+            <input id="messageInput" type="text">
+            <i id="sendBtn" class="acuarela acuarela-Enviar"></i>
             <i class="acuarela acuarela-Adjuntar"></i>
         </div>
     </div>
+    <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
 </div>
