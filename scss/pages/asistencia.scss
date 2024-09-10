@@ -308,3 +308,70 @@
     }
   }
 }
+
+.methods-finanzas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  p {
+    color: #333b5c;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    margin-bottom: 30px;
+    // list-style-type: disc;
+  }
+
+  li {
+    position: relative;
+    padding-left: 20px; 
+    color: #333b5c;
+    font-size: 14px;
+    margin-bottom: 10px;
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: 5px; 
+      height: 5px; 
+      background-color: black; 
+      border-radius: 50%; 
+    }
+  }
+}
+
+.precios span {
+  color: #333b5c;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 32px;
+}
+
+.precios p {
+  color: #333b5c;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 32px;
+  margin-top: 27px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  
+  &::after {
+    content: "";
+    display: block;
+    height: 4px;           
+    width: 40px;           
+    background-color: #30F77E;  
+    margin-top: 15px;       
+  }
+}

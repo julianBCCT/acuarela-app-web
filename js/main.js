@@ -1295,6 +1295,68 @@ const getChildren = async () => {
     fadeOut(preloader);
   }
 };
+
+// Lightbox de finanzas
+const subirplan = () => {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-register");
+
+  const linkMensual = document.createElement("a");
+  linkMensual.href = "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
+  linkMensual.classList.add("precios");
+  linkMensual.innerHTML = `
+    <img src="img/icons/clip_path_group.svg"" alt="file">
+    <span>Acuarela Pro </span>
+    <p class=price">$24 / mes</p>
+  `;
+  const linkAnual = document.createElement("a");
+  linkAnual.href = "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
+  linkAnual.classList.add("precios");
+  linkAnual.innerHTML = `
+    <img src="img/icons/clip_path_group.svg"" alt="file">
+    <span>Acuarela Pro </span>
+    <p class=price">$249 / anual</p>
+  `;
+
+  contentContainer.appendChild(linkMensual);
+  contentContainer.appendChild(linkAnual);
+
+  showInfoLightbox(
+    "Escoge el tipo de suscripción que desea", 
+    contentContainer
+  );
+};
+
+const finanzas_lightbox = document.getElementById('lightbox-finanzas');
+finanzas_lightbox.addEventListener('click', function(event) {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-finanzas");
+
+  contentContainer.innerHTML = `
+    <p> Descubre el poder de una gestión integral para tu Daycare con Acuarela Pro, administra tus gastos, ingresos y genera facturas automáticas para Padres. </p>
+    <ul>
+      <li>Administra niños sin límite.</li>
+      <li>Administra tus gastos, reportes financieros avanzados.</li>
+      <li>Administra tus ingresos.</li>
+      <li>Facturación automática y profesional para padres.</li>
+      <li>Recibe pagos electronicos de padres.</li>
+    </ul>
+  `;
+
+  const contentPlan = document.createElement("button");
+  contentPlan.classList.add("btn", "btn-action-primary", "enfasis", "btn-big");
+  contentPlan.innerText = "Obtener versión PRO";
+  contentPlan.addEventListener("click", subirplan);
+
+  contentContainer.appendChild(contentPlan);
+  event.preventDefault(); 
+  
+  showInfoLightbox(
+    'Para obtener mis finanzas es necesario comprar la version PRO', 
+    contentContainer
+  );
+});
+
 const getDataAsistentes = async () => {
   const response = await fetch(`g/getAsistentes/`);
   const asistentes = await response.json();

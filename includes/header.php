@@ -60,7 +60,7 @@
     <a href="/miembros/acuarela-app-web/asistencia" class="<?=$_GET['activeTab'] == 2 ? 'active':''?>"><i class="acuarela acuarela-Asistencia"></i>Asistencia</a>
     <a href="/miembros/acuarela-app-web/asistentes" class="<?=$_GET['activeTab'] == 3 ? 'active':''?>"><i class="acuarela acuarela-Asistente"></i>Asistentes</a>
     <a href="/miembros/acuarela-app-web/grupos" class="<?=$_GET['activeTab'] == 4 ? 'active':''?>"><i class="acuarela acuarela-Grupo"></i>Grupos</a>
-    <a href="javascript:;" class="<?=$_GET['activeTab'] == 5 ? 'active':''?>"><i class="acuarela acuarela-Finanzas"></i>Finanzas <div class="badge">PRO</div></a>
+    <a href="javascript:;" id="lightbox-finanzas" class="<?=$_GET['activeTab'] == 5 ? 'active':''?>"><i class="acuarela acuarela-Finanzas"></i>Finanzas <div class="badge">PRO</div></a>
     <a href="/miembros/acuarela-app-web/inspeccion" class="<?=$_GET['activeTab'] == 6 ? 'active':''?>"><i class="acuarela acuarela-Pago"></i>Inspección</a>
     <!-- <a href="/miembros/acuarela-app-web/visitas" class="<?=$_GET['activeTab'] == 7 ? 'active':''?>"><i class="acuarela acuarela-Familia"></i>Visitas</a> -->
     <hr />
@@ -68,3 +68,4 @@
 
     </nav>
 </aside>
+
