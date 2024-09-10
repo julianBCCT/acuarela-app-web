@@ -2068,7 +2068,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const asideMensajeria = document.getElementById("mesajeria-menu");
     const mensajeButton = document.getElementById("mainButton");
-    const divMensajeButton = document.querySelector(".mensajeria-content");
     const buscarMensajeria = document.getElementById("buscar-mensajeria");
     const buscadorMensajeria = document.getElementById("chats-buscados");
     const agregarButton = document.getElementById("agregar-mensajeria");
@@ -2076,19 +2075,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatButton = document.querySelectorAll(".chat-icon");
     const chatMensajeria = document.querySelector(".chat-individual");
     const opcionesMensajeria = document.getElementById("opcines-mensajeria");
+    const btnSendMensaje = document.getElementById("sendBtn");
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const mensajeButton = document.getElementById("mensajeButton");
-      if (mensajeButton) {
-        mensajeButton.addEventListener("click", function () {
-          // Tu código aquí
-        });
+    mensajeButton.addEventListener("click", function () {
+      if (asideMensajeria.style.display === "none") {
+        asideMensajeria.style.display = "block";
       } else {
-        console.error(
-          'El elemento con ID "mensajeButton" no se encontró en el DOM.'
-        );
+        asideMensajeria.style.display = "none";
       }
     });
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //   const mensajeButton = document.getElementById("mensajeButton");
+    //   if (mensajeButton) {
+    //     mensajeButton.addEventListener("click", function () {
+    //       // Tu código aquí
+    //     });
+    //   } else {
+    //     console.error(
+    //       'El elemento con ID "mensajeButton" no se encontró en el DOM.'
+    //     );
+    //   }
+    // });
 
     agregarButton.addEventListener("click", function () {
       if (agregarButton.classList.contains("active")) {
@@ -2140,48 +2148,69 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
 
+    function mostrarChat(boton) {
+      if (boton.classList.contains('active')) {
+        // Si el botón ya está activo, lo inactivamos
+        boton.classList.remove("active");
+        boton.classList.add("inactive");
+        buscarMensajeria.classList.remove("inactive");
+        agregarButton.classList.remove("inactive");
+        opcionesMensajeria.classList.remove("inactive");
+
+        // Restauramos la opacidad de todos los botones
+        chatButton.forEach((btn) => btn.classList.remove("inactive"));
+      } else {
+        // Si el botón no está activo, inactivamos todos los botones y activamos el clicado
+        chatButton.forEach((btn) => {
+          btn.classList.remove("active");
+          btn.classList.add("inactive");
+          buscarMensajeria.classList.add("inactive");
+          agregarButton.classList.add("inactive");
+          opcionesMensajeria.classList.add("inactive");
+        });
+
+        // Activamos solo el botón clicado
+        boton.classList.remove("inactive");
+        boton.classList.add("active");
+      }
+      if (chatMensajeria.style.display === "none") {
+        chatMensajeria.style.display = "block";
+      } else {
+        chatMensajeria.style.display = "none";
+      }
+    };
+
+    let selectedButton = null;
+
+    document.getElementById('closeChat').addEventListener('click', () => {
+      if (selectedButton) {  // Verificar si hay un botón seleccionado
+        mostrarChat(selectedButton);  // Llamar a mostrarChat con el botón seleccionado
+        // chatMensajeria.style.display = "none";  // Aquí puedes añadir cualquier otra acción que necesites
+      }
+    });
+
+
     chatButton.forEach(boton => {
+      // document.getElementById('closeChat').addEventListener('click', () => {
+      //   console.log("CLICK");
+      //   mostrarChat(boton);
+      //   // chatMensajeria.style.display = "none";
+      // });
+
       boton.addEventListener('click', () => {
 
-        if (boton.classList.contains('active')) {
-          // Si el botón ya está activo, lo inactivamos
-          boton.classList.remove("active");
-          boton.classList.add("inactive");
-          buscarMensajeria.classList.remove("inactive");
-          agregarButton.classList.remove("inactive");
-          opcionesMensajeria.classList.remove("inactive");
+        mostrarChat(boton);
 
-          // Restauramos la opacidad de todos los botones
-          chatButton.forEach((btn) => btn.classList.remove("inactive"));
-        } else {
-          // Si el botón no está activo, inactivamos todos los botones y activamos el clicado
-          chatButton.forEach((btn) => {
-            btn.classList.remove("active");
-            btn.classList.add("inactive");
-            buscarMensajeria.classList.add("inactive");
-            agregarButton.classList.add("inactive");
-            opcionesMensajeria.classList.add("inactive");
-          });
-
-          // Activamos solo el botón clicado
-          boton.classList.remove("inactive");
-          boton.classList.add("active");
-        }
-        if (chatMensajeria.style.display === "none") {
-          chatMensajeria.style.display = "block";
-        } else {
-          chatMensajeria.style.display = "none";
-        }
-
+        selectedButton = boton;
 
 
         const loadChatList = () => {
-          console.log("Este es", socket);
-          console.log("id", socket.id);
-          console.log("ID", socket.io.engine.id);
+          // console.log("Este es", socket);
+          // console.log("id", socket.id);
+          // console.log("ID", socket.io.engine.id);
           // Aquí debes realizar una consulta a tu API para obtener el listado de chats
           const chats = [
-            { userId: 'XzAokxGkbjCxI2hRAAC9', username: 'Nicolas Prueba' },
+            { userId: 'KzmNK9XyY_VBcKwXAAFC', username: 'Nicolas Prueba' },
             // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
             // { userId: 'user3', username: 'User 3' },
           ];
@@ -2191,8 +2220,6 @@ document.addEventListener("DOMContentLoaded", function () {
           // const chatItem = boton;
           currentChatUser = chats[0].userId;
           loadChatRoom(chats[0].userId, chats[0].username);
-
-
 
 
           // chats.forEach(chat => {
@@ -2211,46 +2238,54 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log(userId);
 
           // Emitir un evento para unirse a la sala del usuario seleccionado
-          socket.emit('join', { username: userName, userId });
+          socket.emit('join', { username: userName, userId: 'XzAokxGkbjCxI2hRAAC9' });
 
           const messages = document.getElementById('messages');
           messages.innerHTML = '';
 
           // Aquí debes realizar una consulta a tu API para obtener los mensajes previos con este usuario
           const chatMessages = [
-            { user: 'user1', text: 'Hola, ¿cómo estás?' },
-            { user: 'Current User', text: 'Estoy bien, gracias.' }
+            { user: 'Acuarela', text: 'Hola' }
+            // { user: '', text: 'Estoy bi' }
           ];
 
           chatMessages.forEach(msg => {
             const messageElement = document.createElement('div');
-            messageElement.className = 'message';
+            messageElement.className = 'mensaje-enviado';
             messageElement.textContent = `${msg.user}: ${msg.text}`;
             messages.appendChild(messageElement);
           });
         };
 
-        document.getElementById('sendBtn').addEventListener('click', () => {
+        document.getElementById('messageInput').addEventListener('keyup', (event) => {
+          if (event.code === 'Enter') {
+            btnSendMensaje.click();
+          }
+        });
+
+        btnSendMensaje.addEventListener('click', () => {
           const messageInput = document.getElementById('messageInput');
           const message = messageInput.value;
 
-          console.log(message);
+          // console.log(message);
 
           // if (message && currentChatUser) {
           if (message) {
             // Emitir un mensaje privado al usuario seleccionado
             socket.emit('sendMessage', {
               message: message,
-              userId: socket.id, // Cambia esto por el ID del usuario actual
-              toUserId: currentChatUser
+              userId: 'XzAokxGkbjCxI2hRAAC9', // Cambia esto por el ID del usuario actual
+              // userName: 'Nicolas Acuarela',
+              toUserId: 'KzmNK9XyY_VBcKwXAAFC'
               // toUserId: 'RXYnxdwDJxhxJoeuAABm'
             });
 
             // Mostrar el mensaje en la sala de chat actual
             const messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.textContent = `Current User: ${message}`;
+            messageElement.className = 'mensaje-enviado';
+            messageElement.textContent = `Acuarela: ${message}`;
             document.getElementById('messages').appendChild(messageElement);
+            // scrollToBottom();
 
             messageInput.value = ''; // Limpiar el campo de entrada
           }
@@ -2261,15 +2296,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
         // Escuchar mensajes entrantes
         socket.on('message', (message) => {
-          if (message.user === currentChatUser) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'message';
-            messageElement.textContent = `${message.user}: ${message.text}`;
-            document.getElementById('messages').appendChild(messageElement);
-          }
+          console.log(message);
+          // if (message.user === currentChatUser) {
+          const messageElement = document.createElement('div');
+          messageElement.className = 'mensaje-recibido';
+          messageElement.textContent = ` Usuario: ${message.text}`;
+          document.getElementById('messages').appendChild(messageElement);
+          // scrollToBottom();
+          // }
         });
-
-
 
       });
 

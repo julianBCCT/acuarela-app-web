@@ -70,10 +70,10 @@
         <div class="info-chat">
             <img src="./img/Chat.png" alt="">
             <p>Camilo Barrios</p>
-            <i class="acuarela acuarela-Usuario"></i>
-            <i class="acuarela acuarela-Expandir"></i>
+            <!-- <i class="acuarela acuarela-Usuario"></i> -->
+            <i id="closeChat" class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div class="chat-mensajes">
+        <div id="messages" class="chat-mensajes">
             <div class="mensaje-enviado">
                 <p>Lorem ipsum, dolor sit amet consectetur adipisicing elit. Minima asperiores repudiandae nisi magnam minus et, adipisci numquam id aspernatur totam blanditiis, animi, dolorem fugit dolores! Commodi voluptates sint dolorem magnam.
 
@@ -96,7 +96,7 @@
         <div class="chat-barra-mensajes">
             <input id="messageInput" type="text">
             <i id="sendBtn" class="acuarela acuarela-Enviar"></i>
-            <i class="acuarela acuarela-Adjuntar"></i>
+            <!-- <i class="acuarela acuarela-Adjuntar"></i> -->
         </div>
     </div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
