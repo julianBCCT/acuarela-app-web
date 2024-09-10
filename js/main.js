@@ -1336,7 +1336,7 @@ const subirplan = () => {
   contentContainer.classList.add("methods-register");
 
   const linkMensual = document.createElement("a");
-  linkMensual.href = "https://bilingualchildcaretraining.com/checkout/?service=6463a4c71e65775c4147b57b";
+  linkMensual.href = "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
   linkMensual.classList.add("precios");
   linkMensual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1344,7 +1344,7 @@ const subirplan = () => {
     <p class=price">$24 / mes</p>
   `;
   const linkAnual = document.createElement("a");
-  linkAnual.href = "#";
+  linkAnual.href = "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
   linkAnual.classList.add("precios");
   linkAnual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
