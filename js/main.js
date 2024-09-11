@@ -1322,13 +1322,13 @@ const subirplan = () => {
   contentContainer.appendChild(linkAnual);
 
   showInfoLightbox(
-    "Escoge el tipo de suscripción que desea", 
+    "Escoge el tipo de suscripción que desea",
     contentContainer
   );
 };
 
 const finanzas_lightbox = document.getElementById('lightbox-finanzas');
-finanzas_lightbox.addEventListener('click', function(event) {
+finanzas_lightbox.addEventListener('click', function (event) {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-finanzas");
 
@@ -1349,10 +1349,10 @@ finanzas_lightbox.addEventListener('click', function(event) {
   contentPlan.addEventListener("click", subirplan);
 
   contentContainer.appendChild(contentPlan);
-  event.preventDefault(); 
-  
+  event.preventDefault();
+
   showInfoLightbox(
-    'Para obtener mis finanzas es necesario comprar la version PRO', 
+    'Para obtener mis finanzas es necesario comprar la version PRO',
     contentContainer
   );
 });
@@ -2123,9 +2123,14 @@ document.addEventListener("DOMContentLoaded", function () {
   // console.log(currentPath);
 
   if (currentPath == "/miembros/acuarela-app-web/") {
+    console.log("Id Acuarela", acuarelaId);
 
 
-    const socket = io("https://acuarelacore.com", { transports: ['websocket', 'polling'] });
+    const socket = io("https://acuarelacore.com", {
+      transports: ['websocket', 'polling'], auth: {
+        userId: acuarelaId
+      },
+    });
     let currentChatUser = null;
 
     const asideMensajeria = document.getElementById("mesajeria-menu");
@@ -2146,19 +2151,6 @@ document.addEventListener("DOMContentLoaded", function () {
         asideMensajeria.style.display = "none";
       }
     });
-
-    // document.addEventListener("DOMContentLoaded", function () {
-    //   const mensajeButton = document.getElementById("mensajeButton");
-    //   if (mensajeButton) {
-    //     mensajeButton.addEventListener("click", function () {
-    //       // Tu código aquí
-    //     });
-    //   } else {
-    //     console.error(
-    //       'El elemento con ID "mensajeButton" no se encontró en el DOM.'
-    //     );
-    //   }
-    // });
 
     agregarButton.addEventListener("click", function () {
       if (agregarButton.classList.contains("active")) {
@@ -2253,12 +2245,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     chatButton.forEach(boton => {
-      // document.getElementById('closeChat').addEventListener('click', () => {
-      //   console.log("CLICK");
-      //   mostrarChat(boton);
-      //   // chatMensajeria.style.display = "none";
-      // });
-
       boton.addEventListener('click', () => {
 
         mostrarChat(boton);
@@ -2267,12 +2253,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         const loadChatList = () => {
-          // console.log("Este es", socket);
-          // console.log("id", socket.id);
-          // console.log("ID", socket.io.engine.id);
           // Aquí debes realizar una consulta a tu API para obtener el listado de chats
           const chats = [
-            { userId: 'KzmNK9XyY_VBcKwXAAFC', username: 'Nicolas Prueba' },
+            { userId: 'zkGTkrRvhWSG7i53AAAT', username: 'Nicolas' },
             // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
             // { userId: 'user3', username: 'User 3' },
           ];
@@ -2300,7 +2283,7 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log(userId);
 
           // Emitir un evento para unirse a la sala del usuario seleccionado
-          socket.emit('join', { username: userName, userId: 'XzAokxGkbjCxI2hRAAC9' });
+          socket.emit('join', { username: userName, userId: 'snehYWZsE2JP7k4rAAAP' });
 
           const messages = document.getElementById('messages');
           messages.innerHTML = '';
@@ -2336,9 +2319,9 @@ document.addEventListener("DOMContentLoaded", function () {
             // Emitir un mensaje privado al usuario seleccionado
             socket.emit('sendMessage', {
               message: message,
-              userId: 'XzAokxGkbjCxI2hRAAC9', // Cambia esto por el ID del usuario actual
+              userId: 'snehYWZsE2JP7k4rAAAP', // Cambia esto por el ID del usuario actual
               // userName: 'Nicolas Acuarela',
-              toUserId: 'KzmNK9XyY_VBcKwXAAFC'
+              toUserId: 'zkGTkrRvhWSG7i53AAAT',
               // toUserId: 'RXYnxdwDJxhxJoeuAABm'
             });
 
@@ -2347,8 +2330,6 @@ document.addEventListener("DOMContentLoaded", function () {
             messageElement.className = 'mensaje-enviado';
             messageElement.textContent = `Acuarela: ${message}`;
             document.getElementById('messages').appendChild(messageElement);
-            // scrollToBottom();
-
             messageInput.value = ''; // Limpiar el campo de entrada
           }
         });

@@ -11,17 +11,19 @@
   <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css" />
   <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/css/splide.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
-  <link rel="stylesheet" href="css/acuarela_theme.css?v=<?=time()?>" />
-  <link rel="stylesheet" href="css/styles.css?v=<?=time()?>" />
+  <link rel="stylesheet" href="css/acuarela_theme.css?v=<?= time() ?>" />
+  <link rel="stylesheet" href="css/styles.css?v=<?= time() ?>" />
   <link rel="shortcut icon" href="img/favicon.png" />
   <script>
-    let userMainT = "<?=$a->token?>";
-    let userNameAdmin = "<?=$_SESSION["user"]->name?>";
-    let emailAdmin = "<?=$_SESSION["user"]->email?>";
-    let daycareName = "<?=$_SESSION["user"]->daycares[0]->name?>";
-    let daycareActiveId = "<?=$a->daycareID?>";
+    let userMainT = "<?= $a->token ?>";
+    let userNameAdmin = "<?= $_SESSION["user"]->name ?>";
+    let emailAdmin = "<?= $_SESSION["user"]->email ?>";
+    let daycareName = "<?= $_SESSION["user"]->daycares[0]->name ?>";
+    let daycareActiveId = "<?= $a->daycareID ?>";
+
     // Assuming the daycares array is available in the session
     let daycares = <?php echo json_encode($_SESSION["user"]->daycares); ?>;
+    let acuarelaId = "$<?= $_SESSION["user"]->acuarelauser->id ?>";
 
     // Function to find a daycare by ID
     function findDaycareById(daycares, id) {
@@ -30,14 +32,14 @@
 
     // Example usage
     let daycareId = 1; // Replace with the ID you are looking for
-    let foundDaycare = findDaycareById(daycares, "<?=$a->daycareID?>");
-    document.addEventListener("DOMContentLoaded", function () {
+    let foundDaycare = findDaycareById(daycares, "<?= $a->daycareID ?>");
+    document.addEventListener("DOMContentLoaded", function() {
       if (foundDaycare) {
         document.querySelector('#daycareName').innerText = foundDaycare.name;
-        document.querySelector('.logout a').href = `/miembros/daycare/<?=$a->get_alias($_SESSION["user"]->daycares[0]->name)?>/<?=$a->daycareID?>`;
+        document.querySelector('.logout a').href = `/miembros/daycare/<?= $a->get_alias($_SESSION["user"]->daycares[0]->name) ?>/<?= $a->daycareID ?>`;
       }
     })
   </script>
 </head>
 
-<body class="<?=$classBody?>">
+<body class="<?= $classBody ?>">

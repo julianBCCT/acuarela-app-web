@@ -90,14 +90,14 @@
           .image {
             position: relative;
 
-            &>img {
+            & > img {
               border: 4px solid;
               height: 115px;
               width: 115px;
               border-radius: 50%;
             }
 
-            &>i {
+            & > i {
               position: absolute;
               bottom: 0;
               right: 0;
@@ -147,8 +147,6 @@
               cursor: pointer;
               transition: transform 0.3s;
 
-
-
               img {
                 width: 100%;
                 height: 100%;
@@ -161,7 +159,7 @@
                 position: absolute;
                 top: 50%;
                 left: 110%;
-                color: var(--gris1, #140A4C);
+                color: var(--gris1, #140a4c);
                 font-size: 15px;
                 font-style: normal;
                 font-weight: 700;
@@ -182,15 +180,12 @@
           }
 
           &.active {
-
-
             .acuarelausers-buttons {
               transform: scale(1) translate(-50%, -50%);
             }
 
             .image {
-
-              &>i {
+              & > i {
                 display: none;
               }
             }
@@ -215,7 +210,7 @@
               border-color: var(--cielo);
             }
 
-            &>i {
+            & > i {
               background-color: var(--cielo);
             }
           }
@@ -229,7 +224,7 @@
               border-color: var(--pollito);
             }
 
-            &>i {
+            & > i {
               background-color: var(--pollito);
             }
           }
@@ -245,7 +240,7 @@
               border-color: var(--gris1);
             }
 
-            &>i {
+            & > i {
               background-color: var(--gris1);
             }
           }
@@ -282,7 +277,7 @@
     }
 
     span {
-      color: var(--gris2, #55637E);
+      color: var(--gris2, #55637e);
       text-align: center;
       font-size: 12px;
       display: block;
@@ -297,7 +292,7 @@
 
       p {
         margin: 0;
-        color: #FFF;
+        color: #fff;
       }
     }
 
@@ -331,7 +326,7 @@
 
   li {
     position: relative;
-    padding-left: 20px; 
+    padding-left: 20px;
     color: #333b5c;
     font-size: 14px;
     margin-bottom: 10px;
@@ -341,10 +336,10 @@
       top: 50%;
       left: 0;
       transform: translateY(-50%);
-      width: 5px; 
-      height: 5px; 
-      background-color: black; 
-      border-radius: 50%; 
+      width: 5px;
+      height: 5px;
+      background-color: black;
+      border-radius: 50%;
     }
   }
 }
@@ -365,13 +360,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  
+
   &::after {
     content: "";
     display: block;
-    height: 4px;           
-    width: 40px;           
-    background-color: #30F77E;  
-    margin-top: 15px;       
+    height: 4px;
+    width: 40px;
+    background-color: #30f77e;
+    margin-top: 15px;
   }
 }
