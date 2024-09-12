@@ -3,6 +3,7 @@
   <?php
       $mainHeaderTitle = 'Social' ;
       $action = '';
+      $videoPath = 'videos/muro_social.mp4';
       include "templates/sectionHeader.php";
   ?>
   <div class="content">

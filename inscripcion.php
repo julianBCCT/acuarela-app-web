@@ -7,6 +7,7 @@
   <?php
     $mainHeaderTitle = "Agregar Niñx";
     $action = '<button class="btn btn-action-primary enfasis btn-big" onclick="handleInscripcion()">Guardar Borrador</button>';
+    $videoPath = 'videos/agregar_ninxs.mp4';
     include "templates/sectionHeader.php";
 ?>
   <div class="navtabs">

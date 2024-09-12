@@ -3,6 +3,7 @@
 <?php
     $mainHeaderTitle = "Asistentes" ;
     $action = '<a href="/miembros/acuarela-app-web/agregar-asistente" class="btn btn-action-primary enfasis btn-big">Agregar asistente</a>';
+    $videoPath = 'videos/asistentes.mp4';
     include "templates/sectionHeader.php";
 ?>
     <div class="content">

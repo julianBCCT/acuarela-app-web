@@ -3,6 +3,7 @@
   <?php
     $mainHeaderTitle = "Niñxs agregados";
     $action = '<a href="/miembros/acuarela-app-web/agregar-ninx" class="btn btn-action-primary enfasis btn-big">Agregar niñxs</a>';
+    $videoPath = 'videos/agregar_ninxs.mp4';
     include "templates/sectionHeader.php";
 ?>
   <div class="content">

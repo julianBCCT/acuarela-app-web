@@ -3,6 +3,7 @@
     <?php
     $mainHeaderTitle = "Modo inspección" ;
     $action = '<button type="button" onclick="generateReport()" class="btn btn-action-secondary enfasis btn-big">Generar informe</button>';
+    $videoPath = 'videos/inspeccion.mp4';
     include "templates/sectionHeader.php";
 ?>
     <div class="content">

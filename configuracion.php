@@ -3,6 +3,7 @@
     <?php
     $mainHeaderTitle = $_SESSION["userAll"]->name ." ". $_SESSION["userAll"]->lastname;
     $action = '';
+    $videoPath = 'videos/editar_perfil.mp4';
     include "templates/sectionHeader.php";
 ?>
     <div class="navtabs">

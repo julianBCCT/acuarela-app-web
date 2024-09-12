@@ -3,6 +3,7 @@
   <?php
     $mainHeaderTitle = "Grupos" ;
     $action = '<a href="/miembros/acuarela-app-web/grupos/nuevo-grupo" class="btn btn-action-primary enfasis btn-big">Crear grupo</a>';
+    $videoPath = 'videos/grupos.mp4';
     include "templates/sectionHeader.php";
 ?>
   <div class="content">

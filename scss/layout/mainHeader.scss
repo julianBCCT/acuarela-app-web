@@ -36,6 +36,19 @@
         opacity: 0.5;
       }
     }
+    .info-icon {
+      display: flex;
+      align-items: center;
+    
+      i {
+        cursor: pointer;
+        transition: transform 0.3s ease;
+    
+        &:hover {
+          transform: translateY(-5px);
+        }
+      }
+    }    
   }
   .actions {
     a,

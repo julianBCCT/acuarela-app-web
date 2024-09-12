@@ -58,6 +58,7 @@ include "includes/header.php"; ?>
     <?php
     $mainHeaderTitle = "Asistencia";
     $action = '<a href="/miembros/acuarela-app-web/inspeccion" class="btn btn-action-primary enfasis btn-big"><i class="acuarela acuarela-Pago"></i>Generar informe</a>';
+    $videoPath = 'videos/asistencia.mp4';
     include "templates/sectionHeader.php";
     ?>
     <div class="content">

@@ -2249,3 +2249,38 @@ const getAllCategories = async () => {
   const body = await resp.json();
   console.log(body);
 };
+
+// tutos de video
+
+function openVideoModal(videoPath) {
+  // Crear o seleccionar un modal para mostrar el video
+  const modal = document.createElement('div');
+  modal.classList.add('video-modal');
+
+  // Añadir el contenido del modal con un elemento <video> para mostrar el video local
+  modal.innerHTML = `
+    <div class="video-modal-content" onclick="event.stopPropagation()">
+      <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+      <video id="video-player" width="560" height="315" controls autoplay>
+        <source src="${videoPath}" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+      </video>
+    </div>
+  `;
+  
+  // Añadir el modal al cuerpo del documento
+  document.body.appendChild(modal);
+  
+  const videoElement = document.getElementById('video-player');
+  videoElement.volume = 0.5; // Volumen al 50%
+
+  // Cerrar el modal al hacer clic fuera del contenedor de contenido
+  modal.addEventListener('click', closeVideoModal);
+}
+
+function closeVideoModal() {
+  const modal = document.querySelector('.video-modal');
+  if (modal) {
+    modal.remove(); // Eliminar el modal del DOM
+  }
+}
