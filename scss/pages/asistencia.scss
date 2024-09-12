@@ -1,327 +1,345 @@
 .asistencia {
-  main {
-    padding: 0;
-    .dialog-container[open] {
+  .dialog-container[open] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  .dialog-container {
+    display: none;
+    font-family: "Montserrat";
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    z-index: 999;
+
+    .dialogCode {
       display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    .dialog-container {
-      display: none;
-      font-family: "Montserrat";
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      text-align: center;
-      z-index: 999;
+      flex-direction: column;
+      justify-content: space-evenly;
+      background: white;
+      border-radius: 15px;
+      padding: 50px;
+      width: 550px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 
-      .dialogCode {
+      @media (max-width: 768px) {
+        width: 80%;
+        height: max-content;
+      }
+
+      h2 {
+        font-size: 24px;
+        margin: 0 20px;
+        color: #140a4c;
+      }
+
+      p {
+        font-size: 15px;
+        color: #55637e;
+        line-height: 1.4;
+        text-align: center;
+      }
+
+      .dialog-header {
         display: flex;
-        flex-direction: column;
-        justify-content: space-evenly;
-        background: white;
-        border-radius: 15px;
-        padding: 50px;
-        width: 550px;
-        height: 372px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-
-        @media (max-width: 768px) {
-          width: 80%;
-          height: max-content;
-        }
+        justify-content: space-between;
+        align-items: center;
 
         h2 {
+          color: #140a4c;
           font-size: 24px;
           margin: 0 20px;
-          color: #140a4c;
+        }
+
+        .back-btn,
+        .close-btn {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          color: #98a2b7;
+          background: none;
+          border: 1px solid #e1e4e9;
+          border-radius: 50%;
+          width: 32px;
+          height: 32px;
+          font-size: 1.5rem;
+          cursor: pointer;
+        }
+      }
+
+      .dialog-body {
+        margin-top: 20px;
+
+        .code-inputs {
+          display: flex;
+          justify-content: space-between;
+          margin-bottom: 20px;
+
+          @media (max-width: 550px) {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 10px;
+          }
+
+          input {
+            width: 50px;
+            height: 60px;
+            font-size: 2rem;
+            text-align: center;
+            border: 2px solid #ccc;
+            border-radius: 10px;
+            transition: border-color 0.3s;
+
+            @media (max-width: 550px) {
+              margin: 0 auto;
+            }
+
+            &::placeholder {
+              color: #ccc;
+            }
+
+            &:focus {
+              outline: none;
+              border-color: #00b0b9;
+            }
+
+            &::-webkit-outer-spin-button,
+            &::-webkit-inner-spin-button {
+              -webkit-appearance: none;
+              margin: 0;
+            }
+
+            &[type="number"] {
+              -moz-appearance: textfield;
+            }
+          }
         }
 
         p {
           font-size: 15px;
           color: #55637e;
           line-height: 1.4;
+          margin: 20px 0;
           text-align: center;
         }
 
-        .dialog-header {
+        #reminder {
           display: flex;
-          justify-content: space-between;
           align-items: center;
-
-          h2 {
-            color: #140a4c;
-            font-size: 24px;
-            margin: 0 20px;
+          gap: 20px;
+          padding: 20px;
+          border-radius: 12px;
+          background: #f0feff;
+          box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
+          margin-bottom: 30px;
+          img {
+            width: 50px;
+            height: 50px;
           }
-
-          .back-btn,
-          .close-btn {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: #98a2b7;
-            background: none;
-            border: 1px solid #e1e4e9;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 1.5rem;
-            cursor: pointer;
-          }
-        }
-
-        .dialog-body {
-          margin-top: 20px;
-
-          .code-inputs {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 15px;
-
-            @media (max-width: 550px) {
-              display: grid;
-              grid-template-columns: 1fr 1fr 1fr;
-              gap: 10px;
-            }
-
-            input {
-              width: 50px;
-              height: 60px;
-              font-size: 2rem;
-              text-align: center;
-              border: 2px solid #ccc;
-              border-radius: 10px;
-              transition: border-color 0.3s;
-
-              @media (max-width: 550px) {
-                margin: 0 auto;
-              }
-
-              &::placeholder {
-                color: #ccc;
-              }
-
-              &:focus {
-                outline: none;
-                border-color: #00b0b9;
-              }
-
-              &::-webkit-outer-spin-button,
-              &::-webkit-inner-spin-button {
-                -webkit-appearance: none;
-                margin: 0;
-              }
-
-              &[type="number"] {
-                -moz-appearance: textfield;
-              }
-            }
-          }
-
           p {
-            font-size: 15px;
-            color: #55637e;
-            line-height: 1.4;
-            margin: 20px 0 40px 0;
-            text-align: center;
-          }
-
-          .validate-btn,
-          .aceptar-btn {
-            font-family: "Montserrat";
-            display: block;
-            width: 100%;
-            background-color: #00b0b9;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            padding: 10px 0;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s;
-
-            &:hover {
-              background-color: #008a8f;
-            }
+            margin: 0;
           }
         }
 
-        &#exitoCodigo {
-          display: none;
-          .checkmark_circle_error {
-            stroke-dasharray: 166;
-            stroke-dashoffset: 166;
-            stroke-width: 5px;
-            stroke-miterlimit: 10;
-            stroke: #00C851;
-            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        .validate-btn,
+        .aceptar-btn {
+          font-family: "Montserrat";
+          display: block;
+          width: 100%;
+          background-color: #00b0b9;
+          color: white;
+          border: none;
+          border-radius: 10px;
+          padding: 10px 0;
+          font-size: 1rem;
+          cursor: pointer;
+          transition: background-color 0.3s;
+
+          &:hover {
+            background-color: #008a8f;
           }
+        }
+      }
 
-          .checkmark {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: block;
-            stroke-width: 5px;
-            stroke: #ffffff;
-            stroke-miterlimit: 10;
-            margin: 10% auto;
+      &#exitoCodigo {
+        display: none;
+        .checkmark_circle_error {
+          stroke-dasharray: 166;
+          stroke-dashoffset: 166;
+          stroke-width: 5px;
+          stroke-miterlimit: 10;
+          stroke: #00c851;
+          animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
 
-            &.success {
-              box-shadow: inset 0px 0px 0px #00C851;
-              animation: fillsuccess .4s ease-in-out .4s forwards, scale .3s ease-in-out .9s both;
-            }
-          }
+        .checkmark {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          display: block;
+          stroke-width: 5px;
+          stroke: #ffffff;
+          stroke-miterlimit: 10;
+          margin: 10% auto;
 
-          .checkmark_check {
-            transform-origin: 50% 50%;
-            stroke-dasharray: 48;
-            stroke-dashoffset: 48;
-            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.9s forwards;
-          }
-
-          .progress {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            transform: rotate(-90deg);
-            stroke: black;
-
-            &.progress--thin {
-              left: auto;
-              right: 5%;
-            }
-
-            circle {
-              stroke-dasharray: 130;
-              stroke-dashoffset: 130;
-              animation: dash 1.5s infinite;
-            }
-          }
-
-          @keyframes dash {
-            50% {
-              stroke-dashoffset: 0;
-            }
-            100% {
-              stroke-dashoffset: -130;
-            }
-          }
-
-          @keyframes stroke {
-            100% {
-              stroke-dashoffset: 0;
-            }
-          }
-
-          @keyframes scale {
-            0%,
-            100% {
-              transform: none;
-            }
-            50% {
-              transform: scale3d(1.1, 1.1, 1);
-            }
-          }
-
-          @keyframes fillsuccess {
-            100% {
-              box-shadow: inset 0px 0px 0px calc(80px / 2) #00C851;
-            }
+          &.success {
+            box-shadow: inset 0px 0px 0px #00c851;
+            animation: fillsuccess 0.4s ease-in-out 0.4s forwards,
+              scale 0.3s ease-in-out 0.9s both;
           }
         }
 
-        &#errorCodigo {
-          display: none;
-          .checkmark_circle_error {
-            stroke-dasharray: 166;
-            stroke-dashoffset: 166;
-            stroke-width: 5px;
-            stroke-miterlimit: 10;
-            stroke: #ff4444;
-            animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        .checkmark_check {
+          transform-origin: 50% 50%;
+          stroke-dasharray: 48;
+          stroke-dashoffset: 48;
+          animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.9s forwards;
+        }
+
+        .progress {
+          position: absolute;
+          top: 5%;
+          left: 5%;
+          transform: rotate(-90deg);
+          stroke: black;
+
+          &.progress--thin {
+            left: auto;
+            right: 5%;
           }
 
-          .checkmark {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: block;
-            stroke-width: 5px;
-            stroke: #ffffff;
-            stroke-miterlimit: 10;
-            margin: 10% auto;
+          circle {
+            stroke-dasharray: 130;
+            stroke-dashoffset: 130;
+            animation: dash 1.5s infinite;
+          }
+        }
 
-            &.error {
-              box-shadow: inset 0px 0px 0px #ff4444;
-              animation: fillerror 0.4s ease-in-out 0.4s forwards,
-                scale 0.3s ease-in-out 0.9s both;
-            }
+        @keyframes dash {
+          50% {
+            stroke-dashoffset: 0;
+          }
+          100% {
+            stroke-dashoffset: -130;
+          }
+        }
+
+        @keyframes stroke {
+          100% {
+            stroke-dashoffset: 0;
+          }
+        }
+
+        @keyframes scale {
+          0%,
+          100% {
+            transform: none;
+          }
+          50% {
+            transform: scale3d(1.1, 1.1, 1);
+          }
+        }
+
+        @keyframes fillsuccess {
+          100% {
+            box-shadow: inset 0px 0px 0px calc(80px / 2) #00c851;
+          }
+        }
+      }
+
+      &#errorCodigo {
+        display: none;
+        .checkmark_circle_error {
+          stroke-dasharray: 166;
+          stroke-dashoffset: 166;
+          stroke-width: 5px;
+          stroke-miterlimit: 10;
+          stroke: #ff4444;
+          animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+        }
+
+        .checkmark {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          display: block;
+          stroke-width: 5px;
+          stroke: #ffffff;
+          stroke-miterlimit: 10;
+          margin: 10% auto;
+
+          &.error {
+            box-shadow: inset 0px 0px 0px #ff4444;
+            animation: fillerror 0.4s ease-in-out 0.4s forwards,
+              scale 0.3s ease-in-out 0.9s both;
+          }
+        }
+
+        .checkmark_check {
+          transform-origin: 50% 50%;
+          stroke-dasharray: 48;
+          stroke-dashoffset: 48;
+          animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.9s forwards;
+        }
+
+        .progress {
+          position: absolute;
+          top: 5%;
+          left: 5%;
+          transform: rotate(-90deg);
+          stroke: black;
+
+          &.progress--thin {
+            left: auto;
+            right: 5%;
           }
 
-          .checkmark_check {
-            transform-origin: 50% 50%;
-            stroke-dasharray: 48;
-            stroke-dashoffset: 48;
-            animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.9s forwards;
+          circle {
+            stroke-dasharray: 130;
+            stroke-dashoffset: 130;
+            animation: dash 1.5s infinite;
           }
+        }
 
-          .progress {
-            position: absolute;
-            top: 5%;
-            left: 5%;
-            transform: rotate(-90deg);
-            stroke: black;
-
-            &.progress--thin {
-              left: auto;
-              right: 5%;
-            }
-
-            circle {
-              stroke-dasharray: 130;
-              stroke-dashoffset: 130;
-              animation: dash 1.5s infinite;
-            }
+        @keyframes dash {
+          50% {
+            stroke-dashoffset: 0;
           }
-
-          @keyframes dash {
-            50% {
-              stroke-dashoffset: 0;
-            }
-            100% {
-              stroke-dashoffset: -130;
-            }
+          100% {
+            stroke-dashoffset: -130;
           }
+        }
 
-          @keyframes stroke {
-            100% {
-              stroke-dashoffset: 0;
-            }
+        @keyframes stroke {
+          100% {
+            stroke-dashoffset: 0;
           }
+        }
 
-          @keyframes scale {
-            0%,
-            100% {
-              transform: none;
-            }
-            50% {
-              transform: scale3d(1.1, 1.1, 1);
-            }
+        @keyframes scale {
+          0%,
+          100% {
+            transform: none;
           }
+          50% {
+            transform: scale3d(1.1, 1.1, 1);
+          }
+        }
 
-          @keyframes fillerror {
-            100% {
-              box-shadow: inset 0px 0px 0px calc(80px / 2) #ff4444;
-            }
+        @keyframes fillerror {
+          100% {
+            box-shadow: inset 0px 0px 0px calc(80px / 2) #ff4444;
           }
         }
       }
     }
+  }
+  main {
+    padding: 0;
 
     .content {
       padding: 40px clamp(20px, 3vw, 80px) 120px;

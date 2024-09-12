@@ -1161,15 +1161,15 @@ const getChildren = async () => {
         };
 
         const resetDialogStates = () => {
-          const dialogCode = document.getElementById('dialog-code');
-          const exitoCodigo = document.getElementById('exitoCodigo');
-          const errorCodigo = document.getElementById('errorCodigo');
-          const dialogContainer = document.querySelector('.dialog-container'); 
-        
-          dialogCode.style.display = 'flex';
-          exitoCodigo.style.display = 'none';
-          errorCodigo.style.display = 'none';
-        
+          const dialogCode = document.getElementById("dialog-code");
+          const exitoCodigo = document.getElementById("exitoCodigo");
+          const errorCodigo = document.getElementById("errorCodigo");
+          const dialogContainer = document.querySelector(".dialog-container");
+
+          dialogCode.style.display = "flex";
+          exitoCodigo.style.display = "none";
+          errorCodigo.style.display = "none";
+
           dialogContainer.close();
         };
 
@@ -1309,10 +1309,13 @@ const getChildren = async () => {
 
         // Función para abrir el diálogo
         const abriVentanaCodigo = (callback) => {
+          const lightbox = document.querySelector("#info-lightbox");
           const dialog = document.querySelector(".dialog-container");
           const validateBtn = document.querySelector(".validate-btn");
           const closeBtn = document.querySelector(".close-btn");
           const inputs = document.querySelectorAll(".code-inputs input");
+
+          lightbox.style.display = "none";
 
           dialog.showModal();
 
@@ -1351,7 +1354,38 @@ const getChildren = async () => {
           });
         };
 
-        // Configura los botones de registro para cada padre/acudiente
+        //Enviar correo con el codigo
+        function enviarDatosAMake(parentId) {
+          var url =
+            "https://hook.us1.make.com/inblgu4qb8wpusg7eu5ckkdr19pxtjoi";
+
+          var data = {
+            parentId: parentId,
+          };
+
+          fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          })
+            .then((response) => {
+              const contentType = response.headers.get("content-type");
+              if (contentType && contentType.includes("application/json")) {
+                return response.json(); 
+              } else {
+                return response.text(); 
+              }
+            })
+            .then((data) => {
+              console.log("Respuesta del servidor:", data);
+            })
+            .catch((error) => {
+              console.error("Error:", error);
+            });
+        }
+
         let handleButtonParent = (parentId, parentName, parentEmail) => {
           listItem.classList.toggle("active");
 
@@ -1366,6 +1400,7 @@ const getChildren = async () => {
 
           buttonManual.addEventListener("click", () => {
             if (typeCheck === "checkout") {
+              enviarDatosAMake(parentId);
               abriVentanaCodigo((code) => {
                 console.log("Código ingresado:", code);
                 console.log("ParentID:", parentId);
