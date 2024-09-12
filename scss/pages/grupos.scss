@@ -172,6 +172,9 @@
 .grupo {
   main {
     padding: 0;
+    .info-icon {
+      display: none;
+    }
 
     .content {
       padding: 40px clamp(20px, 3vw, 45px) 120px;
