@@ -23,7 +23,7 @@
 
     // Assuming the daycares array is available in the session
     let daycares = <?php echo json_encode($_SESSION["user"]->daycares); ?>;
-    let acuarelaId = "$<?= $_SESSION["user"]->acuarelauser->id ?>";
+    let acuarelaId = "<?= $_SESSION["user"]->acuarelauser->id ?>";
 
     // Function to find a daycare by ID
     function findDaycareById(daycares, id) {

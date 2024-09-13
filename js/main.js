@@ -2251,6 +2251,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selectedButton = boton;
 
+        // const senderId = 'snehYWZsE2JP7k4rAAAP';  // Tu ID
+        // const receiverId = 'zkGTkrRvhWSG7i53AAAT';  // ID del destinatario
+
 
         const loadChatList = () => {
           // Aquí debes realizar una consulta a tu API para obtener el listado de chats
@@ -2283,7 +2286,9 @@ document.addEventListener("DOMContentLoaded", function () {
           console.log(userId);
 
           // Emitir un evento para unirse a la sala del usuario seleccionado
-          socket.emit('join', { username: userName, userId: 'snehYWZsE2JP7k4rAAAP' });
+          // socket.emit('join', { username: userName, userId: 'snehYWZsE2JP7k4rAAAP' });
+
+          socket.emit('joinRoom', { senderId, receiverId });
 
           const messages = document.getElementById('messages');
           messages.innerHTML = '';
@@ -2312,18 +2317,24 @@ document.addEventListener("DOMContentLoaded", function () {
           const messageInput = document.getElementById('messageInput');
           const message = messageInput.value;
 
+
           // console.log(message);
 
           // if (message && currentChatUser) {
           if (message) {
+
+            sendMessage(message);
+
+
+
             // Emitir un mensaje privado al usuario seleccionado
-            socket.emit('sendMessage', {
-              message: message,
-              userId: 'snehYWZsE2JP7k4rAAAP', // Cambia esto por el ID del usuario actual
-              // userName: 'Nicolas Acuarela',
-              toUserId: 'zkGTkrRvhWSG7i53AAAT',
-              // toUserId: 'RXYnxdwDJxhxJoeuAABm'
-            });
+            // socket.emit('sendMessage', {
+            //   message: message,
+            //   userId: 'snehYWZsE2JP7k4rAAAP', // Cambia esto por el ID del usuario actual
+            //   // userName: 'Nicolas Acuarela',
+            //   toUserId: 'zkGTkrRvhWSG7i53AAAT',
+            //   // toUserId: 'RXYnxdwDJxhxJoeuAABm'
+            // });
 
             // Mostrar el mensaje en la sala de chat actual
             const messageElement = document.createElement('div');
@@ -2337,17 +2348,27 @@ document.addEventListener("DOMContentLoaded", function () {
         // Cargar el listado de chats al cargar la página
         loadChatList();
 
-        // Escuchar mensajes entrantes
-        socket.on('message', (message) => {
-          console.log(message);
-          // if (message.user === currentChatUser) {
-          const messageElement = document.createElement('div');
-          messageElement.className = 'mensaje-recibido';
-          messageElement.textContent = ` Usuario: ${message.text}`;
-          document.getElementById('messages').appendChild(messageElement);
-          // scrollToBottom();
-          // }
+
+        socket.on('message', ({ senderId, message }) => {
+          console.log(`Nuevo mensaje de ${senderId}: ${message}`);
         });
+
+        // Enviar un mensaje privado
+        function sendMessage(message) {
+          socket.emit('sendMessage', { senderId, receiverId, message });
+        }
+
+        // Escuchar mensajes entrantes
+        // socket.on('message', (message) => {
+        //   console.log(message);
+        //   // if (message.user === currentChatUser) {
+        //   const messageElement = document.createElement('div');
+        //   messageElement.className = 'mensaje-recibido';
+        //   messageElement.textContent = ` Usuario: ${message.text}`;
+        //   document.getElementById('messages').appendChild(messageElement);
+        //   // scrollToBottom();
+        //   // }
+        // });
 
       });
 
