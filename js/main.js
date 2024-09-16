@@ -2231,6 +2231,9 @@ document.addEventListener("DOMContentLoaded", function () {
         chatMensajeria.style.display = "block";
       } else {
         chatMensajeria.style.display = "none";
+        const contendorMessages = document.getElementById("messages");
+        contendorMessages.textContent = '';
+
       }
     };
 
@@ -2238,14 +2241,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     document.getElementById('closeChat').addEventListener('click', () => {
       if (selectedButton) {  // Verificar si hay un botón seleccionado
-        mostrarChat(selectedButton);  // Llamar a mostrarChat con el botón seleccionado
+        mostrarChat(selectedButton);
+        // socket.close(); // Llamar a mostrarChat con el botón seleccionado
         // chatMensajeria.style.display = "none";  // Aquí puedes añadir cualquier otra acción que necesites
       }
     });
 
 
     chatButton.forEach(boton => {
-      boton.addEventListener('click', () => {
+      boton.addEventListener('click', async () => {
 
         mostrarChat(boton);
 
@@ -2256,6 +2260,22 @@ document.addEventListener("DOMContentLoaded", function () {
           // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
           // { userId: 'user3', username: 'User 3' },
         ];
+        try {
+          const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${chats[0].userId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
+          const usuario = await usuarioInfo.json();
+          const usuarioName = document.getElementById('userChat');
+          const usuarioImg = document.getElementById('imgUser');
+          usuarioImg.src = `https://acuarelacore.com/api${usuario.photo.url}`;
+          usuarioName.textContent = usuario.name;
+
+        } catch (error) {
+          console.error(error);
+        }
 
 
         let roomId = getRoomName(acuarelaId, chats[0].userId);
@@ -2269,61 +2289,71 @@ document.addEventListener("DOMContentLoaded", function () {
           // joinRoomButton.disabled = true;
         }
 
-        // const senderId = 'snehYWZsE2JP7k4rAAAP';  // Tu ID
-        // const receiverId = 'zkGTkrRvhWSG7i53AAAT';  // ID del destinatario
 
+        try {
+          const messages = await fetch(`https://acuarelacore.com/api/chats?room=${roomId}`, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json'
+            }
+          });
 
-        // const loadChatList = () => {
-        //   // Aquí debes realizar una consulta a tu API para obtener el listado de chats
-        // const chats = [
-        //   { userId: '65d4ad648cf368c869172e09', username: 'Julie' },
-        //   // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
-        //   // { userId: 'user3', username: 'User 3' },
-        // ];
+          const chatMessages = await messages.json();
 
-        // const chatList = boton;
-        // chatList.innerHTML = '';
-        // const chatItem = boton;
-        // currentChatUser = chats[0].userId;
-        // loadChatRoom(chats[0].userId, chats[0].username);
+          if (chatMessages && chatMessages.length > 0) {
 
+            chatMessages.forEach(msg => {
+              if (msg.sender === acuarelaId) {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'mensaje-enviado';
 
-        // chats.forEach(chat => {
-        //   const chatItem = document.createElement('div');
-        //   chatItem.className = 'chat-item';
-        //   chatItem.textContent = chat.username;
-        //   chatItem.onclick = () => {
-        //     currentChatUser = chat.userId;
-        //     loadChatRoom(chat.userId);
-        //   };
-        //   chatList.appendChild(chatItem);
-        // });
-        // };
+                const mensajeElement = document.createElement('p');
+                mensajeElement.textContent = `${msg.content}`
 
-        // const loadChatRoom = (userId, userName) => {
-        //   console.log(userId);
+                const horaElement = document.createElement('p');
+                horaElement.className = 'chat-hora';
 
-        //   // Emitir un evento para unirse a la sala del usuario seleccionado
-        //   // socket.emit('join', { username: userName, userId: 'snehYWZsE2JP7k4rAAAP' });
+                const horaMenssage = new Date(msg.createdAt);
+                const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+                const formattedTime = horaMenssage.toLocaleTimeString([], options);
+                horaElement.textContent = formattedTime;
 
-        //   socket.emit('joinRoom', { senderId, receiverId });
+                // messageElement.textContent = `${msg.content}`;
+                messageElement.appendChild(mensajeElement);
+                messageElement.appendChild(horaElement);
+                document.getElementById('messages').appendChild(messageElement);
+              } else {
+                const messageElement = document.createElement('div');
+                messageElement.className = 'mensaje-recibido';
 
-        //   const messages = document.getElementById('messages');
-        //   messages.innerHTML = '';
+                const horaElement = document.createElement('p');
+                horaElement.className = 'chat-hora';
 
-        //   // Aquí debes realizar una consulta a tu API para obtener los mensajes previos con este usuario
-        //   const chatMessages = [
-        //     { user: 'Acuarela', text: 'Hola' }
-        //     // { user: '', text: 'Estoy bi' }
-        //   ];
+                const horaMenssage = new Date(msg.createdAt);
+                const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+                const formattedTime = horaMenssage.toLocaleTimeString([], options);
+                horaElement.textContent = formattedTime;
 
-        // chatMessages.forEach(msg => {
-        //   const messageElement = document.createElement('div');
-        //   messageElement.className = 'mensaje-enviado';
-        //   messageElement.textContent = `${msg.user}: ${msg.text}`;
-        //   messages.appendChild(messageElement);
-        // });
-        // };
+                messageElement.textContent = `${msg.content}`;
+
+                messageElement.appendChild(horaElement);
+                document.getElementById('messages').appendChild(messageElement);
+              }
+
+            });
+          } else {
+            const noMessagesElement = document.createElement('div');
+            noMessagesElement.className = 'message';
+            noMessagesElement.textContent = 'No hay mensajes previos.';
+            messages.appendChild(noMessagesElement);
+          }
+        } catch (error) {
+          console.error('Error fetching chat messages:', error);
+          const errorElement = document.createElement('div');
+          errorElement.className = 'message';
+          errorElement.textContent = 'Error al cargar los mensajes.';
+          messages.appendChild(errorElement);
+        }
 
         document.getElementById('messageInput').addEventListener('keyup', (event) => {
           if (event.code === 'Enter') {
@@ -2352,22 +2382,13 @@ document.addEventListener("DOMContentLoaded", function () {
               const message = {
                 text: messageInput.value,
                 user: user, // Puedes modificar para manejar usuarios reales
+                timestamp: Date.now().toString(),
                 roomId,
               };
               socket.emit('sendMessage', message);
               messageInput.value = '';
             }
 
-
-
-            // Emitir un mensaje privado al usuario seleccionado
-            // socket.emit('sendMessage', {
-            //   message: message,
-            //   userId: 'snehYWZsE2JP7k4rAAAP', // Cambia esto por el ID del usuario actual
-            //   // userName: 'Nicolas Acuarela',
-            //   toUserId: 'zkGTkrRvhWSG7i53AAAT',
-            //   // toUserId: 'RXYnxdwDJxhxJoeuAABm'
-            // });
 
             // Mostrar el mensaje en la sala de chat actual
             const messageElement = document.createElement('div');
@@ -2381,47 +2402,27 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
 
-        // Cargar el listado de chats al cargar la página
-        // loadChatList();
-
 
         socket.on('receiveMessage', (message) => {
-          const messageElement = document.createElement('div');
-          messageElement.className = 'mensaje-recibido';
+          if (message.user !== user) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'mensaje-recibido';
 
-          const horaElement = document.createElement('p');
-          horaElement.className = 'chat-hora';
+            const horaElement = document.createElement('p');
+            horaElement.className = 'chat-hora';
 
-          const horaMenssage = new Date(message.timestamp);
-          const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-          const formattedTime = horaMenssage.toLocaleTimeString([], options);
-          horaElement.textContent = formattedTime;
+            const horaMenssage = new Date(message.timestamp);
+            const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+            const formattedTime = horaMenssage.toLocaleTimeString([], options);
+            horaElement.textContent = formattedTime;
 
-          messageElement.textContent = `${message.user}: ${message.text}`;
+            messageElement.textContent = `${message.user}: ${message.text}`;
 
-          messageElement.appendChild(horaElement);
-          document.getElementById('messages').appendChild(messageElement);
-          // document.getElementById('messages').appendChild(horaElement);
+            messageElement.appendChild(horaElement);
+            document.getElementById('messages').appendChild(messageElement);
 
-          // messagesContainer.scrollTop = messagesContainer.scrollHeight;
+          }
         });
-
-        // Enviar un mensaje privado
-        // function sendMessage(message) {
-        //   socket.emit('sendMessage', { senderId, receiverId, message });
-        // }
-
-        // Escuchar mensajes entrantes
-        // socket.on('message', (message) => {
-        //   console.log(message);
-        //   // if (message.user === currentChatUser) {
-        //   const messageElement = document.createElement('div');
-        //   messageElement.className = 'mensaje-recibido';
-        //   messageElement.textContent = ` Usuario: ${message.text}`;
-        //   document.getElementById('messages').appendChild(messageElement);
-        //   // scrollToBottom();
-        //   // }
-        // });
 
       });
 

@@ -68,8 +68,8 @@
 
     <div id="chat-individual" class="chat-individual" style="display: none;">
         <div class="info-chat">
-            <img src="./img/Chat.png" alt="">
-            <p>Camilo Barrios</p>
+            <img id="imgUser" src="./img/Chat.png" alt="">
+            <p id="userChat"></p>
             <!-- <i class="acuarela acuarela-Usuario"></i> -->
             <i id="closeChat" class="acuarela acuarela-Cancelar"></i>
         </div>
