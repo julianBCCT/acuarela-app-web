@@ -2251,67 +2251,91 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selectedButton = boton;
 
+        const chats = [
+          { userId: '65d4ad648cf368c869172e09', username: 'Julie' },
+          // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
+          // { userId: 'user3', username: 'User 3' },
+        ];
+
+
+        let roomId = getRoomName(acuarelaId, chats[0].userId);
+        console.log(roomId);
+        let user = userNameAdmin;
+
+        if (roomId && user) {
+          socket.emit('joinRoom', { roomId, user });
+          // messageForm.style.display = 'block';
+          // roomInput.disabled = true;
+          // joinRoomButton.disabled = true;
+        }
+
         // const senderId = 'snehYWZsE2JP7k4rAAAP';  // Tu ID
         // const receiverId = 'zkGTkrRvhWSG7i53AAAT';  // ID del destinatario
 
 
-        const loadChatList = () => {
-          // Aquí debes realizar una consulta a tu API para obtener el listado de chats
-          const chats = [
-            { userId: 'zkGTkrRvhWSG7i53AAAT', username: 'Nicolas' },
-            // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
-            // { userId: 'user3', username: 'User 3' },
-          ];
+        // const loadChatList = () => {
+        //   // Aquí debes realizar una consulta a tu API para obtener el listado de chats
+        // const chats = [
+        //   { userId: '65d4ad648cf368c869172e09', username: 'Julie' },
+        //   // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
+        //   // { userId: 'user3', username: 'User 3' },
+        // ];
 
-          // const chatList = boton;
-          // chatList.innerHTML = '';
-          // const chatItem = boton;
-          currentChatUser = chats[0].userId;
-          loadChatRoom(chats[0].userId, chats[0].username);
+        // const chatList = boton;
+        // chatList.innerHTML = '';
+        // const chatItem = boton;
+        // currentChatUser = chats[0].userId;
+        // loadChatRoom(chats[0].userId, chats[0].username);
 
 
-          // chats.forEach(chat => {
-          //   const chatItem = document.createElement('div');
-          //   chatItem.className = 'chat-item';
-          //   chatItem.textContent = chat.username;
-          //   chatItem.onclick = () => {
-          //     currentChatUser = chat.userId;
-          //     loadChatRoom(chat.userId);
-          //   };
-          //   chatList.appendChild(chatItem);
-          // });
-        };
+        // chats.forEach(chat => {
+        //   const chatItem = document.createElement('div');
+        //   chatItem.className = 'chat-item';
+        //   chatItem.textContent = chat.username;
+        //   chatItem.onclick = () => {
+        //     currentChatUser = chat.userId;
+        //     loadChatRoom(chat.userId);
+        //   };
+        //   chatList.appendChild(chatItem);
+        // });
+        // };
 
-        const loadChatRoom = (userId, userName) => {
-          console.log(userId);
+        // const loadChatRoom = (userId, userName) => {
+        //   console.log(userId);
 
-          // Emitir un evento para unirse a la sala del usuario seleccionado
-          // socket.emit('join', { username: userName, userId: 'snehYWZsE2JP7k4rAAAP' });
+        //   // Emitir un evento para unirse a la sala del usuario seleccionado
+        //   // socket.emit('join', { username: userName, userId: 'snehYWZsE2JP7k4rAAAP' });
 
-          socket.emit('joinRoom', { senderId, receiverId });
+        //   socket.emit('joinRoom', { senderId, receiverId });
 
-          const messages = document.getElementById('messages');
-          messages.innerHTML = '';
+        //   const messages = document.getElementById('messages');
+        //   messages.innerHTML = '';
 
-          // Aquí debes realizar una consulta a tu API para obtener los mensajes previos con este usuario
-          const chatMessages = [
-            { user: 'Acuarela', text: 'Hola' }
-            // { user: '', text: 'Estoy bi' }
-          ];
+        //   // Aquí debes realizar una consulta a tu API para obtener los mensajes previos con este usuario
+        //   const chatMessages = [
+        //     { user: 'Acuarela', text: 'Hola' }
+        //     // { user: '', text: 'Estoy bi' }
+        //   ];
 
-          chatMessages.forEach(msg => {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'mensaje-enviado';
-            messageElement.textContent = `${msg.user}: ${msg.text}`;
-            messages.appendChild(messageElement);
-          });
-        };
+        // chatMessages.forEach(msg => {
+        //   const messageElement = document.createElement('div');
+        //   messageElement.className = 'mensaje-enviado';
+        //   messageElement.textContent = `${msg.user}: ${msg.text}`;
+        //   messages.appendChild(messageElement);
+        // });
+        // };
 
         document.getElementById('messageInput').addEventListener('keyup', (event) => {
           if (event.code === 'Enter') {
             btnSendMensaje.click();
           }
         });
+
+        function getRoomName(user1, user2) {
+          // Ordenar IDs para que el nombre de la sala sea consistente
+          return [user1, user2].sort().join('-');
+        }
+
 
         btnSendMensaje.addEventListener('click', () => {
           const messageInput = document.getElementById('messageInput');
@@ -2323,7 +2347,16 @@ document.addEventListener("DOMContentLoaded", function () {
           // if (message && currentChatUser) {
           if (message) {
 
-            sendMessage(message);
+            // sendMessage(message);
+            if (messageInput.value && roomId) {
+              const message = {
+                text: messageInput.value,
+                user: user, // Puedes modificar para manejar usuarios reales
+                roomId,
+              };
+              socket.emit('sendMessage', message);
+              messageInput.value = '';
+            }
 
 
 
@@ -2340,23 +2373,43 @@ document.addEventListener("DOMContentLoaded", function () {
             const messageElement = document.createElement('div');
             messageElement.className = 'mensaje-enviado';
             messageElement.textContent = `Acuarela: ${message}`;
+
+
+
             document.getElementById('messages').appendChild(messageElement);
             messageInput.value = ''; // Limpiar el campo de entrada
           }
         });
 
         // Cargar el listado de chats al cargar la página
-        loadChatList();
+        // loadChatList();
 
 
-        socket.on('message', ({ senderId, message }) => {
-          console.log(`Nuevo mensaje de ${senderId}: ${message}`);
+        socket.on('receiveMessage', (message) => {
+          const messageElement = document.createElement('div');
+          messageElement.className = 'mensaje-recibido';
+
+          const horaElement = document.createElement('p');
+          horaElement.className = 'chat-hora';
+
+          const horaMenssage = new Date(message.timestamp);
+          const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+          const formattedTime = horaMenssage.toLocaleTimeString([], options);
+          horaElement.textContent = formattedTime;
+
+          messageElement.textContent = `${message.user}: ${message.text}`;
+
+          messageElement.appendChild(horaElement);
+          document.getElementById('messages').appendChild(messageElement);
+          // document.getElementById('messages').appendChild(horaElement);
+
+          // messagesContainer.scrollTop = messagesContainer.scrollHeight;
         });
 
         // Enviar un mensaje privado
-        function sendMessage(message) {
-          socket.emit('sendMessage', { senderId, receiverId, message });
-        }
+        // function sendMessage(message) {
+        //   socket.emit('sendMessage', { senderId, receiverId, message });
+        // }
 
         // Escuchar mensajes entrantes
         // socket.on('message', (message) => {
