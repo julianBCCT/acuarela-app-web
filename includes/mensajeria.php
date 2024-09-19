@@ -32,7 +32,7 @@
             <input type="text">
             <i class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div class="chats-mensajeria">
+        <!-- <div class="chats-mensajeria">
             <img src="./img/Chat.png" alt="">
             <p>Nombre persona</p>
         </div>
@@ -43,7 +43,7 @@
         <div class="chats-mensajeria">
             <img src="./img/Chat3.png" alt="">
             <p>Nombre persona</p>
-        </div>
+        </div> -->
     </div>
 
     <div id="chats-agregados" class="chats-buscados" style="display: none;">
