@@ -1,4 +1,21 @@
 <?php include "head.php" ?>
+<?php
+session_start();
+
+// Obtener todas las suscripciones del usuario
+$suscripciones = $_SESSION['user']->suscriptions;
+
+// Crear un array con los IDs de las suscripciones
+$suscripcionIds = [];
+foreach ($suscripciones as $suscripcion) {
+    $suscripcionIds[] = $suscripcion->id;
+}
+
+// Pasar los IDs a JavaScript
+echo '<script>';
+echo 'var suscripcionIds = ' . json_encode($suscripcionIds) . ';';
+echo '</script>';
+?>
 <header>
     <button type="button" onclick="toggleMenu()">
         <i class="acuarela acuarela-Menu"></i>

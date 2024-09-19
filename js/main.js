@@ -335,10 +335,10 @@ const fetchToken = async (endpoint, data, method = "GET") => {
     method === "GET"
       ? { method, headers }
       : {
-        method,
-        headers,
-        body: JSON.stringify(data),
-      };
+          method,
+          headers,
+          body: JSON.stringify(data),
+        };
 
   try {
     const response = await fetch(url, options);
@@ -546,28 +546,32 @@ const requestposts = async () => {
         reactions.map((reaction) => {
           reactionsList += `<button type="button" onclick="addReaction({post: '${post.id}',type: ${reaction.id},acuarelauser: '65d7d5c68cf368c869172f18'}, '${post.id}')"><img src="${reaction.icon}" alt="happy"><small>${reaction.name}</small></button>`;
         });
-        let dialog = `<div id="comments-${post.id
-          }" style="display:none;max-width:768px;" class="formcomments"><div class="content_box">
+        let dialog = `<div id="comments-${
+          post.id
+        }" style="display:none;max-width:768px;" class="formcomments"><div class="content_box">
         <div class="comments-list">
             <h3>Comentarios</h3>
             <ul>
             ${post.comments
-            .map((comment) => {
-              return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment?.acuarelauser?.photo?.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
+              .map((comment) => {
+                return `<li><img loading="lazy" class="lazyload" data-src="https://acuarelacore.com/api${comment?.acuarelauser?.photo?.url}" alt="imagesPost" src="img/placeholder.png"><div class="comment-info">
               <strong>${comment.acuarelauser.name}</strong>
               <p>${comment.content}</p>
               </div></li>`;
-            })
-            .join("")}
+              })
+              .join("")}
                
             </ul>
         </div>
         <form id="add-comment">
-            <span><input type="text" id="comment-${post.id}" name="comment-${post.id
-          }" placeholder="Escribe tu mensaje"></span>
-            <button type="button"  onclick="addComment({post: '${post.id
-          }'}, '#comment-${post.id
-          }')"><svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.7347 5.57296L1.95145 0.216402C1.45504 -0.00928566 0.894225 0.0899957 0.487894 0.475371C0.0815634 0.860808 -0.0883852 1.45468 0.0444246 2.02521L1.09324 6.53121H6.22838C6.46468 6.53121 6.65628 6.74109 6.65628 7C6.65628 7.25887 6.4647 7.46878 6.22838 7.46878H1.09324L0.0444246 11.9747C-0.0883852 12.5453 0.0815349 13.1392 0.487894 13.5246C0.895052 13.9107 1.45593 14.0088 1.95148 13.7836L13.7348 8.42703C14.2712 8.18315 14.6045 7.63634 14.6045 7C14.6045 6.36365 14.2712 5.81681 13.7347 5.57296Z" fill="#FBFCFE"/></svg></button>
+            <span><input type="text" id="comment-${post.id}" name="comment-${
+          post.id
+        }" placeholder="Escribe tu mensaje"></span>
+            <button type="button"  onclick="addComment({post: '${
+              post.id
+            }'}, '#comment-${
+          post.id
+        }')"><svg width="15" height="14" viewBox="0 0 15 14" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.7347 5.57296L1.95145 0.216402C1.45504 -0.00928566 0.894225 0.0899957 0.487894 0.475371C0.0815634 0.860808 -0.0883852 1.45468 0.0444246 2.02521L1.09324 6.53121H6.22838C6.46468 6.53121 6.65628 6.74109 6.65628 7C6.65628 7.25887 6.4647 7.46878 6.22838 7.46878H1.09324L0.0444246 11.9747C-0.0883852 12.5453 0.0815349 13.1392 0.487894 13.5246C0.895052 13.9107 1.45593 14.0088 1.95148 13.7836L13.7348 8.42703C14.2712 8.18315 14.6045 7.63634 14.6045 7C14.6045 6.36365 14.2712 5.81681 13.7347 5.57296Z" fill="#FBFCFE"/></svg></button>
             </form>
             </div>
             </div>`;
@@ -576,13 +580,15 @@ const requestposts = async () => {
         let template = `
           <article class="post-list__item" id="${post.id}">
               <div class="post-list__item-header">
-                  <img loading="lazy" class="lazyload" data-src="${post.acuarelauser && post.acuarelauser.photo
-            ? `https://acuarelacore.com/api${post?.acuarelauser?.photo?.url}`
-            : "img/placeholder.png"
-          }"
+                  <img loading="lazy" class="lazyload" data-src="${
+                    post.acuarelauser && post.acuarelauser.photo
+                      ? `https://acuarelacore.com/api${post?.acuarelauser?.photo?.url}`
+                      : "img/placeholder.png"
+                  }"
                       alt="UserName" src="img/placeholder.png">
-                  <span class="name">${post.acuarelauser && post.acuarelauser.name
-          }</span>
+                  <span class="name">${
+                    post.acuarelauser && post.acuarelauser.name
+                  }</span>
               </div>
               <div class="post-list__item-photos">
                   <section class="splide splidePots">
@@ -596,73 +602,90 @@ const requestposts = async () => {
               <div class="post-list__item-footer">
                   <div class="post-list__item-footer-actions">
                       <div class="reactions-actions">
-                        <button type="button" onclick="showReactions('${post.id
-          }')">
-                        ${activeUserReactions
-            ? `<img src="${reactions.find(
-              (reaction) =>
-                reaction.id == activeUserReactions.type
-            ).icon
-            }" alt="${reactions.find(
-              (reaction) =>
-                reaction.id == activeUserReactions.type
-            ).name
-            }">`
-            : `<i class="acuarela acuarela-Anadir_reaccion"></i>`
-          }
+                        <button type="button" onclick="showReactions('${
+                          post.id
+                        }')">
+                        ${
+                          activeUserReactions
+                            ? `<img src="${
+                                reactions.find(
+                                  (reaction) =>
+                                    reaction.id == activeUserReactions.type
+                                ).icon
+                              }" alt="${
+                                reactions.find(
+                                  (reaction) =>
+                                    reaction.id == activeUserReactions.type
+                                ).name
+                              }">`
+                            : `<i class="acuarela acuarela-Anadir_reaccion"></i>`
+                        }
                         </button>
                         <div class="reactions-box">${reactionsList}</div>
                       </div>
-                      <button type="button" data-fancybox data-src="#comments-${post.id
-          }"><i class="acuarela acuarela-Habla"></i></button>
+                      <button type="button" data-fancybox data-src="#comments-${
+                        post.id
+                      }"><i class="acuarela acuarela-Habla"></i></button>
 
 
                       <!--Botón para obtener id de la publicación -->
       <button type="button" class="btn_share" onclick="toggleShareMenu(${index})"><i class="acuarela acuarela-Compartir"></i>
       <div class="share_menu" id="share_menu-${index}" style="display: none;">
-                <a href="#" class="share-link" data-platform="whatsapp" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
+                <a href="#" class="share-link" data-platform="whatsapp" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-whatsapp" viewBox="0 0 16 16">  <path d="M13.601 2.326A7.85 7.85 0 0 0 7.994 0C3.627 0 .068 3.558.064 7.926c0 1.399.366 2.76 1.057 3.965L0 16l4.204-1.102a7.9 7.9 0 0 0 3.79.965h.004c4.368 0 7.926-3.558 7.93-7.93A7.9 7.9 0 0 0 13.6 2.326zM7.994 14.521a6.6 6.6 0 0 1-3.356-.92l-.24-.144-2.494.654.666-2.433-.156-.251a6.56 6.56 0 0 1-1.007-3.505c0-3.626 2.957-6.584 6.591-6.584a6.56 6.56 0 0 1 4.66 1.931 6.56 6.56 0 0 1 1.928 4.66c-.004 3.639-2.961 6.592-6.592 6.592m3.615-4.934c-.197-.099-1.17-.578-1.353-.646-.182-.065-.315-.099-.445.099-.133.197-.513.646-.627.775-.114.133-.232.148-.43.05-.197-.1-.836-.308-1.592-.985-.59-.525-.985-1.175-1.103-1.372-.114-.198-.011-.304.088-.403.087-.088.197-.232.296-.346.1-.114.133-.198.198-.33.065-.134.034-.248-.015-.347-.05-.099-.445-1.076-.612-1.47-.16-.389-.323-.335-.445-.34-.114-.007-.247-.007-.38-.007a.73.73 0 0 0-.529.247c-.182.198-.691.677-.691 1.654s.71 1.916.81 2.049c.098.133 1.394 2.132 3.383 2.992.47.205.84.326 1.129.418.475.152.904.129 1.246.08.38-.058 1.171-.48 1.338-.943.164-.464.164-.86.114-.943-.049-.084-.182-.133-.38-.232"/></svg>
           </a>
-                <a href="#" class="share-link" data-platform="facebook" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/></svg>
+                <a href="#" class="share-link" data-platform="facebook" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-facebook" viewBox="0 0 16 16">  <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951"/></svg>
           </a>
-                <a href="#" class="share-link" data-platform="twitter" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+                <a href="#" class="share-link" data-platform="twitter" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-twitter-x" viewBox="0 0 16 16">  <path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
           </a>
-                <a href="#" class="share-link" data-platform="linkedin" data-post-id="${post._id
-          }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">  <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></svg>
+                <a href="#" class="share-link" data-platform="linkedin" data-post-id="${
+                  post._id
+                }"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-linkedin" viewBox="0 0 16 16">  <path d="M0 1.146C0 .513.526 0 1.175 0h13.65C15.474 0 16 .513 16 1.146v13.708c0 .633-.526 1.146-1.175 1.146H1.175C.526 16 0 15.487 0 14.854zm4.943 12.248V6.169H2.542v7.225zm-1.2-8.212c.837 0 1.358-.554 1.358-1.248-.015-.709-.52-1.248-1.342-1.248S2.4 3.226 2.4 3.934c0 .694.521 1.248 1.327 1.248zm4.908 8.212V9.359c0-.216.016-.432.08-.586.173-.431.568-.878 1.232-.878.869 0 1.216.662 1.216 1.634v3.865h2.401V9.25c0-2.22-1.184-3.252-2.764-3.252-1.274 0-1.845.7-2.165 1.193v.025h-.016l.016-.025V6.169h-2.4c.03.678 0 7.225 0 7.225z"/></svg>
           </a>
-          <div onclick="sharePost('${post._id
+          <div onclick="sharePost('${
+            post._id
           }')"><i class="acuarela acuarela-Link"></i></div>
           </div>
           </button>
                       
                   </div>
-                  ${post.reactions.length > 0 && post.comments.length > 0
-            ? `
+                  ${
+                    post.reactions.length > 0 && post.comments.length > 0
+                      ? `
                     <div class="post-list__item-footer-counters">
-                        <div class="reactions"><img src="" alt="">${post.reactions.length > 0
-              ? `${post.reactions.length} ${post.reactions.length === 1
-                ? "Rección"
-                : "Reacciones"
-              }`
-              : ""
-            }</div>
-                        <div class="comments">${post.comments.length > 0
-              ? `${post.comments.length} ${post.comments.length === 1
-                ? "comentario"
-                : "comentarios"
-              }`
-              : ""
-            }</div>
+                        <div class="reactions"><img src="" alt="">${
+                          post.reactions.length > 0
+                            ? `${post.reactions.length} ${
+                                post.reactions.length === 1
+                                  ? "Rección"
+                                  : "Reacciones"
+                              }`
+                            : ""
+                        }</div>
+                        <div class="comments">${
+                          post.comments.length > 0
+                            ? `${post.comments.length} ${
+                                post.comments.length === 1
+                                  ? "comentario"
+                                  : "comentarios"
+                              }`
+                            : ""
+                        }</div>
                     </div>
                     `
-            : ``
-          }
+                      : ``
+                  }
                   <div class="post-list__item-footer-caption">
-                      <p><strong>${post.acuarelauser && post.acuarelauser.name
-          }</strong><span>${post.classactivity ? post.classactivity.type : ""
-          }</span></p>
+                      <p><strong>${
+                        post.acuarelauser && post.acuarelauser.name
+                      }</strong><span>${
+          post.classactivity ? post.classactivity.type : ""
+        }</span></p>
                       <p>${post.content}</p>
                   </div>
               </div>
@@ -698,15 +721,17 @@ const requestinscripciones = async () => {
               <span id="options">
                 <i class="acuarela acuarela-Opciones"></i>
                 <ul>
-                 ${percentaje >= 100
-                ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.id}">Editar ninx</a> </li>`
-                : ``
-              }
+                 ${
+                   percentaje >= 100
+                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.id}">Editar ninx</a> </li>`
+                     : ``
+                 }
                   <li>
-                  ${percentaje >= 100
-                ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">Ver perfil</a>`
-                : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar inscripción</a>`
-              }
+                  ${
+                    percentaje >= 100
+                      ? `<a id="profile" href="/miembros/acuarela-app-web/ninxs/${child.id}">Ver perfil</a>`
+                      : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar inscripción</a>`
+                  }
                     
                   </li>
                   <li>
@@ -717,8 +742,9 @@ const requestinscripciones = async () => {
               <h3>${name} ${lastname}</h3>
               <small>Estado inscripción: ${status}</small>
               <div class="progress">
-                <small><span>Has completado el</span> <strong>${percentaje >= 100 ? 100 : percentaje
-              }%</strong></small>
+                <small><span>Has completado el</span> <strong>${
+                  percentaje >= 100 ? 100 : percentaje
+                }%</strong></small>
                 <div class="bar"><div class="barpro" style="width: ${percentaje}%"></div></div>
               </div>
             </li>`;
@@ -728,10 +754,11 @@ const requestinscripciones = async () => {
               <i class="acuarela acuarela-Opciones"></i>
               <ul>
                 <li>
-                ${percentaje >= 100
-                ? `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
-                : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
-              }
+                ${
+                  percentaje >= 100
+                    ? `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
+                    : `<a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar</a>`
+                }
                   
                 </li>
                 <li>
@@ -742,7 +769,8 @@ const requestinscripciones = async () => {
             <h3>${name} ${lastname}</h3>
             <small>Estado inscripción: ${status}</small>
             <div class="progress">
-              <small><span>Has completado el</span> <strong>${percentaje >= 100 ? 100 : percentaje
+              <small><span>Has completado el</span> <strong>${
+                percentaje >= 100 ? 100 : percentaje
               }%</strong></small>
               <div class="bar"><div class="barpro" style="width: ${percentaje}%"></div></div>
             </div>
@@ -866,19 +894,22 @@ const getChildren = async () => {
       <i class="acuarela acuarela-Opciones"></i>
       <ul>
         <li>
-          <button type="button" id="desactivar" onclick="updateKid('${kid.id
-      }', {'status': false, 'indaycare': false})">Desactivar</button>
+          <button type="button" id="desactivar" onclick="updateKid('${
+            kid.id
+          }', {'status': false, 'indaycare': false})">Desactivar</button>
         </li>
         <li>
-          <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${kid.id
-      }");'>Eliminar</button>
+          <button type="button" id="eliminar" onclick='showLightbox("Eliminar Ninx","¿Estás seguro de que quieres eliminar esta ninx?","children","${
+            kid.id
+          }");'>Eliminar</button>
         </li>
       </ul>
     </div>
     <div class="image">
-      ${kid.photo
-        ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
-        : `
+      ${
+        kid.photo
+          ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
+          : `
       ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
       ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
       ${kid.gender === "X" ? `<img src="img/Nonbinary.png" alt="">` : ""}
@@ -888,23 +919,26 @@ const getChildren = async () => {
       <div class="acuarelausers-buttons"></div>
     </div>
     <span class="name">${kid.name}</span>
-    <a href="/miembros/acuarela-app-web/ninxs/${kid.id
-      }" class="btn btn-action-primary enfasis btn-small">Ver perfil</a>`;
+    <a href="/miembros/acuarela-app-web/ninxs/${
+      kid.id
+    }" class="btn btn-action-primary enfasis btn-small">Ver perfil</a>`;
 
     const createKidInaciveTemplate = (kid, iconClass) => `
         <div class="image">
-          ${kid.photo
-        ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
-        : `
+          ${
+            kid.photo
+              ? `<img src='https://acuarelacore.com/api/${kid.photo.url}' alt='${kid.name}'>`
+              : `
           ${kid.gender === "Masculino" ? `<img src="img/mal.png" alt="">` : ""}
           ${kid.gender === "Femenino" ? `<img src="img/fem.png" alt="">` : ""}
           ${kid.gender === "X" ? `<img src="img/Nonbinary.png" alt="">` : ""}
           `
-      }
+          }
         </div>
         <span class="name">${kid.name}</span>
-        <button type="button" class="btn btn-action-tertiary enfasis" onclick="updateKid('${kid.id
-      }', {'status': true})">Activar</button>`;
+        <button type="button" class="btn btn-action-tertiary enfasis" onclick="updateKid('${
+          kid.id
+        }', {'status': true})">Activar</button>`;
 
     const renderAcuarelaUserButtons = (
       acuarelausers,
@@ -923,10 +957,11 @@ const getChildren = async () => {
         const y = -Math.cos(angleInRadians) * radius + totalOffset;
         const x = Math.sin(angleInRadians) * radius + totalOffset;
         const buttonTemplate = `
-       <img loading="lazy" class="lazyload" data-src="${acuarelauser && acuarelauser.photo
-            ? `https://acuarelacore.com/api$?{acuarelauser?.photo?.url}`
-            : "img/placeholder.png"
-          }"
+       <img loading="lazy" class="lazyload" data-src="${
+         acuarelauser && acuarelauser.photo
+           ? `https://acuarelacore.com/api$?{acuarelauser?.photo?.url}`
+           : "img/placeholder.png"
+       }"
                       alt="UserName" src="img/placeholder.png">
               <span class="acuarelauser-name">${acuarelauser.name}</span>
             `;
@@ -1302,7 +1337,8 @@ const subirplan = () => {
   contentContainer.classList.add("methods-register");
 
   const linkMensual = document.createElement("a");
-  linkMensual.href = "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
+  linkMensual.href =
+    "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
   linkMensual.classList.add("precios");
   linkMensual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1310,7 +1346,8 @@ const subirplan = () => {
     <p class=price">$24 / mes</p>
   `;
   const linkAnual = document.createElement("a");
-  linkAnual.href = "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
+  linkAnual.href =
+    "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
   linkAnual.classList.add("precios");
   linkAnual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1321,25 +1358,24 @@ const subirplan = () => {
   contentContainer.appendChild(linkMensual);
   contentContainer.appendChild(linkAnual);
 
-  showInfoLightbox(
-    "Escoge el tipo de suscripción que desea",
-    contentContainer
-  );
+  showInfoLightbox("Escoge el tipo de suscripción que desea", contentContainer);
 };
 
-const finanzas_lightbox = document.getElementById('lightbox-finanzas');
-finanzas_lightbox.addEventListener('click', function (event) {
+const targetId = "66e99e236624c5230df59cec"; // ID de Acuarela PRO
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxFinanzas() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-finanzas");
 
   contentContainer.innerHTML = `
-    <p> Descubre el poder de una gestión integral para tu Daycare con Acuarela Pro, administra tus gastos, ingresos y genera facturas automáticas para Padres. </p>
+    <p>Descubre el poder de una gestión integral para tu Daycare con Acuarela Pro, administra tus gastos, ingresos y genera facturas automáticas para Padres.</p>
     <ul>
       <li>Administra niños sin límite.</li>
       <li>Administra tus gastos, reportes financieros avanzados.</li>
       <li>Administra tus ingresos.</li>
       <li>Facturación automática y profesional para padres.</li>
-      <li>Recibe pagos electronicos de padres.</li>
+      <li>Recibe pagos electrónicos de padres.</li>
     </ul>
   `;
 
@@ -1349,12 +1385,50 @@ finanzas_lightbox.addEventListener('click', function (event) {
   contentPlan.addEventListener("click", subirplan);
 
   contentContainer.appendChild(contentPlan);
-  event.preventDefault();
 
   showInfoLightbox(
-    'Para obtener mis finanzas es necesario comprar la version PRO',
+    'Para obtener mis finanzas es necesario comprar la versión PRO',
     contentContainer
   );
+}
+
+// Verifica si el ID de suscripción es igual al objetivo
+function validarSuscripcion() {
+  let accesoPermitido = false; // Por defecto, no permitir el acceso
+  suscripcionIds.forEach(function(id) {
+    if (id === targetId) {
+      accesoPermitido = true; // Si se encuentra el ID, permir el acceso
+    }
+  });
+  return accesoPermitido;
+}
+
+// Al hacer clic en el botón de finanzas
+const finanzas_lightbox = document.getElementById('lightbox-finanzas');
+finanzas_lightbox.addEventListener('click', function (event) {
+  event.preventDefault(); // Evitar el comportamiento predeterminado del clic
+  
+  if (validarSuscripcion()) {
+    // Si el ID es correcto, redirigir a la página de finanzas
+    window.location.href = "https://dev.bilingualchildcaretraining.com/miembros/acuarela-app-web/finanzas";
+  } else {
+    // Si no, mostrar el lightbox
+    showLightboxFinanzas();
+  }
+});
+
+// Validar acceso al cargar la página directamente
+document.addEventListener("DOMContentLoaded", function() {
+  const mainFinanzas = document.getElementById('Finanzas');
+
+  if (window.location.href.includes("/miembros/acuarela-app-web/finanzas")) {
+    if (!validarSuscripcion()) {
+      if (mainFinanzas) {
+        mainFinanzas.innerHTML = ''; // Limpiar el contenido de <main id="Finanzas">
+      }
+      showLightboxFinanzas();
+    }
+  }
 });
 
 const getDataAsistentes = async () => {
@@ -1373,18 +1447,21 @@ const getAsistentes = async () => {
         <i class="acuarela acuarela-Opciones"></i>
         <ul>
           <li>
-            <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","acuarelausers","${asistente.id
-        }");'>Eliminar</button>
+            <button type="button" id="eliminar" onclick='showLightbox("Eliminar asistente","¿Estás seguro de que quieres eliminar esta asistente?","acuarelausers","${
+              asistente.id
+            }");'>Eliminar</button>
           </li>
         </ul>
       </div>
          <a href="/miembros/acuarela-app-web/asistente/${asistente.id}" >
           <div class="image">
-            ${asistente.photo
-          ? `<img src='${getSmallestImageUrl(asistente.photo)}' alt='${asistente.name
-          }'>`
-          : `<img src="img/placeholder.png" alt="placeholder">`
-        }
+            ${
+              asistente.photo
+                ? `<img src='${getSmallestImageUrl(asistente.photo)}' alt='${
+                    asistente.name
+                  }'>`
+                : `<img src="img/placeholder.png" alt="placeholder">`
+            }
             <i class="acuarela ${iconClass}"></i>
           </div>
           <span class="name">${asistente.name}</span>
@@ -1485,20 +1562,23 @@ const getInfoNewGroup = () => {
         asistentes.forEach((asistente) => {
           if (acuarelauser) {
             let { name, id } = asistente;
-            document.querySelector("#acuarelauser").innerHTML += `<option ${acuarelauser == id ? `selected` : ``
-              } value="${id}">${name}</option>`;
+            document.querySelector("#acuarelauser").innerHTML += `<option ${
+              acuarelauser == id ? `selected` : ``
+            } value="${id}">${name}</option>`;
           } else {
             if (!asistente.group) {
               let { name, id } = asistente;
-              document.querySelector("#acuarelauser").innerHTML += `<option ${acuarelauser == id ? `selected` : ``
-                } value="${id}">${name}</option>`;
+              document.querySelector("#acuarelauser").innerHTML += `<option ${
+                acuarelauser == id ? `selected` : ``
+              } value="${id}">${name}</option>`;
             }
           }
         });
         ageGroups.forEach((ageGroup) => {
           let { name } = ageGroup;
-          document.querySelector("#edades").innerHTML += `<option ${edades == name ? `selected` : ``
-            } value="${name}">${name}</option>`;
+          document.querySelector("#edades").innerHTML += `<option ${
+            edades == name ? `selected` : ``
+          } value="${name}">${name}</option>`;
         });
         let childrenNoGroup = children.response;
         childrenNoGroup.forEach((kid) => {
@@ -1508,22 +1588,27 @@ const getInfoNewGroup = () => {
             url = photo.url;
           }
           document.querySelector(".children").innerHTML += `<li >
-                        <input type="checkbox" name="${id}" id="${id}" ${group && !acuarelauser ? `disabled` : ``
-            } ${childrenGroup.includes(id) ? `checked` : ``}>
+                        <input type="checkbox" name="${id}" id="${id}" ${
+            group && !acuarelauser ? `disabled` : ``
+          } ${childrenGroup.includes(id) ? `checked` : ``}>
                         <label for="${id}">
-                             ${photo
-              ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
-              : `${kid.gender === "Masculino"
-                ? `<img src="img/mal.png" alt="">`
-                : ""
-              }${kid.gender === "Femenino"
-                ? `<img src="img/fem.png" alt="">`
-                : ""
-              }${kid.gender === "X"
-                ? `<img src="img/Nonbinary.png" alt="">`
-                : ""
-              }`
-            }
+                             ${
+                               photo
+                                 ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
+                                 : `${
+                                     kid.gender === "Masculino"
+                                       ? `<img src="img/mal.png" alt="">`
+                                       : ""
+                                   }${
+                                     kid.gender === "Femenino"
+                                       ? `<img src="img/fem.png" alt="">`
+                                       : ""
+                                   }${
+                                     kid.gender === "X"
+                                       ? `<img src="img/Nonbinary.png" alt="">`
+                                       : ""
+                                   }`
+                             }
                             <span>${name}</span>
                         </label>
                     </li>`;
@@ -1709,9 +1794,10 @@ if (document.querySelector(".actividadescontainer")) {
         activityElement.className = "activity";
         activityElement.innerHTML = `
         <div class="left">
-        <i class="acuarela ${activitiesList.find((actList) => actList.id == activity.classactivity)
+        <i class="acuarela ${
+          activitiesList.find((actList) => actList.id == activity.classactivity)
             .iconClass
-          }"></i>
+        }"></i>
         <div class="txt">
         <div class="activity-title">${activity.name}</div>
         <div class="activity-desc">
@@ -1722,8 +1808,8 @@ if (document.querySelector(".actividadescontainer")) {
         </div>
                   </div>
                   <div class="activity-time">${formatFechaAmigable(
-            activity.date
-          )}</div>
+                    activity.date
+                  )}</div>
               `;
         activitiesListContainer.appendChild(activityElement);
       });
@@ -1839,7 +1925,7 @@ function showActivityLightbox(showNextStep = false) {
     }
     document
       .querySelectorAll("#createActicity .step")
-    [activeStepNo].classList.add("active");
+      [activeStepNo].classList.add("active");
     onceOpen = false;
   }
   lightbox.style.display = "flex";
@@ -1855,7 +1941,7 @@ function showActivityLightbox(showNextStep = false) {
     }
     document
       .querySelectorAll("#createActicity .step")
-    [activeStepNo].classList.add("active");
+      [activeStepNo].classList.add("active");
     closeButton.removeEventListener("click", closeHandler);
   };
   closeButton.addEventListener("click", closeHandler);
@@ -1882,7 +1968,7 @@ const nextStep = () => {
   }
   document
     .querySelectorAll("#createActicity .step")
-  [activeStepNo].classList.add("active");
+    [activeStepNo].classList.add("active");
 };
 const prevStep = () => {
   if (activeStepNo > 0) {
@@ -1893,7 +1979,7 @@ const prevStep = () => {
     }
     document
       .querySelectorAll("#createActicity .step")
-    [activeStepNo].classList.add("active");
+      [activeStepNo].classList.add("active");
   }
 };
 
@@ -1987,13 +2073,17 @@ const generateReport = async () => {
     return formattedDate;
   }
 
-  let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${formValuesInspeccion.fichasNinos
-    }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${formValuesInspeccion.registroAsistencia
-    }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${formValuesInspeccion.ingresos
-    }&gastos=${formValuesInspeccion.gastos}&visitas=${formValuesInspeccion.visitas
-    }&payrolls=${formValuesInspeccion.payrolls}&from=${convertDate(
-      initialFilterDate
-    )}&to=${convertDate(finalFilterDate)}&user=${userMainT}`;
+  let link = `https://acuarela.app/modo-inspeccion/?daycare=${daycareId}&ninos=${
+    formValuesInspeccion.fichasNinos
+  }&actividades=${formValuesInspeccion.registroActividades}&asistencia=${
+    formValuesInspeccion.registroAsistencia
+  }&asistentes=${formValuesInspeccion.fichasAsistentes}&ingresos=${
+    formValuesInspeccion.ingresos
+  }&gastos=${formValuesInspeccion.gastos}&visitas=${
+    formValuesInspeccion.visitas
+  }&payrolls=${formValuesInspeccion.payrolls}&from=${convertDate(
+    initialFilterDate
+  )}&to=${convertDate(finalFilterDate)}&user=${userMainT}`;
 
   await sendInspectionModeMail(userNameAdmin, emailAdmin, link);
 };
@@ -2125,10 +2215,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (currentPath == "/miembros/acuarela-app-web/") {
     console.log("Id Acuarela", acuarelaId);
 
-
     const socket = io("https://acuarelacore.com", {
-      transports: ['websocket', 'polling'], auth: {
-        userId: acuarelaId
+      transports: ["websocket", "polling"],
+      auth: {
+        userId: acuarelaId,
       },
     });
     let currentChatUser = null;
@@ -2201,9 +2291,8 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-
     function mostrarChat(boton) {
-      if (boton.classList.contains('active')) {
+      if (boton.classList.contains("active")) {
         // Si el botón ya está activo, lo inactivamos
         boton.classList.remove("active");
         boton.classList.add("inactive");
@@ -2232,151 +2321,163 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         chatMensajeria.style.display = "none";
         const contendorMessages = document.getElementById("messages");
-        contendorMessages.textContent = '';
-
+        contendorMessages.textContent = "";
       }
-    };
+    }
 
     let selectedButton = null;
 
-    document.getElementById('closeChat').addEventListener('click', () => {
-      if (selectedButton) {  // Verificar si hay un botón seleccionado
+    document.getElementById("closeChat").addEventListener("click", () => {
+      if (selectedButton) {
+        // Verificar si hay un botón seleccionado
         mostrarChat(selectedButton);
         // socket.close(); // Llamar a mostrarChat con el botón seleccionado
         // chatMensajeria.style.display = "none";  // Aquí puedes añadir cualquier otra acción que necesites
       }
     });
 
-
-    chatButton.forEach(boton => {
-      boton.addEventListener('click', async () => {
-
+    chatButton.forEach((boton) => {
+      boton.addEventListener("click", async () => {
         mostrarChat(boton);
 
         selectedButton = boton;
 
         const chats = [
-          { userId: '65d4ad648cf368c869172e09', username: 'Julie' },
+          { userId: "65d4ad648cf368c869172e09", username: "Julie" },
           // { userId: 'uWfqmtuHAJPwfpG4AAAb', username: 'Sebastian' },
           // { userId: 'user3', username: 'User 3' },
         ];
         try {
-          const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${chats[0].userId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
+          const usuarioInfo = await fetch(
+            `https://acuarelacore.com/api/acuarelausers/${chats[0].userId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
-          });
+          );
           const usuario = await usuarioInfo.json();
-          const usuarioName = document.getElementById('userChat');
-          const usuarioImg = document.getElementById('imgUser');
+          const usuarioName = document.getElementById("userChat");
+          const usuarioImg = document.getElementById("imgUser");
           usuarioImg.src = `https://acuarelacore.com/api${usuario.photo.url}`;
           usuarioName.textContent = usuario.name;
-
         } catch (error) {
           console.error(error);
         }
-
 
         let roomId = getRoomName(acuarelaId, chats[0].userId);
         console.log(roomId);
         let user = userNameAdmin;
 
         if (roomId && user) {
-          socket.emit('joinRoom', { roomId, user });
+          socket.emit("joinRoom", { roomId, user });
           // messageForm.style.display = 'block';
           // roomInput.disabled = true;
           // joinRoomButton.disabled = true;
         }
 
-
         try {
-          const messages = await fetch(`https://acuarelacore.com/api/chats?room=${roomId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
+          const messages = await fetch(
+            `https://acuarelacore.com/api/chats?room=${roomId}`,
+            {
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+              },
             }
-          });
+          );
 
           const chatMessages = await messages.json();
 
           if (chatMessages && chatMessages.length > 0) {
-
-            chatMessages.forEach(msg => {
+            chatMessages.forEach((msg) => {
               if (msg.sender === acuarelaId) {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'mensaje-enviado';
+                const messageElement = document.createElement("div");
+                messageElement.className = "mensaje-enviado";
 
-                const mensajeElement = document.createElement('p');
-                mensajeElement.textContent = `${msg.content}`
+                const mensajeElement = document.createElement("p");
+                mensajeElement.textContent = `${msg.content}`;
 
-                const horaElement = document.createElement('p');
-                horaElement.className = 'chat-hora';
+                const horaElement = document.createElement("p");
+                horaElement.className = "chat-hora";
 
                 const horaMenssage = new Date(msg.createdAt);
-                const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-                const formattedTime = horaMenssage.toLocaleTimeString([], options);
+                const options = {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                };
+                const formattedTime = horaMenssage.toLocaleTimeString(
+                  [],
+                  options
+                );
                 horaElement.textContent = formattedTime;
 
                 // messageElement.textContent = `${msg.content}`;
                 messageElement.appendChild(mensajeElement);
                 messageElement.appendChild(horaElement);
-                document.getElementById('messages').appendChild(messageElement);
+                document.getElementById("messages").appendChild(messageElement);
               } else {
-                const messageElement = document.createElement('div');
-                messageElement.className = 'mensaje-recibido';
+                const messageElement = document.createElement("div");
+                messageElement.className = "mensaje-recibido";
 
-                const horaElement = document.createElement('p');
-                horaElement.className = 'chat-hora';
+                const horaElement = document.createElement("p");
+                horaElement.className = "chat-hora";
 
                 const horaMenssage = new Date(msg.createdAt);
-                const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-                const formattedTime = horaMenssage.toLocaleTimeString([], options);
+                const options = {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                };
+                const formattedTime = horaMenssage.toLocaleTimeString(
+                  [],
+                  options
+                );
                 horaElement.textContent = formattedTime;
 
                 messageElement.textContent = `${msg.content}`;
 
                 messageElement.appendChild(horaElement);
-                document.getElementById('messages').appendChild(messageElement);
+                document.getElementById("messages").appendChild(messageElement);
               }
-
             });
           } else {
-            const noMessagesElement = document.createElement('div');
-            noMessagesElement.className = 'message';
-            noMessagesElement.textContent = 'No hay mensajes previos.';
+            const noMessagesElement = document.createElement("div");
+            noMessagesElement.className = "message";
+            noMessagesElement.textContent = "No hay mensajes previos.";
             messages.appendChild(noMessagesElement);
           }
         } catch (error) {
-          console.error('Error fetching chat messages:', error);
-          const errorElement = document.createElement('div');
-          errorElement.className = 'message';
-          errorElement.textContent = 'Error al cargar los mensajes.';
+          console.error("Error fetching chat messages:", error);
+          const errorElement = document.createElement("div");
+          errorElement.className = "message";
+          errorElement.textContent = "Error al cargar los mensajes.";
           messages.appendChild(errorElement);
         }
 
-        document.getElementById('messageInput').addEventListener('keyup', (event) => {
-          if (event.code === 'Enter') {
-            btnSendMensaje.click();
-          }
-        });
+        document
+          .getElementById("messageInput")
+          .addEventListener("keyup", (event) => {
+            if (event.code === "Enter") {
+              btnSendMensaje.click();
+            }
+          });
 
         function getRoomName(user1, user2) {
           // Ordenar IDs para que el nombre de la sala sea consistente
-          return [user1, user2].sort().join('-');
+          return [user1, user2].sort().join("-");
         }
 
-
-        btnSendMensaje.addEventListener('click', () => {
-          const messageInput = document.getElementById('messageInput');
+        btnSendMensaje.addEventListener("click", () => {
+          const messageInput = document.getElementById("messageInput");
           const message = messageInput.value;
-
 
           // console.log(message);
 
           // if (message && currentChatUser) {
           if (message) {
-
             // sendMessage(message);
             if (messageInput.value && roomId) {
               const message = {
@@ -2385,51 +2486,46 @@ document.addEventListener("DOMContentLoaded", function () {
                 timestamp: Date.now().toString(),
                 roomId,
               };
-              socket.emit('sendMessage', message);
-              messageInput.value = '';
+              socket.emit("sendMessage", message);
+              messageInput.value = "";
             }
 
-
             // Mostrar el mensaje en la sala de chat actual
-            const messageElement = document.createElement('div');
-            messageElement.className = 'mensaje-enviado';
+            const messageElement = document.createElement("div");
+            messageElement.className = "mensaje-enviado";
             messageElement.textContent = `Acuarela: ${message}`;
 
-
-
-            document.getElementById('messages').appendChild(messageElement);
-            messageInput.value = ''; // Limpiar el campo de entrada
+            document.getElementById("messages").appendChild(messageElement);
+            messageInput.value = ""; // Limpiar el campo de entrada
           }
         });
 
-
-        socket.on('receiveMessage', (message) => {
+        socket.on("receiveMessage", (message) => {
           if (message.user !== user) {
-            const messageElement = document.createElement('div');
-            messageElement.className = 'mensaje-recibido';
+            const messageElement = document.createElement("div");
+            messageElement.className = "mensaje-recibido";
 
-            const horaElement = document.createElement('p');
-            horaElement.className = 'chat-hora';
+            const horaElement = document.createElement("p");
+            horaElement.className = "chat-hora";
 
             const horaMenssage = new Date(message.timestamp);
-            const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+            const options = {
+              hour: "2-digit",
+              minute: "2-digit",
+              hour12: true,
+            };
             const formattedTime = horaMenssage.toLocaleTimeString([], options);
             horaElement.textContent = formattedTime;
 
             messageElement.textContent = `${message.user}: ${message.text}`;
 
             messageElement.appendChild(horaElement);
-            document.getElementById('messages').appendChild(messageElement);
-
+            document.getElementById("messages").appendChild(messageElement);
           }
         });
-
       });
-
     });
-
   }
-
 });
 
 const changeValuesForMultipleContainers = (event, selectors) => {
