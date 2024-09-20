@@ -1302,7 +1302,8 @@ const subirplan = () => {
   contentContainer.classList.add("methods-register");
 
   const linkMensual = document.createElement("a");
-  linkMensual.href = "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
+  linkMensual.href =
+    "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
   linkMensual.classList.add("precios");
   linkMensual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1310,7 +1311,8 @@ const subirplan = () => {
     <p class=price">$24 / mes</p>
   `;
   const linkAnual = document.createElement("a");
-  linkAnual.href = "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
+  linkAnual.href =
+    "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
   linkAnual.classList.add("precios");
   linkAnual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1321,25 +1323,24 @@ const subirplan = () => {
   contentContainer.appendChild(linkMensual);
   contentContainer.appendChild(linkAnual);
 
-  showInfoLightbox(
-    "Escoge el tipo de suscripción que desea",
-    contentContainer
-  );
+  showInfoLightbox("Escoge el tipo de suscripción que desea", contentContainer);
 };
 
-const finanzas_lightbox = document.getElementById('lightbox-finanzas');
-finanzas_lightbox.addEventListener('click', function (event) {
+const targetId = "66e99e236624c5230df59cec"; // ID de Acuarela PRO
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxFinanzas() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-finanzas");
 
   contentContainer.innerHTML = `
-    <p> Descubre el poder de una gestión integral para tu Daycare con Acuarela Pro, administra tus gastos, ingresos y genera facturas automáticas para Padres. </p>
+    <p>Descubre el poder de una gestión integral para tu Daycare con Acuarela Pro, administra tus gastos, ingresos y genera facturas automáticas para Padres.</p>
     <ul>
       <li>Administra niños sin límite.</li>
       <li>Administra tus gastos, reportes financieros avanzados.</li>
       <li>Administra tus ingresos.</li>
       <li>Facturación automática y profesional para padres.</li>
-      <li>Recibe pagos electronicos de padres.</li>
+      <li>Recibe pagos electrónicos de padres.</li>
     </ul>
   `;
 
@@ -1349,12 +1350,50 @@ finanzas_lightbox.addEventListener('click', function (event) {
   contentPlan.addEventListener("click", subirplan);
 
   contentContainer.appendChild(contentPlan);
-  event.preventDefault();
 
   showInfoLightbox(
-    'Para obtener mis finanzas es necesario comprar la version PRO',
+    'Para obtener mis finanzas es necesario comprar la versión PRO',
     contentContainer
   );
+}
+
+// Verifica si el ID de suscripción es igual al objetivo
+function validarSuscripcion() {
+  let accesoPermitido = false; // Por defecto, no permitir el acceso
+  suscripcionIds.forEach(function (id) {
+    if (id === targetId) {
+      accesoPermitido = true; // Si se encuentra el ID, permir el acceso
+    }
+  });
+  return accesoPermitido;
+}
+
+// Al hacer clic en el botón de finanzas
+const finanzas_lightbox = document.getElementById('lightbox-finanzas');
+finanzas_lightbox.addEventListener('click', function (event) {
+  event.preventDefault(); // Evitar el comportamiento predeterminado del clic
+
+  if (validarSuscripcion()) {
+    // Si el ID es correcto, redirigir a la página de finanzas
+    window.location.href = "https://dev.bilingualchildcaretraining.com/miembros/acuarela-app-web/finanzas";
+  } else {
+    // Si no, mostrar el lightbox
+    showLightboxFinanzas();
+  }
+});
+
+// Validar acceso al cargar la página directamente
+document.addEventListener("DOMContentLoaded", function () {
+  const mainFinanzas = document.getElementById('Finanzas');
+
+  if (window.location.href.includes("/miembros/acuarela-app-web/finanzas")) {
+    if (!validarSuscripcion()) {
+      if (mainFinanzas) {
+        mainFinanzas.innerHTML = ''; // Limpiar el contenido de <main id="Finanzas">
+      }
+      showLightboxFinanzas();
+    }
+  }
 });
 
 const getDataAsistentes = async () => {
@@ -2125,10 +2164,10 @@ document.addEventListener("DOMContentLoaded", function () {
   if (currentPath == "/miembros/acuarela-app-web/") {
     console.log("Id Acuarela", acuarelaId);
 
-
     const socket = io("https://acuarelacore.com", {
-      transports: ['websocket', 'polling'], auth: {
-        userId: acuarelaId
+      transports: ["websocket", "polling"],
+      auth: {
+        userId: acuarelaId,
       },
     });
     // let currentChatUser = null;
@@ -2311,7 +2350,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     });
 
-
     function mostrarChat(boton) {
       const contendorMessages = document.getElementById("messages");
 
@@ -2350,7 +2388,7 @@ document.addEventListener("DOMContentLoaded", function () {
         contendorMessages.textContent = '';
 
       }
-    };
+    }
 
     let selectedButton = null;
 
