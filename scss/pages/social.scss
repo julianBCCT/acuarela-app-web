@@ -499,26 +499,32 @@
             cursor: pointer;
           }
         }
-        #chats-padres {
+        .chats-padres {
           overflow-y: auto;
           height: 120px;
           .chats-mensajeria {
-            padding: 5px;
+            padding: 8px;
             height: 40px;
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-items: center;
+            justify-content: space-between;
             border-bottom: 1px solid rgba(0, 0, 0, 0.2);
             p {
               margin-inline: 5px;
             }
             img {
-              // background-color: red;
               margin-inline: 10px;
               width: 16px;
               height: 16px;
               border-radius: 50%;
+            }
+            button {
+              background-color: #0cb5c3;
+              color: white;
+              padding: 6px;
+              border-radius: 5px;
+              cursor: pointer;
             }
           }
         }

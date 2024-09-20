@@ -30,9 +30,9 @@
         <div class="buscador-mensajeria">
             <i id="btn-buscador-chat" class="acuarela acuarela-Buscar"></i>
             <input id="buscador-chat" type="text">
-            <i class="acuarela acuarela-Cancelar"></i>
+            <i id="closeBuscador" class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div id="chats-padres">
+        <div id="chats-padres" class="chats-padres">
 
         </div>
         <!-- <div class="chats-mensajeria">
@@ -53,9 +53,9 @@
         <div class="buscador-mensajeria">
             <i class="acuarela acuarela-Agregar"></i>
             <input type="text">
-            <i class="acuarela acuarela-Cancelar"></i>
+            <i id="closeAgregar" class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div id="chats-padres">
+        <div id="padres-inactivos" class="chats-padres">
 
         </div>
         <!-- <div class="chats-mensajeria">
