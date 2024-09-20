@@ -20,17 +20,20 @@
             <li class="chat-icon">
                 <img src="./img/Chat3.png" alt="">
             </li>
-            <li id="opcines-mensajeria">
+            <!-- <li id="opcines-mensajeria">
                 <i class="acuarela acuarela-Opciones"></i>
-            </li>
+            </li> -->
 
         </ul>
     </div>
     <div id="chats-buscados" class="chats-buscados" style="display: none;">
         <div class="buscador-mensajeria">
-            <i class="acuarela acuarela-Buscar"></i>
-            <input type="text">
+            <i id="btn-buscador-chat" class="acuarela acuarela-Buscar"></i>
+            <input id="buscador-chat" type="text">
             <i class="acuarela acuarela-Cancelar"></i>
+        </div>
+        <div id="chats-padres">
+
         </div>
         <!-- <div class="chats-mensajeria">
             <img src="./img/Chat.png" alt="">
@@ -52,7 +55,10 @@
             <input type="text">
             <i class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div class="chats-mensajeria">
+        <div id="chats-padres">
+
+        </div>
+        <!-- <div class="chats-mensajeria">
             <img src="./img/Chat.png" alt="">
             <p>Nombre persona</p>
         </div>
@@ -63,7 +69,7 @@
         <div class="chats-mensajeria">
             <img src="./img/Chat3.png" alt="">
             <p>Nombre persona</p>
-        </div>
+        </div> -->
     </div>
 
     <div id="chat-individual" class="chat-individual" style="display: none;">
