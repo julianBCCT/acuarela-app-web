@@ -2808,33 +2808,114 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         }
       });
-      socket.off('receiveMessage');
 
-      socket.on('receiveMessage', (message) => {
-        if (message.user !== user) {
-          const messageElement = document.createElement('div');
-          messageElement.className = 'mensaje-recibido';
 
-          const mensajeElement = document.createElement('p');
-          mensajeElement.textContent = message.content;
 
-          const horaElement = document.createElement('p');
-          horaElement.className = 'chat-hora';
 
-          const horaMenssage = new Date(message.timestamp);
-          const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-          const formattedTime = horaMenssage.toLocaleTimeString([], options);
-          horaElement.textContent = formattedTime;
 
-          messageElement.appendChild(mensajeElement);
-          messageElement.appendChild(horaElement);
-          document.getElementById('messages').appendChild(messageElement);
+      // socket.on("receiveMessage", (data) => {
+      //   console.log(data);
+      //   const { room, sender } = data;
 
-        }
-      });
+      //   // Aquí podrías verificar si el usuario está en la sala activa o no
+      //   console.log("HOLA", room, rommId);
+      //   if (room !== roomId) {
+      //     // Mostrar notificación, por ejemplo en un badge de notificaciones
+      //     showNotification(`Nuevo mensaje de ${sender}: ${data.content}`);
+      //   }
+      // });
 
 
     }
+
+    // function showNotification(notificationMessage) {
+    //   console.log(notificationMessage);
+    //   // Verificar si el navegador soporta las notificaciones
+    //   if (!("Notification" in window)) {
+    //     console.error("Este navegador no soporta notificaciones.");
+    //     return;
+    //   }
+
+    //   // Verificar permisos de notificación
+    //   if (Notification.permission === "granted") {
+    //     // Crear y mostrar la notificación
+    //     new Notification("Nuevo mensaje", {
+    //       body: notificationMessage,
+    //       icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg' // Puedes cambiar el ícono según tus necesidades
+    //     });
+    //   } else if (Notification.permission !== "denied") {
+    //     // Solicitar permiso si no ha sido denegado
+    //     Notification.requestPermission().then(permission => {
+    //       if (permission === "granted") {
+    //         // Crear y mostrar la notificación
+    //         new Notification("Nuevo mensaje", {
+    //           body: notificationMessage,
+    //           icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg'
+    //         });
+    //       }
+    //     });
+    //   }
+    // }
+
+    function showNotification(notificationMessage) {
+      if (!("Notification" in window)) {
+        console.error("Este navegador no soporta notificaciones.");
+        return;
+      }
+
+      if (Notification.permission === "granted") {
+        new Notification("Nuevo mensaje", {
+          body: notificationMessage,
+          icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg'
+        });
+      } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+          if (permission === "granted") {
+            new Notification("Nuevo mensaje", {
+              body: notificationMessage,
+              icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg'
+            });
+          }
+        });
+      }
+    }
+
+    // Llamada a la función para probar
+    showNotification("¡Hola! Esta es una prueba de notificación.");
+
+
+    socket.off('receiveMessage');
+
+    socket.on('receiveMessage', (message) => {
+      if (message.room === roomId) {
+        const messageElement = document.createElement('div');
+        messageElement.className = 'mensaje-recibido';
+
+        const mensajeElement = document.createElement('p');
+        mensajeElement.textContent = message.content;
+
+        const horaElement = document.createElement('p');
+        horaElement.className = 'chat-hora';
+
+        const horaMenssage = new Date(message.timestamp);
+        const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+        const formattedTime = horaMenssage.toLocaleTimeString([], options);
+        horaElement.textContent = formattedTime;
+
+        messageElement.appendChild(mensajeElement);
+        messageElement.appendChild(horaElement);
+        document.getElementById('messages').appendChild(messageElement);
+
+      }
+      const { room, sender } = message;
+
+      console.log("HOLA", room, roomId);
+      if (room !== roomId) {
+        console.log("hola desde mostrar notificacion");
+        // Mostrar notificación, por ejemplo en un badge de notificaciones
+        showNotification(`Nuevo mensaje de ${sender}: ${message.content}`);
+      }
+    });
 
 
 
