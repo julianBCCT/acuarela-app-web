@@ -502,13 +502,16 @@
         .chats-padres {
           overflow-y: auto;
           height: 120px;
+          #chats-mensajeria {
+            justify-content: space-between;
+          }
           .chats-mensajeria {
             padding: 8px;
             height: 40px;
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: space-between;
+            // justify-content: space-between;
             border-bottom: 1px solid rgba(0, 0, 0, 0.2);
             p {
               margin-inline: 5px;

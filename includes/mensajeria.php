@@ -51,8 +51,8 @@
 
     <div id="chats-agregados" class="chats-buscados" style="display: none;">
         <div class="buscador-mensajeria">
-            <i class="acuarela acuarela-Agregar"></i>
-            <input type="text">
+            <i id="btn-invitar" class="acuarela acuarela-Agregar"></i>
+            <input id="agregar-chat" type="text">
             <i id="closeAgregar" class="acuarela acuarela-Cancelar"></i>
         </div>
         <div id="padres-inactivos" class="chats-padres">
