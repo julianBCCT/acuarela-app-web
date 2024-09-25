@@ -2157,8 +2157,14 @@ document.addEventListener("DOMContentLoaded", function () {
   getInfoNewAsistente();
 });
 
+
 document.addEventListener("DOMContentLoaded", function () {
   const currentPath = window.location.pathname;
+  let roomId;
+  let user;
+  let userId;
+  let padres = [];
+
   // console.log(currentPath);
 
   if (currentPath == "/miembros/acuarela-app-web/") {
@@ -2170,7 +2176,6 @@ document.addEventListener("DOMContentLoaded", function () {
         userId: acuarelaId,
       },
     });
-    // let currentChatUser = null;
 
     const asideMensajeria = document.getElementById("mesajeria-menu");
     const mensajeButton = document.getElementById("mainButton");
@@ -2205,13 +2210,45 @@ document.addEventListener("DOMContentLoaded", function () {
             'Content-Type': 'application/json'
           }
         });
-        const padres = await padresInfo.json();
+        padres = await padresInfo.json();
+
+        const filtrarPadresActivos = padres.filter((obj => {
+          const seen = new Set();
+          return function (item) {
+            // Verifica si el correo ya fue encontrado
+            if (seen.has(item.email)) {
+              return false;
+            }
+            // Si es nuevo, lo agrega al conjunto y lo mantiene
+            seen.add(item.email);
+            return true;
+          };
+        })());
         // console.log(padres);
-        return padres;
+        return filtrarPadresActivos;
       } catch (error) {
         console.log('No se encontraron los padres');
       }
     };
+
+    async function buscarChatsActivos() {
+      try {
+        // const response = await fetchToken(`https://acuarelacore.com/api/chats?room_contains=${userId}`, {
+        const response = await fetch(`https://acuarelacore.com/api/chats?room_contains=668d3301ffe9cb949a3e3681`, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+        const chatsActivos = await response.json();
+        return chatsActivos;
+
+      } catch (error) {
+        console.log("No se pueden listar los chats activos");
+      }
+
+    }
+
 
     const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
       let baseUrl = `/s/endRegister/?rol=${rol}&daycare=${daycare}&email=${email}&link=${link}&kid=${kid}`;
@@ -2233,6 +2270,97 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     };
 
+    function filtrarPadres(text, padres) {
+
+      if (text === "") {
+        mostrarPadres(padres);
+      } else {
+        const textLower = text.toLowerCase();
+        const padresFiltrados = padres.filter(padre =>
+          padre.name.toLowerCase().includes(textLower) ||
+          padre.lastname.toLowerCase().includes(textLower)
+        );
+        mostrarPadres(padresFiltrados);
+      }
+    };
+
+
+    function mostrarPadres(padres) {
+      divPadresInactivos.innerHTML = "";
+      if (padres.length > 0) {
+        console.log("Hola desde padres");
+        padres.forEach((padre) => {
+          const padreElement = document.createElement('div');
+          padreElement.className = 'chats-mensajeria';
+          padreElement.id = 'chats-mensajeria';
+
+          const padrePhoto = document.createElement('img');
+          padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
+          const padreName = document.createElement('p');
+          padreName.id = 'chat-padre'
+
+          padreName.textContent = `${padre.name} ${padre.lastname}`;
+          padreElement.appendChild(padrePhoto);
+          padreElement.appendChild(padreName);
+          if (padre.status === false) {
+            const btnInvitar = document.createElement('button');
+            btnInvitar.id = 'btn-invitar';
+            btnInvitar.textContent = 'Invitar';
+            padreElement.appendChild(btnInvitar);
+
+            btnInvitar.addEventListener('click', function () {
+              console.log('Hola', daycareName, padre.email);
+              // console.log('Hola');
+              sendRegisterEmail(
+                "padre",
+                daycareName,
+                padre.email,
+                `https://acuarelacore.com/auth/register/${padre.id}`,
+                padre.children[0].name,
+              );
+              // })
+            })
+          } else {
+            const btnChatear = document.createElement('button');
+            btnChatear.id = 'btn-invitar';
+            btnChatear.textContent = 'Chatear';
+            padreElement.appendChild(btnChatear);
+
+            btnChatear.addEventListener('click', () => {
+              // console.log("hola");
+              cargarChatPadre(padre.name, padre.id);
+              userId = padre.id;
+              mostrarChat(btnChatear);
+              selectedButton = btnChatear;
+              mensajeria();
+            });
+
+          }
+          divPadresInactivos.appendChild(padreElement);
+
+
+
+          // document.getElementById('btn-invitar').addEventListener('click', function () {
+
+
+
+        })
+
+      } else {
+        console.log("Hola no hay");
+        const padreElement = document.createElement('div');
+        padreElement.className = 'chats-mensajeria';
+        padreElement.id = 'chats-mensajeria';
+
+        const padreName = document.createElement('p');
+        padreName.id = 'chat-padre'
+        padreName.textContent = `No hay padres con ese nombre.`;
+        padreElement.appendChild(padreName);
+        divPadresInactivos.appendChild(padreElement);
+      }
+    };
+
+
 
     agregarButton.addEventListener("click", async function () {
       if (agregarButton.classList.contains("active")) {
@@ -2252,25 +2380,32 @@ document.addEventListener("DOMContentLoaded", function () {
       if (agregarMensajeria.style.display === "none") {
         agregarMensajeria.style.display = "block";
 
-        const padres = await buscarPadres();
+        padres = await buscarPadres();
         divPadresInactivos.innerHTML = "";
 
-        const padresInactivos = padres.filter(item => item.status === false);
+        // const padresInactivos = padres.filter(item => item.status === false);
 
-        const filtrarPadresInactivos = padresInactivos.filter((obj => {
-          const seen = new Set();
-          return function (item) {
-            // Verifica si el correo ya fue encontrado
-            if (seen.has(item.email)) {
-              return false;
-            }
-            // Si es nuevo, lo agrega al conjunto y lo mantiene
-            seen.add(item.email);
-            return true;
-          };
-        })());
+        const chatsActivos = await buscarChatsActivos();
 
-        if (filtrarPadresInactivos.length > 0) {
+        let padresFiltrados = padres.filter(item1 =>
+          !chatsActivos.some(item2 => item2.room.includes(item1.id))
+        );
+        // console.log(padresFiltrados);
+
+        // const filtrarPadresInactivos = padresInactivos.filter((obj => {
+        //   const seen = new Set();
+        //   return function (item) {
+        //     // Verifica si el correo ya fue encontrado
+        //     if (seen.has(item.email)) {
+        //       return false;
+        //     }
+        //     // Si es nuevo, lo agrega al conjunto y lo mantiene
+        //     seen.add(item.email);
+        //     return true;
+        //   };
+        // })());
+
+        if (padresFiltrados.length > 0) {
 
           const btnInvitar = document.getElementById('btn-invitar');
           const inputInvitar = document.getElementById('agregar-chat');
@@ -2283,75 +2418,75 @@ document.addEventListener("DOMContentLoaded", function () {
 
           btnInvitar.addEventListener('click', function () {
             const textInvitar = inputInvitar.value;
-            filtrarPadres(textInvitar, filtrarPadresInactivos);
+            filtrarPadres(textInvitar, padresFiltrados);
           });
 
-          function filtrarPadres(text, padres) {
+          // function filtrarPadres(text, padres) {
 
-            if (text === "") {
-              mostrarPadres(padres);
-            } else {
-              const textLower = text.toLowerCase();
-              const padresFiltrados = padres.filter(padre =>
-                padre.name.toLowerCase().includes(textLower) ||
-                padre.lastname.toLowerCase().includes(textLower)
-              );
-              mostrarPadres(padresFiltrados);
-            }
-          }
+          //   if (text === "") {
+          //     mostrarPadres(padres);
+          //   } else {
+          //     const textLower = text.toLowerCase();
+          //     const padresFiltrados = padres.filter(padre =>
+          //       padre.name.toLowerCase().includes(textLower) ||
+          //       padre.lastname.toLowerCase().includes(textLower)
+          //     );
+          //     mostrarPadres(padresFiltrados);
+          //   }
+          // }
 
-          function mostrarPadres(padres) {
-            divPadresInactivos.innerHTML = "";
-            if (padres.length > 0) {
-              console.log("Hola desde padres");
-              padres.forEach((padre) => {
-                const padreElement = document.createElement('div');
-                padreElement.className = 'chats-mensajeria';
-                padreElement.id = 'chats-mensajeria';
+          // function mostrarPadres(padres) {
+          //   divPadresInactivos.innerHTML = "";
+          //   if (padres.length > 0) {
+          //     console.log("Hola desde padres");
+          //     padres.forEach((padre) => {
+          //       const padreElement = document.createElement('div');
+          //       padreElement.className = 'chats-mensajeria';
+          //       padreElement.id = 'chats-mensajeria';
 
-                const padrePhoto = document.createElement('img');
-                padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
-                const padreName = document.createElement('p');
-                padreName.id = 'chat-padre'
-                const btnInvitar = document.createElement('button');
-                btnInvitar.id = 'btn-invitar';
-                btnInvitar.textContent = 'Invitar';
-                padreName.textContent = `${padre.name} ${padre.lastname}`;
-                padreElement.appendChild(padrePhoto);
-                padreElement.appendChild(padreName);
-                padreElement.appendChild(btnInvitar);
-                divPadresInactivos.appendChild(padreElement);
+          //       const padrePhoto = document.createElement('img');
+          //       padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
+          //       const padreName = document.createElement('p');
+          //       padreName.id = 'chat-padre'
+          //       const btnInvitar = document.createElement('button');
+          //       btnInvitar.id = 'btn-invitar';
+          //       btnInvitar.textContent = 'Invitar';
+          //       padreName.textContent = `${padre.name} ${padre.lastname}`;
+          //       padreElement.appendChild(padrePhoto);
+          //       padreElement.appendChild(padreName);
+          //       padreElement.appendChild(btnInvitar);
+          //       divPadresInactivos.appendChild(padreElement);
 
-                // document.getElementById('btn-invitar').addEventListener('click', function () {
+          //       // document.getElementById('btn-invitar').addEventListener('click', function () {
 
-                btnInvitar.addEventListener('click', function () {
-                  console.log('Hola', daycareName, padre.email);
-                  // console.log('Hola');
-                  sendRegisterEmail(
-                    "padre",
-                    daycareName,
-                    padre.email,
-                    `https://acuarelacore.com/auth/register/${padre.id}`,
-                    padre.children[0].name,
-                  );
-                  // })
-                })
+          //       btnInvitar.addEventListener('click', function () {
+          //         console.log('Hola', daycareName, padre.email);
+          //         // console.log('Hola');
+          //         sendRegisterEmail(
+          //           "padre",
+          //           daycareName,
+          //           padre.email,
+          //           `https://acuarelacore.com/auth/register/${padre.id}`,
+          //           padre.children[0].name,
+          //         );
+          //         // })
+          //       })
 
-              })
+          //     })
 
-            } else {
-              console.log("Hola no hay");
-              const padreElement = document.createElement('div');
-              padreElement.className = 'chats-mensajeria';
-              padreElement.id = 'chats-mensajeria';
+          //   } else {
+          //     console.log("Hola no hay");
+          //     const padreElement = document.createElement('div');
+          //     padreElement.className = 'chats-mensajeria';
+          //     padreElement.id = 'chats-mensajeria';
 
-              const padreName = document.createElement('p');
-              padreName.id = 'chat-padre'
-              padreName.textContent = `No hay padres con ese nombre.`;
-              padreElement.appendChild(padreName);
-              divPadresInactivos.appendChild(padreElement);
-            }
-          };
+          //     const padreName = document.createElement('p');
+          //     padreName.id = 'chat-padre'
+          //     padreName.textContent = `No hay padres con ese nombre.`;
+          //     padreElement.appendChild(padreName);
+          //     divPadresInactivos.appendChild(padreElement);
+          //   }
+          // };
 
         } else {
           const padreElement = document.createElement('div');
@@ -2364,8 +2499,8 @@ document.addEventListener("DOMContentLoaded", function () {
           divPadresInactivos.appendChild(padreElement);
         }
 
-        if (filtrarPadresInactivos.length > 0) {
-          mostrarPadres(filtrarPadresInactivos);
+        if (padresFiltrados.length > 0) {
+          mostrarPadres(padresFiltrados);
         } else {
           const padreElement = document.createElement('div');
           padreElement.className = 'chats-mensajeria';
@@ -2390,80 +2525,6 @@ document.addEventListener("DOMContentLoaded", function () {
       buscarMensajeria.click();
     });
 
-    // function filtrarPadres(text, padres) {
-    //   if (text === "") {
-    //     mostrarPadres(padres);
-    //   } else {
-    //     // Convertir el texto de búsqueda y los nombres a minúsculas para hacer la búsqueda case-insensitive
-    //     const textLower = text.toLowerCase();
-    //     const padresFiltrados = padres.filter(padre =>
-    //       padre.name.toLowerCase().includes(textLower) ||
-    //       padre.lastname.toLowerCase().includes(textLower) // Puedes incluir también el apellido en el filtro
-    //     );
-    //     mostrarPadres(padresFiltrados);
-    //   }
-    // }
-
-    // let padres = [];
-
-    // function mostrarPadres(padres) {
-    //   console.log(padres);
-    //   divPadresChats.innerHTML = "";
-
-    //   if (padres.length > 0) {
-    //     padres.forEach((padre) => {
-    //       // console.log(padre);
-    //       const padreElement = document.createElement('div');
-    //       padreElement.className = 'chats-mensajeria';
-    //       padreElement.id = 'chats-mensajeria';
-
-    //       const padrePhoto = document.createElement('img');
-    //       padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
-    //       const padreName = document.createElement('p');
-    //       padreName.id = 'chat-padre'
-    //       padreName.textContent = `${padre.name} ${padre.lastname}`;
-    //       padreElement.appendChild(padrePhoto);
-    //       padreElement.appendChild(padreName);
-    //       divPadresChats.appendChild(padreElement);
-    //       console.log(padre.id);
-
-    //       padreElement.addEventListener('click', () => {
-    //         // console.log("hola");
-    //         cargarChatPadre(padre.name, padre.id);
-    //         userId = padre.id;
-    //         mostrarChat(padreElement);
-    //         selectedButton = padreElement;
-    //         mensajeria();
-    //       });
-    //     })
-    //   } else {
-    //     const padreElement = document.createElement('div');
-    //     padreElement.className = 'chats-mensajeria';
-    //     padreElement.id = 'chats-mensajeria';
-
-    //     const padreName = document.createElement('p');
-    //     padreName.id = 'chat-padre'
-    //     padreName.textContent = `No hay padres con ese nombre.`;
-    //     padreElement.appendChild(padreName);
-    //     divPadresChats.appendChild(padreElement);
-    //   }
-
-    // }
-
-    // if (padres.length > 0) {
-    //   mostrarPadres(padres);
-    // } else {
-    //   const padreElement = document.createElement('div');
-    //   padreElement.className = 'chats-mensajeria';
-    //   padreElement.id = 'chats-mensajeria';
-
-    //   const padreName = document.createElement('p');
-    //   padreName.id = 'chat-padre'
-    //   padreName.textContent = `No hay padres registrados en el daycare.`;
-    //   padreElement.appendChild(padreName);
-    //   divPadresChats.appendChild(padreElement);
-    // }
-
     buscarMensajeria.addEventListener("click", async function () {
 
       if (buscarMensajeria.classList.contains("active")) {
@@ -2485,92 +2546,63 @@ document.addEventListener("DOMContentLoaded", function () {
       if (buscadorMensajeria.style.display === "none") {
         buscadorMensajeria.style.display = "block";
 
-        try {
-          const padresInfo = await fetch(`https://acuarelacore.com/api/acuarelausers?rols=5ff790045d6f2e272cfd7394&daycare=${daycareActiveId}`, {
-            method: 'GET',
-            headers: {
-              'Content-Type': 'application/json'
-            }
-          });
+        const padres = await buscarPadres();
 
-          const padres = await padresInfo.json();
+        padresActivos = padres.filter(padre => padre.status === true);
+        const chatsActivos = await buscarChatsActivos();
 
-          padresActivos = padres.filter(padre => padre.status === true);
-
-          const filtrarPadresActivos = padresActivos.filter((obj => {
-            const seen = new Set();
-            return function (item) {
-              // Verifica si el correo ya fue encontrado
-              if (seen.has(item.email)) {
-                return false;
-              }
-              // Si es nuevo, lo agrega al conjunto y lo mantiene
-              seen.add(item.email);
-              return true;
-            };
-          })());
-          mostrarPadres(filtrarPadresActivos);
+        //Se compara el json de padres con el de chats activos para mostrar solo los padres que tengan chats activos
+        let padresFiltrados = padresActivos.filter(item1 =>
+          chatsActivos.some(item2 => item2.room.includes(item1.id))
+        );
 
 
-          function filtrarPadres(text, padres) {
-            if (text === "") {
-              mostrarPadres(padres);
-            } else {
-              // Convertir el texto de búsqueda y los nombres a minúsculas para hacer la búsqueda case-insensitive
-              const textLower = text.toLowerCase();
-              const padresFiltrados = padres.filter(padre =>
-                padre.name.toLowerCase().includes(textLower) ||
-                padre.lastname.toLowerCase().includes(textLower) // Puedes incluir también el apellido en el filtro
-              );
-              mostrarPadres(padresFiltrados);
-            }
+        mostrarPadres(padresFiltrados);
+
+
+        function filtrarPadres(text, padres) {
+          if (text === "") {
+            mostrarPadres(padres);
+          } else {
+            // Convertir el texto de búsqueda y los nombres a minúsculas para hacer la búsqueda case-insensitive
+            const textLower = text.toLowerCase();
+            const padresFiltrados = padres.filter(padre =>
+              padre.name.toLowerCase().includes(textLower) ||
+              padre.lastname.toLowerCase().includes(textLower) // Puedes incluir también el apellido en el filtro
+            );
+            mostrarPadres(padresFiltrados);
           }
+        }
 
-          function mostrarPadres(padres) {
-            divPadresChats.innerHTML = "";
+        function mostrarPadres(padres) {
+          divPadresChats.innerHTML = "";
 
-            if (padres.length > 0) {
-              padres.forEach((padre) => {
-                // console.log(padre);
-                const padreElement = document.createElement('div');
-                padreElement.className = 'chats-mensajeria';
-                // padreElement.id = 'chats-mensajeria';
-
-                const padrePhoto = document.createElement('img');
-                padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
-                const padreName = document.createElement('p');
-                padreName.id = 'chat-padre'
-                padreName.textContent = `${padre.name} ${padre.lastname}`;
-                padreElement.appendChild(padrePhoto);
-                padreElement.appendChild(padreName);
-                divPadresChats.appendChild(padreElement);
-                console.log(padre.id);
-
-                padreElement.addEventListener('click', () => {
-                  // console.log("hola");
-                  cargarChatPadre(padre.name, padre.id);
-                  userId = padre.id;
-                  mostrarChat(padreElement);
-                  selectedButton = padreElement;
-                  mensajeria();
-                });
-              })
-            } else {
+          if (padres.length > 0) {
+            padres.forEach((padre) => {
+              // console.log(padre);
               const padreElement = document.createElement('div');
               padreElement.className = 'chats-mensajeria';
               // padreElement.id = 'chats-mensajeria';
 
+              const padrePhoto = document.createElement('img');
+              padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
               const padreName = document.createElement('p');
               padreName.id = 'chat-padre'
-              padreName.textContent = `No hay padres con ese nombre.`;
+              padreName.textContent = `${padre.name} ${padre.lastname}`;
+              padreElement.appendChild(padrePhoto);
               padreElement.appendChild(padreName);
               divPadresChats.appendChild(padreElement);
-            }
 
-          }
 
-          if (filtrarPadresActivos.length > 0) {
-            mostrarPadres(filtrarPadresActivos);
+              padreElement.addEventListener('click', () => {
+                // console.log("hola");
+                cargarChatPadre(padre.name, padre.id);
+                userId = padre.id;
+                mostrarChat(padreElement);
+                selectedButton = padreElement;
+                mensajeria();
+              });
+            })
           } else {
             const padreElement = document.createElement('div');
             padreElement.className = 'chats-mensajeria';
@@ -2578,31 +2610,44 @@ document.addEventListener("DOMContentLoaded", function () {
 
             const padreName = document.createElement('p');
             padreName.id = 'chat-padre'
-            padreName.textContent = `No hay padres registrados en el daycare.`;
+            padreName.textContent = `No hay padres con ese nombre.`;
             padreElement.appendChild(padreName);
             divPadresChats.appendChild(padreElement);
           }
 
-          const inputBuscarChat = document.getElementById('buscador-chat');
-          const bntBuscarChat = document.getElementById('btn-buscador-chat');
-
-          document.getElementById('buscador-chat').addEventListener('keyup', (event) => {
-            if (event.code === 'Enter') {
-              bntBuscarChat.click();
-            }
-          })
-
-
-          bntBuscarChat.addEventListener('click', () => {
-            const textBuscarChat = inputBuscarChat.value;
-            divPadresChats.innerHTML = '';
-            filtrarPadres(textBuscarChat, filtrarPadresActivos);
-
-          });
-
-        } catch (error) {
-          console.error(error);
         }
+
+        if (padresFiltrados.length > 0) {
+          mostrarPadres(padresFiltrados);
+        } else {
+          const padreElement = document.createElement('div');
+          padreElement.className = 'chats-mensajeria';
+          // padreElement.id = 'chats-mensajeria';
+
+          const padreName = document.createElement('p');
+          padreName.id = 'chat-padre'
+          padreName.textContent = `No hay padres registrados en el daycare.`;
+          padreElement.appendChild(padreName);
+          divPadresChats.appendChild(padreElement);
+        }
+
+        const inputBuscarChat = document.getElementById('buscador-chat');
+        const bntBuscarChat = document.getElementById('btn-buscador-chat');
+
+        document.getElementById('buscador-chat').addEventListener('keyup', (event) => {
+          if (event.code === 'Enter') {
+            bntBuscarChat.click();
+          }
+        })
+
+
+        bntBuscarChat.addEventListener('click', () => {
+          const textBuscarChat = inputBuscarChat.value;
+          divPadresChats.innerHTML = '';
+          // console.log(textBuscarChat, padresActivos);
+          filtrarPadres(textBuscarChat, padresFiltrados);
+
+        });
       } else {
         buscadorMensajeria.style.display = "none";
         document.getElementById('buscador-chat').value = "";
@@ -2644,28 +2689,22 @@ document.addEventListener("DOMContentLoaded", function () {
         chatMensajeria.style.display = "none";
         // const contendorMessages = document.getElementById("messages");
         // boton.removeEventListener('click');
+        roomId = null;
         contendorMessages.textContent = '';
 
       }
-    }
+    };
 
     let selectedButton = null;
 
     document.getElementById('closeChat').addEventListener('click', () => {
-      // if (selectedButton) {  // Verificar si hay un botón seleccionado
-      console.log(selectedButton);
       mostrarChat(selectedButton);
-      // socket.close(); // Llamar a mostrarChat con el botón seleccionado
-      // chatMensajeria.style.display = "none";  // Aquí puedes añadir cualquier otra acción que necesites
-      // }
     });
 
-    let roomId;
-    let user;
-    let userId;
+
 
     async function cargarChatPadre(nombre, userId) {
-      console.log("Cargar padre: ", userId);
+      // console.log("Cargar padre: ", userId);
       try {
         const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${userId}`, {
           method: 'GET',
@@ -2677,15 +2716,13 @@ document.addEventListener("DOMContentLoaded", function () {
         const usuarioName = document.getElementById('userChat');
         const usuarioImg = document.getElementById('imgUser');
         usuarioImg.src = `https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png`;
-        usuarioName.textContent = nombre;
+        usuarioName.textContent = `${usuario.name} ${usuario.lastname}`;
 
       } catch (error) {
         console.error(error);
       }
 
       roomId = getRoomName(acuarelaId, userId);
-      console.log(roomId);
-      console.log(userId);
       user = userNameAdmin;
 
       if (roomId && user) {
@@ -2705,11 +2742,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
           const messagesStrapi = chatMessages[0].messages["2024-09"]; // Asegúrate que el formato sea correcto
-          console.log(chatMessages);
-          console.log(messagesStrapi);
 
           messagesStrapi.forEach(msg => {
-            console.log(msg.sender, acuarelaId);
             const messageElement = document.createElement('div');
             const mensajeElement = document.createElement('p');
             const horaElement = document.createElement('p');
@@ -2730,7 +2764,8 @@ document.addEventListener("DOMContentLoaded", function () {
               messageElement.className = 'mensaje-recibido';
             }
 
-            document.getElementById('messages').appendChild(messageElement);
+            const lastMessageElement = document.getElementById('messages').appendChild(messageElement);
+            lastMessageElement.scrollIntoView();
           });
         } else {
           const noMessagesElement = document.createElement('div');
@@ -2749,7 +2784,6 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       function getRoomName(user1, user2) {
-        // Ordenar IDs para que el nombre de la sala sea consistente
         return [user1, user2].sort().join('-');
       }
     }
@@ -2761,12 +2795,6 @@ document.addEventListener("DOMContentLoaded", function () {
           btnSendMensaje.click();
         }
       });
-
-      // function getRoomName(user1, user2) {
-      //   // Ordenar IDs para que el nombre de la sala sea consistente
-      //   return [user1, user2].sort().join('-');
-      // }
-
 
       btnSendMensaje.addEventListener('click', () => {
         const messageInput = document.getElementById('messageInput');
@@ -2804,58 +2832,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
             messageElement.appendChild(mensajeElement);
             messageElement.appendChild(horaElement);
-            document.getElementById('messages').appendChild(messageElement);
+            const lastMessageElement = document.getElementById('messages').appendChild(messageElement);
+            lastMessageElement.scrollIntoView({ behavior: 'smooth' });
           }
         }
       });
-
-
-
-
-
-      // socket.on("receiveMessage", (data) => {
-      //   console.log(data);
-      //   const { room, sender } = data;
-
-      //   // Aquí podrías verificar si el usuario está en la sala activa o no
-      //   console.log("HOLA", room, rommId);
-      //   if (room !== roomId) {
-      //     // Mostrar notificación, por ejemplo en un badge de notificaciones
-      //     showNotification(`Nuevo mensaje de ${sender}: ${data.content}`);
-      //   }
-      // });
-
-
     }
-
-    // function showNotification(notificationMessage) {
-    //   console.log(notificationMessage);
-    //   // Verificar si el navegador soporta las notificaciones
-    //   if (!("Notification" in window)) {
-    //     console.error("Este navegador no soporta notificaciones.");
-    //     return;
-    //   }
-
-    //   // Verificar permisos de notificación
-    //   if (Notification.permission === "granted") {
-    //     // Crear y mostrar la notificación
-    //     new Notification("Nuevo mensaje", {
-    //       body: notificationMessage,
-    //       icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg' // Puedes cambiar el ícono según tus necesidades
-    //     });
-    //   } else if (Notification.permission !== "denied") {
-    //     // Solicitar permiso si no ha sido denegado
-    //     Notification.requestPermission().then(permission => {
-    //       if (permission === "granted") {
-    //         // Crear y mostrar la notificación
-    //         new Notification("Nuevo mensaje", {
-    //           body: notificationMessage,
-    //           icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg'
-    //         });
-    //       }
-    //     });
-    //   }
-    // }
 
     function showNotification(notificationMessage) {
       if (!("Notification" in window)) {
@@ -2881,13 +2863,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Llamada a la función para probar
-    showNotification("¡Hola! Esta es una prueba de notificación.");
+    // showNotification("¡Hola! Esta es una prueba de notificación.");
 
 
     socket.off('receiveMessage');
 
     socket.on('receiveMessage', (message) => {
-      if (message.room === roomId) {
+      console.log("ROOMID: ", roomId);
+      console.log("Message: ", message.receiver, "User: ", userId);
+      if (message.sender === userId) {
         const messageElement = document.createElement('div');
         messageElement.className = 'mensaje-recibido';
 
@@ -2904,7 +2888,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         messageElement.appendChild(mensajeElement);
         messageElement.appendChild(horaElement);
-        document.getElementById('messages').appendChild(messageElement);
+        const lastMessageElement = document.getElementById('messages').appendChild(messageElement);
+        lastMessageElement.scrollIntoView({ behavior: 'smooth' });
 
       }
       const { room, sender } = message;

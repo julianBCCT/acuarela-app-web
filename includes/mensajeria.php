@@ -11,15 +11,15 @@
             <li id="agregar-mensajeria">
                 <i class="acuarela acuarela-Agregar"></i>
             </li>
-            <li class="chat-icon">
-                <img src="./img/Chat.png" alt="">
+            <!-- <li class="chat-icon">
+                <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             </li>
             <li class="chat-icon">
-                <img src="./img/chat2.png" alt="">
+                <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             </li>
             <li class="chat-icon">
-                <img src="./img/Chat3.png" alt="">
-            </li>
+                <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
+            </li> -->
             <!-- <li id="opcines-mensajeria">
                 <i class="acuarela acuarela-Opciones"></i>
             </li> -->
