@@ -2334,7 +2334,7 @@ document.addEventListener("DOMContentLoaded", function () {
             btnChatear.addEventListener('click', () => {
               console.log(padre);
               // console.log("hola");
-              cargarChatPadre(padre.name, padre.id);
+              cargarChatPadre(padre.id);
               userId = padre.id;
               mostrarChat(btnChatear);
               selectedButton = btnChatear;
@@ -2603,7 +2603,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               padreElement.addEventListener('click', () => {
                 // console.log("hola");
-                cargarChatPadre(padre.name, padre.id);
+                cargarChatPadre(padre.id);
                 userId = padre.id;
                 mostrarChat(padreElement);
                 selectedButton = padreElement;
@@ -2612,7 +2612,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 const ulOpciones = document.getElementById('opciones-mensajeria');
                 const iconElement = document.createElement('li');
                 iconElement.className = 'chat-icon';
+
+                const imgIcon = document.createElement('img');
+                imgIcon.src = 'https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png';
+
+                iconElement.appendChild(imgIcon);
                 ulOpciones.appendChild(iconElement);
+                iconElement.addEventListener('click', () => {
+                  console.log("Hola desde li");
+                  mostrarChat(iconElement);
+                  cargarChatPadre(padre.id);
+                })
               });
             })
           } else {
@@ -2715,7 +2725,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 
-    async function cargarChatPadre(nombre, userId) {
+    async function cargarChatPadre(userId) {
       // console.log("Cargar padre: ", userId);
       try {
         const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${userId}`, {
@@ -2940,7 +2950,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         selectedButton = boton;
 
-        cargarChatPadre('Julie', '65d4ad648cf368c869172e09');
+        cargarChatPadre('65d4ad648cf368c869172e09');
 
 
 
