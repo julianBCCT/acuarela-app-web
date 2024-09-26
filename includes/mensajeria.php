@@ -4,16 +4,17 @@
     </button> -->
 
     <div class="icons">
-        <ul>
+        <ul id="opciones-mensajeria">
             <li id="buscar-mensajeria">
                 <i class="acuarela acuarela-Buscar"></i>
             </li>
             <li id="agregar-mensajeria">
                 <i class="acuarela acuarela-Agregar"></i>
             </li>
-            <!-- <li class="chat-icon">
+            <li class="chat-icon">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             </li>
+            <!--
             <li class="chat-icon">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             </li>

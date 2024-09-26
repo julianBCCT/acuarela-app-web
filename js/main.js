@@ -2159,11 +2159,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 document.addEventListener("DOMContentLoaded", function () {
+
   const currentPath = window.location.pathname;
   let roomId;
   let user;
   let userId;
   let padres = [];
+
+
 
   // console.log(currentPath);
 
@@ -2176,6 +2179,8 @@ document.addEventListener("DOMContentLoaded", function () {
         userId: acuarelaId,
       },
     });
+
+    socket.emit('register', { userId: acuarelaId });
 
     const asideMensajeria = document.getElementById("mesajeria-menu");
     const mensajeButton = document.getElementById("mainButton");
@@ -2288,8 +2293,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function mostrarPadres(padres) {
       divPadresInactivos.innerHTML = "";
       if (padres.length > 0) {
-        console.log("Hola desde padres");
         padres.forEach((padre) => {
+          console.log(padre);
           const padreElement = document.createElement('div');
           padreElement.className = 'chats-mensajeria';
           padreElement.id = 'chats-mensajeria';
@@ -2327,12 +2332,14 @@ document.addEventListener("DOMContentLoaded", function () {
             padreElement.appendChild(btnChatear);
 
             btnChatear.addEventListener('click', () => {
+              console.log(padre);
               // console.log("hola");
               cargarChatPadre(padre.name, padre.id);
               userId = padre.id;
               mostrarChat(btnChatear);
               selectedButton = btnChatear;
-              mensajeria();
+
+              mensajeria(padre);
             });
 
           }
@@ -2347,7 +2354,6 @@ document.addEventListener("DOMContentLoaded", function () {
         })
 
       } else {
-        console.log("Hola no hay");
         const padreElement = document.createElement('div');
         padreElement.className = 'chats-mensajeria';
         padreElement.id = 'chats-mensajeria';
@@ -2383,10 +2389,12 @@ document.addEventListener("DOMContentLoaded", function () {
         padres = await buscarPadres();
         divPadresInactivos.innerHTML = "";
 
+        //Revisar------------------------------------------------------------------------
+
         // const padresInactivos = padres.filter(item => item.status === false);
 
         const chatsActivos = await buscarChatsActivos();
-
+        //Compara el json de padres con chatsActivos para mostrar solo los que no tengan chats activos
         let padresFiltrados = padres.filter(item1 =>
           !chatsActivos.some(item2 => item2.room.includes(item1.id))
         );
@@ -2593,14 +2601,18 @@ document.addEventListener("DOMContentLoaded", function () {
               padreElement.appendChild(padreName);
               divPadresChats.appendChild(padreElement);
 
-
               padreElement.addEventListener('click', () => {
                 // console.log("hola");
                 cargarChatPadre(padre.name, padre.id);
                 userId = padre.id;
                 mostrarChat(padreElement);
                 selectedButton = padreElement;
-                mensajeria();
+                mensajeria(padre);
+
+                const ulOpciones = document.getElementById('opciones-mensajeria');
+                const iconElement = document.createElement('li');
+                iconElement.className = 'chat-icon';
+                ulOpciones.appendChild(iconElement);
               });
             })
           } else {
@@ -2741,7 +2753,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const chatMessages = await messages.json();
 
         if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
-          const messagesStrapi = chatMessages[0].messages["2024-09"]; // Asegúrate que el formato sea correcto
+
+          // Obtener la fecha actual y formatear el mes (YYYY-MM)
+          const currentMonth = new Date().toISOString().slice(0, 7); // Obtiene 'YYYY-MM'
+          const messagesStrapi = chatMessages[0].messages[currentMonth];
 
           messagesStrapi.forEach(msg => {
             const messageElement = document.createElement('div');
@@ -2789,7 +2804,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    function mensajeria() {
+    function mensajeria(padre) {
       document.getElementById('messageInput').addEventListener('keyup', (event) => {
         if (event.code === 'Enter') {
           btnSendMensaje.click();
@@ -2799,6 +2814,8 @@ document.addEventListener("DOMContentLoaded", function () {
       btnSendMensaje.addEventListener('click', () => {
         const messageInput = document.getElementById('messageInput');
         const message = messageInput.value;
+        console.log("SokectID", padre);
+        console.log("SokectID", padre.socketId);
 
         if (message) {
 
@@ -2811,6 +2828,7 @@ document.addEventListener("DOMContentLoaded", function () {
               senderId: acuarelaId,
               receiverId: userId,
               roomId,
+              socketid: padre.socketId,
             };
             socket.emit('sendMessage', message);
 
@@ -2839,21 +2857,22 @@ document.addEventListener("DOMContentLoaded", function () {
       });
     }
 
-    function showNotification(notificationMessage) {
+    function showNotification(notificationMessage, notificationtitle) {
+      console.log("Hola ya entró");
       if (!("Notification" in window)) {
         console.error("Este navegador no soporta notificaciones.");
         return;
       }
 
       if (Notification.permission === "granted") {
-        new Notification("Nuevo mensaje", {
+        new Notification(notificationtitle, {
           body: notificationMessage,
           icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg'
         });
       } else if (Notification.permission !== "denied") {
         Notification.requestPermission().then(permission => {
           if (permission === "granted") {
-            new Notification("Nuevo mensaje", {
+            new Notification(notificationtitle, {
               body: notificationMessage,
               icon: 'https://bilingualchildcaretraining.com/img/logo_claro.svg'
             });
@@ -2869,8 +2888,6 @@ document.addEventListener("DOMContentLoaded", function () {
     socket.off('receiveMessage');
 
     socket.on('receiveMessage', (message) => {
-      console.log("ROOMID: ", roomId);
-      console.log("Message: ", message.receiver, "User: ", userId);
       if (message.sender === userId) {
         const messageElement = document.createElement('div');
         messageElement.className = 'mensaje-recibido';
@@ -2892,20 +2909,26 @@ document.addEventListener("DOMContentLoaded", function () {
         lastMessageElement.scrollIntoView({ behavior: 'smooth' });
 
       }
-      const { room, sender } = message;
+      // const { room, sender } = message;
+      // if (room !== roomId) {
+      //   // Mostrar notificación, por ejemplo en un badge de notificaciones
+      //   showNotification(`Nuevo mensaje de ${sender}: ${message.content}`);
+      // }
+    });
 
-      console.log("HOLA", room, roomId);
-      if (room !== roomId) {
-        console.log("hola desde mostrar notificacion");
-        // Mostrar notificación, por ejemplo en un badge de notificaciones
-        showNotification(`Nuevo mensaje de ${sender}: ${message.content}`);
-      }
+    socket.on('newMessageNotification', (msg) => {
+      const { message: { sender, content } } = msg;
+      // Mostrar notificación, por ejemplo en un badge de notificaciones
+      showNotification(content, sender);
+
     });
 
 
-
+    console.log(chatButton);
     chatButton.forEach(boton => {
+      console.log("HOLA");
       boton.addEventListener('click', async () => {
+        console.log("Hola");
 
         if (boton.classList.contains('active')) {
           mostrarChat(boton);
