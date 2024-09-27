@@ -75,7 +75,7 @@
 
     <div id="chat-individual" class="chat-individual" style="display: none;">
         <div class="info-chat">
-            <img id="imgUser" src="./img/Chat.png" alt="">
+            <img id="imgUser" src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             <p id="userChat"></p>
             <!-- <i class="acuarela acuarela-Usuario"></i> -->
             <i id="closeChat" class="acuarela acuarela-Cancelar"></i>
