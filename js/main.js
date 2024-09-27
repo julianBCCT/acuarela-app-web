@@ -2163,6 +2163,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const currentPath = window.location.pathname;
   let roomId;
   let user;
+  let userId;
   let userIdAcuarela = acuarelaId;
   let padres = [];
 
@@ -2677,6 +2678,8 @@ document.addEventListener("DOMContentLoaded", function () {
           // Obtener la fecha actual y formatear el mes (YYYY-MM)
           const currentMonth = new Date().toISOString().slice(0, 7); // Obtiene 'YYYY-MM'
           const messagesStrapi = chatMessages[0].messages[currentMonth];
+          const messagesMonth = chatMessages[0].messages;
+          console.log(messagesMonth);
 
           messagesStrapi.forEach(msg => {
             const messageElement = document.createElement('div');
