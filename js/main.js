@@ -2291,6 +2291,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function mostrarPadres(padres) {
       divPadresInactivos.innerHTML = "";
+      // btnSendMensaje.removeEventListener('click', enviarMensaje);
+
       if (padres.length > 0) {
         padres.forEach((padre) => {
           const padreElement = document.createElement('div');
@@ -2339,7 +2341,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
               selectedButton = btnChatear;
 
-              mensajeria(padre);
+              mensajeriaPadre(padre);
             });
 
           }
@@ -2529,7 +2531,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 mostrarChat(padreElement);
 
                 selectedButton = padreElement;
-                mensajeria(padre);
+                mensajeriaPadre(padre);
                 agregarIcon(padre);
                 padreInfo = padre;
               });
@@ -2656,15 +2658,25 @@ document.addEventListener("DOMContentLoaded", function () {
       // contendorMessages.removeEventListener('scroll', () => { })
       mostrarChat(selectedButton);
     });
+    let mesesMostrados = [];
+
+    // let scrollListenerAttached = false;
+    // contendorMessages.addEventListener('scroll', cargarMensajeScroll);
 
     async function cargarChatPadre(userId) {
+      let isLoadingOlderMessages = false;
+
       console.log("Desde Cargar chat padre");
-      // contendorMessages.innerHTML = '';
+      // if (scrollListenerAttached) {
       // contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
+      //   scrollListenerAttached = false;
+      // }
+      contendorMessages.innerHTML = '';
+      contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
 
 
-      limpiarContenedorMensajes();
-      eliminarEventosScroll();
+      // limpiarContenedorMensajes();
+      // eliminarEventosScroll();
 
       try {
         const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${userId}`, {
@@ -2704,9 +2716,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
         const currentMonth = new Date().toISOString().slice(0, 7);
 
-        let mesesMostrados = [currentMonth];
+        mesesMostrados = [currentMonth];
+        console.log("Meses a mostrar", mesesMostrados);
 
-        let isLoadingOlderMessages = false;
+        isLoadingOlderMessages = false;
 
         // let noMoreMessagesShown = false; // Variable para controlar la visualización del mensaje
 
@@ -2737,14 +2750,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
               messageElement.className = msg.sender === acuarelaId ? 'mensaje-enviado' : 'mensaje-recibido';
 
-
-              // if (msg.sender === acuarelaId) {
-              //   messageElement.className = 'mensaje-enviado';
-              // } else {
-              //   messageElement.className = 'mensaje-recibido';
-              // }
-
-              // Insertar los mensajes más recientes al final del contenedor
               contendorMessages.insertBefore(messageElement, contendorMessages.firstChild);
             });
 
@@ -2752,7 +2757,8 @@ document.addEventListener("DOMContentLoaded", function () {
             contendorMessages.scrollTop = contendorMessages.scrollHeight - currentScrollPosition;
 
             isLoadingOlderMessages = false; // Terminar la carga
-            verificarScrollInicial();
+            contendorMessages.scroll = 1;
+            // verificarScrollInicial();
 
           } else {
             const noMessagesElement = document.createElement('div');
@@ -2767,20 +2773,34 @@ document.addEventListener("DOMContentLoaded", function () {
         cargarMessages(currentMonth);
 
         // Detectar cuando se hace scroll hasta el final del contenedor
+        // if (!scrollListenerAttached) {
+        //   console.log(scrollListenerAttached);
         // contendorMessages.addEventListener('scroll', () => {
         contendorMessages.addEventListener('scroll', cargarMensajeScroll);
+        //   scrollListenerAttached = true;
+
+        // }
 
         function cargarMensajeScroll() {
+          console.log("Se ejecuta cargarMensajeScroll");
+          console.log("cargarMensajeScroll", isLoadingOlderMessages);
+          console.log("Scroll", contendorMessages.scrollTop);
           // if (contendorMessages.scrollTop + contendorMessages.clientHeight >= contendorMessages.scrollHeight) {
-          if (contendorMessages.scrollTop === 0 && !isLoadingOlderMessages) {
+          // if (contendorMessages.scrollTop === 0 && isLoadingOlderMessages === false) {
+          if (contendorMessages.scrollTop === 1 && !isLoadingOlderMessages) {
+            console.log("Se llama cargarMesAnterior", isLoadingOlderMessages);
+            // if (contendorMessages.scrollTop === 0) {
             isLoadingOlderMessages = true;
             // Si llegamos al tope superior, cargar los mensajes del mes anterior
             cargarMesAnterior(); // Esta función debe determinar qué mes cargar
+
           }
         };
 
+
         function verificarScrollInicial() {
           if (contendorMessages.scrollHeight <= contendorMessages.clientHeight) {
+            console.log("VerificarScrollInicial");
             // Si el contenedor no tiene suficiente contenido para el scroll, cargar más mensajes
             cargarMesAnterior();
           }
@@ -2805,10 +2825,14 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
         function cargarMesAnterior() {
+          console.log("Se ejecuta cargarMesAnterior")
+          console.log("cargarMesAnterior", mesesMostrados);
           const ultimoMesMostrado = mesesMostrados[mesesMostrados.length - 1]; // Último mes cargado
+          console.log("cargarMesAnterior", ultimoMesMostrado);
 
           // Restar un mes al último mes mostrado
           const mesAnterior = restarMes(ultimoMesMostrado);
+          console.log("cargarMesAnterior", mesAnterior);
 
           // Verificar si tenemos mensajes para ese mes anterior
           if (chatMessages[0].messages[mesAnterior]) {
@@ -2822,7 +2846,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             cargarMessages(mesAnterior); // Mostrar los chats del mes anterior
             mesesMostrados.push(mesAnterior); // Agregar el nuevo mes a la lista de meses mostrados
-
+            console.log("Meses cargarMesAnterior", mesesMostrados);
+            console.log("Meses cargarMesAnterior: Muestra con este mes", mesAnterior);
             // Si el mensaje "No hay más mensajes" ya fue mostrado, lo ocultamos
             // noMoreMessagesShown = false; // Restablecer la variable
           } else {
@@ -2847,6 +2872,7 @@ document.addEventListener("DOMContentLoaded", function () {
             // const contenedorMessages = document.getElementById('messages');
             contenedorMessages.insertBefore(noMessagesElement, contenedorMessages.firstChild);
 
+
             // Marcar que el mensaje ha sido mostrado
             // noMoreMessagesShown = true;
             // }
@@ -2863,30 +2889,35 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('messages').appendChild(errorElement);
       }
 
-      // Función para limpiar el contenedor de mensajes
-      function limpiarContenedorMensajes() {
-        contendorMessages.innerHTML = ''; // Limpiar el contenedor
-      }
-
-      // Función para eliminar eventos de scroll antiguos
-      function eliminarEventosScroll() {
-        contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
-      }
-
       function getRoomName(user1, user2) {
         return [user1, user2].sort().join('-');
       }
+      // contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
     }
+    // btnSendMensaje.addEventListener('click', enviarMensaje);
+    let clickListenerAttached = false;
 
+    function mensajeriaPadre(padre) {
+      // const btnSendMensaje = document.getElementById("sendBtn");
 
-    function mensajeria(padre) {
+      // btnSendMensaje.removeEventListener('click', enviarMensaje);
       document.getElementById('messageInput').addEventListener('keyup', (event) => {
         if (event.code === 'Enter') {
           btnSendMensaje.click();
         }
       });
 
-      btnSendMensaje.addEventListener('click', () => {
+
+
+      // Agregar el event listener solo una vez
+      if (!clickListenerAttached) {
+        btnSendMensaje.addEventListener('click', enviarMensaje);
+        clickListenerAttached = true;
+      }
+
+      // btnSendMensaje.addEventListener('click', () => {
+      // btnSendMensaje.addEventListener('click', enviarMensaje);
+      function enviarMensaje() {
         const messageInput = document.getElementById('messageInput');
         const message = messageInput.value;
         console.log("SokectID", padre);
@@ -2929,7 +2960,7 @@ document.addEventListener("DOMContentLoaded", function () {
             lastMessageElement.scrollIntoView({ behavior: 'smooth' });
           }
         }
-      });
+      };
     }
 
     function showNotification(notificationMessage, notificationtitle) {
@@ -3034,7 +3065,7 @@ document.addEventListener("DOMContentLoaded", function () {
           cargarChatPadre(chatContent);
           mostrarChat(iconElement);
 
-          mensajeria(arguments);
+          mensajeriaPadre(arguments);
         })
       });
       chatButton = document.querySelectorAll(".chat-icon");
