@@ -1,32 +1,42 @@
-<?php $classBody ="asistencia"; include "includes/header.php"; ?>
+<?php $classBody = "asistencia";
+include "includes/header.php"; ?>
 <main>
     <?php
     $mainHeaderTitle = "Asistencia";
     $action = '<a href="/miembros/acuarela-app-web/inspeccion" class="btn btn-action-primary enfasis btn-big"><i class="acuarela acuarela-Pago"></i>Generar informe</a>';
     include "templates/sectionHeader.php";
-?>
+    ?>
     <div class="content">
         <?php
-  // Define los nombres de los meses en español
-  $meses = [
-      1 => 'Enero', 2 => 'Febrero', 3 => 'Marzo', 4 => 'Abril',
-      5 => 'Mayo', 6 => 'Junio', 7 => 'Julio', 8 => 'Agosto',
-      9 => 'Septiembre', 10 => 'Octubre', 11 => 'Noviembre', 12 => 'Diciembre'
-  ];
+        // Define los nombres de los meses en español
+        $meses = [
+            1 => 'Enero',
+            2 => 'Febrero',
+            3 => 'Marzo',
+            4 => 'Abril',
+            5 => 'Mayo',
+            6 => 'Junio',
+            7 => 'Julio',
+            8 => 'Agosto',
+            9 => 'Septiembre',
+            10 => 'Octubre',
+            11 => 'Noviembre',
+            12 => 'Diciembre'
+        ];
 
-  // Crea un objeto DateTime para la fecha deseada
-  $fecha = new DateTime();
-  $fecha->modify('-1 day'); // Agregar un día
-  // Obtiene el día, mes y año
-  $dia = $fecha->format('d');
-  $mes = $meses[(int)$fecha->format('m')];
-  $anio = $fecha->format('Y');
+        // Crea un objeto DateTime para la fecha deseada
+        $fecha = new DateTime();
+        $fecha->modify('-1 day'); // Agregar un día
+        // Obtiene el día, mes y año
+        $dia = $fecha->format('d');
+        $mes = $meses[(int)$fecha->format('m')];
+        $anio = $fecha->format('Y');
 
-  // Forma la fecha en el formato deseado
-  $fecha_formateada = "$mes $dia, $anio";
-  ?>
+        // Forma la fecha en el formato deseado
+        $fecha_formateada = "$mes $dia, $anio";
+        ?>
         <h2>
-            <?= $fecha_formateada?>
+            <?= $fecha_formateada ?>
         </h2>
         <div class="info">
             <i class="acuarela acuarela-Informacion"></i>
@@ -47,6 +57,12 @@
         <hr />
         <h3>¿Quiénes están inactivos?</h3>
         <ul class="inactive"></ul>
+    </div>
+    <div class="mensajeria-content">
+        <?php include "includes/mensajeria.php" ?>
+        <button id="mainButton" class="main-button">
+            <i class="acuarela acuarela-Mensajes"></i>
+        </button>
     </div>
 </main>
 <?php include "includes/footer.php" ?>

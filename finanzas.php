@@ -94,7 +94,7 @@ $balance = $ingresosTotal - $gastosTotal;
                 <tbody>
                     <?php
                     if (count($movements) == 0) {
-                        ?>
+                    ?>
                         <tr>
                             <td>
                                 <p style="text-align:center;font-weight:bold;">No se encontraron registros en estas fechas
@@ -103,11 +103,11 @@ $balance = $ingresosTotal - $gastosTotal;
                         </tr>
                     <?php
                     } else {
-                        ?>
+                    ?>
                         <?php
                         for ($i = 0; $i < count($movements); $i++) {
                             $movement = $movements[$i];
-                            ?>
+                        ?>
                             <tr>
                                 <td>
                                     <h4><?= $movement->name ?></h4>
@@ -159,7 +159,7 @@ $balance = $ingresosTotal - $gastosTotal;
                 <tbody>
                     <?php
                     if (count($ingresos) == 0) {
-                        ?>
+                    ?>
                         <tr>
                             <td>
                                 <p style="text-align:center;font-weight:bold;">No se encontraron ingresos en estas fechas
@@ -168,11 +168,11 @@ $balance = $ingresosTotal - $gastosTotal;
                         </tr>
                     <?php
                     } else {
-                        ?>
+                    ?>
                         <?php
                         for ($i = 0; $i < count($ingresos); $i++) {
                             $ingreso = $ingresos[$i];
-                            ?>
+                        ?>
                             <tr>
                                 <td>
                                     <h4><?= $ingreso->name ?></h4>
@@ -248,7 +248,7 @@ $balance = $ingresosTotal - $gastosTotal;
                 <tbody>
                     <?php
                     if (count($gastos) == 0) {
-                        ?>
+                    ?>
                         <tr>
                             <td>
                                 <p style="text-align:center;font-weight:bold;">No se encontraron gastos en estas fechas</p>
@@ -256,11 +256,11 @@ $balance = $ingresosTotal - $gastosTotal;
                         </tr>
                     <?php
                     } else {
-                        ?>
+                    ?>
                         <?php
                         for ($i = 0; $i < count($gastos); $i++) {
                             $gasto = $gastos[$i];
-                            ?>
+                        ?>
                             <tr>
                                 <td>
                                     <h4><?= $gasto->name ?></h4>
@@ -318,7 +318,7 @@ $balance = $ingresosTotal - $gastosTotal;
                 <tbody>
                     <?php
                     if (count($pendientes) == 0) {
-                        ?>
+                    ?>
                         <tr>
                             <td>
                                 <p style="text-align:center;font-weight:bold;">No se encontraron pagos pendiente en estas
@@ -327,11 +327,11 @@ $balance = $ingresosTotal - $gastosTotal;
                         </tr>
                     <?php
                     } else {
-                        ?>
+                    ?>
                         <?php
                         for ($i = 0; $i < count($pendientes); $i++) {
                             $pendiente = $pendientes[$i];
-                            ?>
+                        ?>
                             <tr>
                                 <td>
                                     <h4><?= $pendiente->name ?></h4>
@@ -359,6 +359,12 @@ $balance = $ingresosTotal - $gastosTotal;
                 </tbody>
             </table>
         </div>
+    </div>
+    <div class="mensajeria-content">
+        <?php include "includes/mensajeria.php" ?>
+        <button id="mainButton" class="main-button">
+            <i class="acuarela acuarela-Mensajes"></i>
+        </button>
     </div>
 </main>
 <?php include "includes/footer.php" ?>

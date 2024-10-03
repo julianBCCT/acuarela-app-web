@@ -1,14 +1,14 @@
-<?php 
-  $classBody ="inscripcion"; 
-  include "includes/header.php";
-  $inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
+<?php
+$classBody = "inscripcion";
+include "includes/header.php";
+$inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
 ?>
 <main>
   <?php
-    $mainHeaderTitle = "Agregar Niñx";
-    $action = '<button class="btn btn-action-primary enfasis btn-big" onclick="handleInscripcion()">Guardar Borrador</button>';
-    include "templates/sectionHeader.php";
-?>
+  $mainHeaderTitle = "Agregar Niñx";
+  $action = '<button class="btn btn-action-primary enfasis btn-big" onclick="handleInscripcion()">Guardar Borrador</button>';
+  include "templates/sectionHeader.php";
+  ?>
   <div class="navtabs">
     <div class="navtab active" data-target="basica">Información básica</div>
     <div class="navtab" data-target="familia">Familia</div>
@@ -22,7 +22,7 @@
       <div class="formHeader">
         <strong>
           Has completado el <span class="percentage">
-            <?=$inscripcion != "" ? $inscripcion->percentaje : "0"?>%
+            <?= $inscripcion != "" ? $inscripcion->percentaje : "0" ?>%
           </span> de la inscripción
           mínima de <span class="name"></span>
         </strong>
@@ -34,33 +34,33 @@
         <span>
           <i class="acuarela acuarela-Usuario"></i>
           <label for="name">Nombre</label>
-          <input type="text" name="name" id="name" / value="<?=$inscripcion != "" ? $inscripcion->name : ""?>" required
+          <input type="text" name="name" id="name" / value="<?= $inscripcion != "" ? $inscripcion->name : "" ?>" required
             oninput="changeValuesForMultipleContainers(event, {'span.name': ' {value}', '#resname strong': '{value}'})">
         </span>
         <span>
           <i class="acuarela acuarela-Usuario"></i>
           <label for="lastname">Apellidos</label>
           <input type="text" name="lastname" id="lastname" /
-            value="<?=$inscripcion != "" ? $inscripcion->lastname : ""?>" required>
+            value="<?= $inscripcion != "" ? $inscripcion->lastname : "" ?>" required>
         </span>
         <div class="row">
           <span class="calendar">
             <i class="acuarela acuarela-Calendario"></i>
             <label for="birthdate">Fecha de nacimiento</label>
             <input type="date" name="birthdate" id="birthdate" /
-              value="<?=$inscripcion != "" ? $inscripcion->birthdate : ""?>" required
+              value="<?= $inscripcion != "" ? $inscripcion->birthdate : "" ?>" required
               onchange="changeValuesForMultipleContainers(event, {'#resbirthday strong': '{value}'})">
           </span>
           <span>
             <i class="acuarela acuarela-Nino"></i>
             <label for="genero">Género</label>
-            <select name="genero" id="genero" <?=$inscripcion !="" ? $inscripcion->gender : ""?>
+            <select name="genero" id="genero" <?= $inscripcion != "" ? $inscripcion->gender : "" ?>
               onchange="changeValuesForMultipleContainers(event, {'#resgender strong': '{value}'})">
-              <option <?=$inscripcion !="" && $inscripcion->gender == "Masculino" ? "selected" : ""?>
+              <option <?= $inscripcion != "" && $inscripcion->gender == "Masculino" ? "selected" : "" ?>
                 value="Masculino">Masculino</option>
-              <option <?=$inscripcion !="" && $inscripcion->gender == "Femenino" ? "selected" : ""?>
+              <option <?= $inscripcion != "" && $inscripcion->gender == "Femenino" ? "selected" : "" ?>
                 value="Femenino">Femenino</option>
-              <option <?=$inscripcion !="" && $inscripcion->gender == "X" ? "selected" : ""?> value="X">X</option>
+              <option <?= $inscripcion != "" && $inscripcion->gender == "X" ? "selected" : "" ?> value="X">X</option>
             </select>
           </span>
         </div>
@@ -88,26 +88,26 @@
                     <input type="text" autocomplete="off" name="parent_email1" id="parent_email1"
                       onchange="handleEmailChange(event, 1)"
                       oninput="changeValuesForMultipleContainers(event, { '#resparentmail strong': '{value}'})"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->email : ""?>" required />
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[0]->email : "" ?>" required />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_name1">Nombres</label>
                     <input type="text" autocomplete="off" name="parent_name1" id="parent_name1"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->name : ""?>" required
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[0]->name : "" ?>" required
                       oninput="changeValuesForMultipleContainers(event, { '#resparentname strong': '{value}'})" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_lastname1">Apellidos</label>
                     <input type="text" autocomplete="off" name="parent_lastname1" id="parent_lastname1"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->lastname : ""?>" required />
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[0]->lastname : "" ?>" required />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Telefono"></i>
                     <label for="parent_phone1">Celular</label>
                     <input type="text" autocomplete="off" name="parent_phone1" id="parent_phone1"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[0]->phone : ""?>" required
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[0]->phone : "" ?>" required
                       oninput="changeValuesForMultipleContainers(event, { '#resparenttel strong': '{value}'})" />
                   </span>
                 </fieldset>
@@ -128,25 +128,25 @@
                     <label for="parent_email2">Correo Electrónico</label>
                     <input type="text" autocomplete="off" name="parent_email2" id="parent_email2"
                       onchange="handleEmailChange(event, 2)"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->email : ""?>" />
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[1]->email : "" ?>" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_name2">Nombres</label>
                     <input type="text" autocomplete="off" name="parent_name2" id="parent_name2"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->name : ""?>" />
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[1]->name : "" ?>" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Usuario"></i>
                     <label for="parent_lastname2">Apellidos</label>
                     <input type="text" autocomplete="off" name="parent_lastname2" id="parent_lastname2"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->lastname : ""?>" />
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[1]->lastname : "" ?>" />
                   </span>
                   <span>
                     <i class="acuarela acuarela-Telefono"></i>
                     <label for="parent_phone2">Celular</label>
                     <input type="text" autocomplete="off" name="parent_phone2" id="parent_phone2"
-                      value="<?=$inscripcion != "" ? $inscripcion->parents[1]->phone : ""?>" />
+                      value="<?= $inscripcion != "" ? $inscripcion->parents[1]->phone : "" ?>" />
                   </span>
                 </fieldset>
               </li>
@@ -170,38 +170,38 @@
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Parentesco</label>
-                <select name="guardian1_relationship" id="parent_type1"  onchange="checkOtherOption(this)">
-                      <option value="Hermana/o">Hermana/o</option>
-                      <option value="Prima/o">Prima/o</option>
-                      <option value="Abuela/o">Abuela/o</option>
-                      <option value="Tia/o">Tia/o</option>
-                      <option value="Otra/o">Otra/o</option>
-                    </select>
+                <select name="guardian1_relationship" id="parent_type1" onchange="checkOtherOption(this)">
+                  <option value="Hermana/o">Hermana/o</option>
+                  <option value="Prima/o">Prima/o</option>
+                  <option value="Abuela/o">Abuela/o</option>
+                  <option value="Tia/o">Tia/o</option>
+                  <option value="Otra/o">Otra/o</option>
+                </select>
               </span>
               <span class="other_relationship_span" style="display:none;">
-              <i class="acuarela acuarela-"></i>
+                <i class="acuarela acuarela-"></i>
                 <label for="other_relationship2">Especifique el parentesco</label>
                 <input type="text" name="other_relationship2" />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Nombres</label>
-                <input type="text" name="guardian1_name" id="guardian1_name" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardian_name : ""?>" required />
+                <input type="text" name="guardian1_name" id="guardian1_name" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardian_name : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Apellidos</label>
-                <input type="text" name="guardian1_lastname" id="guardian1_lastname" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardian_latname : ""?>" required />
+                <input type="text" name="guardian1_lastname" id="guardian1_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardian_latname : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Celular</label>
-                <input type="text" name="guardian1_phone" id="guardian1_phone" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardianphone : ""?>" required />
+                <input type="text" name="guardian1_phone" id="guardian1_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardianphone : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Correo electrónico</label>
-                <input type="text" name="guardian1_email" id="guardian1_email" value="<?=$inscripcion != "" ? $inscripcion->guardians[0]->guardianemail : ""?>" required />
+                <input type="text" name="guardian1_email" id="guardian1_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardianemail : "" ?>" required />
               </span>
               <span>
                 <div class="cntr-check">
@@ -223,48 +223,48 @@
                 <i class="acuarela acuarela-"></i>
                 <label for="">Parentesco</label>
                 <select name="guardian2_relationship" id="parent_type1" onchange="checkOtherOption(this)">
-                      <option value="Hermana/o">Hermana/o</option>
-                      <option value="Prima/o">Prima/o</option>
-                      <option value="Abuela/o">Abuela/o</option>
-                      <option value="Tia/o">Tia/o</option>
-                      <option value="Otra/o">Otra/o</option>
-                    </select>
+                  <option value="Hermana/o">Hermana/o</option>
+                  <option value="Prima/o">Prima/o</option>
+                  <option value="Abuela/o">Abuela/o</option>
+                  <option value="Tia/o">Tia/o</option>
+                  <option value="Otra/o">Otra/o</option>
+                </select>
               </span>
               <span class="other_relationship_span" style="display:none;">
-              <i class="acuarela acuarela-"></i>
+                <i class="acuarela acuarela-"></i>
                 <label for="other_relationship2">Especifique el parentesco</label>
                 <input type="text" name="other_relationship2" />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Nombres</label>
-                <input type="text" name="guardian2_name" id="guardian2_name" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardian_name : ""?>" required />
+                <input type="text" name="guardian2_name" id="guardian2_name" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_name : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Apellidos</label>
-                <input type="text" name="guardian2_lastname" id="guardian2_lastname" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardian_latname : ""?>" required />
+                <input type="text" name="guardian2_lastname" id="guardian2_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_latname : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Celular</label>
-                <input type="text" name="guardian2_phone" id="guardian2_phone" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardianphone : ""?>" required />
+                <input type="text" name="guardian2_phone" id="guardian2_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardianphone : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Correo electrónico</label>
-                <input type="text" name="guardian2_email" id="guardian2_email" value="<?=$inscripcion != "" ? $inscripcion->guardians[1]->guardianemail : ""?>" required />
+                <input type="text" name="guardian2_email" id="guardian2_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardianemail : "" ?>" required />
               </span>
               <span>
                 <div class="cntr-check">
-                  <input  type="checkbox" id="guardian2_emergency" name="guardian2_emergency" class="hidden-xs-up" />
+                  <input type="checkbox" id="guardian2_emergency" name="guardian2_emergency" class="hidden-xs-up" />
                   <label for="guardian2_emergency" class="cbx"></label>
                   <span> Marcar como contacto de emergencia</span>
                 </div>
               </span>
               <span>
                 <div class="cntr-check">
-                  <input  type="checkbox" id="guardian2_pickup" name="guardian2_pickup" class="hidden-xs-up" />
+                  <input type="checkbox" id="guardian2_pickup" name="guardian2_pickup" class="hidden-xs-up" />
                   <label for="guardian2_pickup" class="cbx"></label>
                   <span> Puede entregar o recibir al niño</span>
                 </div>
@@ -278,17 +278,17 @@
           <i class="acuarela acuarela-Nino"></i>
           <label for="paymentTime">Cada cuánto se cobra:</label>
           <select name="paymentTime" id="paymentTime">
-            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Hora" ? "selected" : ""?>
+            <option <?= $inscripcion != "" && $inscripcion->payment->time == "Hora" ? "selected" : "" ?>
               value="Hora">Hora</option>
-            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Diario" ? "selected" : ""?>
+            <option <?= $inscripcion != "" && $inscripcion->payment->time == "Diario" ? "selected" : "" ?>
               value="Diario">Diario</option>
-            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Semanal" ? "selected" : ""?>
+            <option <?= $inscripcion != "" && $inscripcion->payment->time == "Semanal" ? "selected" : "" ?>
               value="Semanal">Semanal</option>
-            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Mensual" ? "selected" : ""?>
+            <option <?= $inscripcion != "" && $inscripcion->payment->time == "Mensual" ? "selected" : "" ?>
               value="Mensual">Mensual</option>
-            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Semestral" ? "selected" : ""?>
+            <option <?= $inscripcion != "" && $inscripcion->payment->time == "Semestral" ? "selected" : "" ?>
               value="Semestral">Semestral</option>
-            <option <?=$inscripcion !="" && $inscripcion->payment->time == "Anual" ? "selected" : ""?>
+            <option <?= $inscripcion != "" && $inscripcion->payment->time == "Anual" ? "selected" : "" ?>
               value="Anual">Anual</option>
           </select>
         </span>
@@ -296,13 +296,13 @@
           <i class="acuarela acuarela-Calendario"></i>
           <label for="proximo_pago">Inicio del cobro</label>
           <input type="date" name="proximo_pago" id="proximo_pago"
-            value="<?=$inscripcion != "" ? $inscripcion->payment->proximo_pago : ""?>" required />
+            value="<?= $inscripcion != "" ? $inscripcion->payment->proximo_pago : "" ?>" required />
         </span>
         <span>
           <i class="acuarela acuarela-Usuario"></i>
           <label for="paymentPrice">Cuánto se va a cobrar:</label>
           <input type="text" name="paymentPrice" id="paymentPrice"
-            value="<?=$inscripcion != "" ? $inscripcion->payment->price : ""?>" required />
+            value="<?= $inscripcion != "" ? $inscripcion->payment->price : "" ?>" required />
         </span>
         <div class="info">
           <i class="acuarela acuarela-Informacion"></i>
@@ -389,8 +389,8 @@
         </div>
         <!-- <h5>Otros responsables</h5> -->
       </div>
-      <input type="hidden" name="daycare" id="daycare" value="<?=$a->daycareID?>">
-      <input type="hidden" name="inscripcion" id="inscripcion" value="<?=$_GET['id']?>">
+      <input type="hidden" name="daycare" id="daycare" value="<?= $a->daycareID ?>">
+      <input type="hidden" name="inscripcion" id="inscripcion" value="<?= $_GET['id'] ?>">
     </form>
   </div>
 </main>
