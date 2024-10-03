@@ -16,10 +16,6 @@ include "includes/header.php" ?>
   </div>
 </main>
 
-<!-- <div class="message">
-    
-
-  </div> -->
 <div class="mensajeria-content">
   <?php include "includes/mensajeria.php" ?>
 

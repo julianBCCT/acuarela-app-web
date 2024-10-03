@@ -2163,11 +2163,11 @@ document.addEventListener("DOMContentLoaded", function () {
   const currentPath = window.location.pathname;
   let roomId;
   let user;
-  let userId;
+  let userIdPadre;
+  let socketPadre;
   let userIdAcuarela = acuarelaId;
   let padres = [];
-
-  // console.log(currentPath);
+  let padre = [];
 
   if (currentPath == "/miembros/acuarela-app-web/") {
     console.log("Id Acuarela", acuarelaId);
@@ -2315,7 +2315,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
             btnInvitar.addEventListener('click', function () {
               console.log('Hola', daycareName, padre.email);
-              // console.log('Hola');
               sendRegisterEmail(
                 "padre",
                 daycareName,
@@ -2331,17 +2330,16 @@ document.addEventListener("DOMContentLoaded", function () {
             btnChatear.textContent = 'Chatear';
             padreElement.appendChild(btnChatear);
 
-            btnChatear.addEventListener('click', () => {
-              console.log(padre);
-              // console.log("hola");
 
-              userId = padre.id;
+            btnChatear.addEventListener('click', () => {
+              userIdPadre = padre.id;
+              socketPadre = padre.socketId;
               cargarChatPadre(padre.id);
               mostrarChat(btnChatear);
 
               selectedButton = btnChatear;
 
-              mensajeriaPadre(padre);
+              mensajeriaPadre();
             });
 
           }
@@ -2386,8 +2384,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
         padres = await buscarPadres();
         divPadresInactivos.innerHTML = "";
-
-        //Revisar------------------------------------------------------------------------
 
         const chatsActivos = await buscarChatsActivos();
         //Compara el json de padres con chatsActivos para mostrar solo los que no tengan chats activos
@@ -2464,10 +2460,8 @@ document.addEventListener("DOMContentLoaded", function () {
       } else {
         buscarMensajeria.classList.add("active");
         agregarButton.classList.add("inactive");
-        // opcionesMensajeria.classList.add("inactive");
         chatButton.forEach((boton) => {
           boton.classList.add("inactive");
-          console.log(boton);
           boton.disabled = false;
 
         });
@@ -2509,10 +2503,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
           if (padres.length > 0) {
             padres.forEach((padre) => {
-              // console.log(padre);
               const padreElement = document.createElement('div');
               padreElement.className = 'chats-mensajeria';
-              // padreElement.id = 'chats-mensajeria';
 
               const padrePhoto = document.createElement('img');
               padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
@@ -2523,15 +2515,16 @@ document.addEventListener("DOMContentLoaded", function () {
               padreElement.appendChild(padreName);
               divPadresChats.appendChild(padreElement);
 
-              padreElement.addEventListener('click', () => {
-                // console.log("hola");
+              console.log(padre);
 
-                userId = padre.id;
+              padreElement.addEventListener('click', () => {
+                userIdPadre = padre.id;
+                socketPadre = padre.socketId;
                 cargarChatPadre(padre.id);
                 mostrarChat(padreElement);
 
                 selectedButton = padreElement;
-                mensajeriaPadre(padre);
+                mensajeriaPadre();
                 agregarIcon(padre);
                 padreInfo = padre;
               });
@@ -2577,7 +2570,6 @@ document.addEventListener("DOMContentLoaded", function () {
         bntBuscarChat.addEventListener('click', () => {
           const textBuscarChat = inputBuscarChat.value;
           divPadresChats.innerHTML = '';
-          // console.log(textBuscarChat, padresActivos);
           filtrarPadres(textBuscarChat, padresFiltrados);
 
         });
@@ -2590,13 +2582,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function mostrarChat(boton) {
-      console.log("Desde Mostrar Chat");
       selectedButton = boton;
       contendorMessages.innerHTML = "";
-      // const cerrarChat = document.getElementById('closeChat');
-      // const manejarCierreChat = () => {
-      //   mostrarChat(selectedButton);
-      // }
 
       if (boton.classList.contains('active')) {
         // Si el botón ya está activo, lo inactivamos
@@ -2604,8 +2591,6 @@ document.addEventListener("DOMContentLoaded", function () {
         boton.classList.add("inactive");
         buscarMensajeria.classList.remove("inactive");
         agregarButton.classList.remove("inactive");
-        // opcionesMensajeria.classList.remove("inactive");
-
         // Restauramos la opacidad de todos los botones
         chatButton.forEach((btn) => btn.classList.remove("inactive"));
       } else {
@@ -2645,39 +2630,22 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedButton = null;
 
     const cerrarChat = document.getElementById('closeChat');
-    // function manejarCierreChat() {
-    //   const messageInput = document.getElementById('messageInput');
-    //   messageInput.value = "";
-    // }
 
-    // document.getElementById('closeChat').addEventListener('click', () => {
     cerrarChat.addEventListener('click', () => {
       const messageInput = document.getElementById('messageInput');
       messageInput.value = "";
-      console.log("Al cerrar", selectedButton);
-      // contendorMessages.removeEventListener('scroll', () => { })
       mostrarChat(selectedButton);
     });
 
-
-    // let scrollListenerAttached = false;
-    // contendorMessages.addEventListener('scroll', cargarMensajeScroll);
     let chatMessages = [];
     let mesesMostrados = [];
     let isLoadingOlderMessages = false;
-    async function cargarChatPadre(userId) {
-
-
-      // let chatMessages = [];
+    async function cargarChatPadre(userIdPadre) {
       contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
-
-      console.log("Desde Cargar chat padre");
-
       contendorMessages.innerHTML = '';
 
-
       try {
-        const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${userId}`, {
+        const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${userIdPadre}`, {
           method: 'GET',
           headers: {
             'Content-Type': 'application/json'
@@ -2693,7 +2661,7 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error(error);
       }
 
-      roomId = getRoomName(acuarelaId, userId);
+      roomId = getRoomName(acuarelaId, userIdPadre);
       user = userNameAdmin;
 
       if (roomId && user) {
@@ -2708,11 +2676,9 @@ document.addEventListener("DOMContentLoaded", function () {
           }
         });
         chatMessages = await messages.json();
-        console.log(chatMessages);
         const currentMonth = new Date().toISOString().slice(0, 7);
 
         mesesMostrados = [currentMonth];
-        console.log("Meses a mostrar", mesesMostrados);
 
         isLoadingOlderMessages = false;
 
@@ -2736,10 +2702,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function cargarMessages(mes) {
-      console.log("Se ejecuta cargarMessages");
       if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
-
-        console.log("Entra al condicional");
         const messagesMonths = chatMessages[0].messages;
 
         // Insertar los mensajes del mes en orden descendente (del más reciente al más antiguo)
@@ -2787,42 +2750,17 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
     }
-
-
-
-    // Detectar cuando se hace scroll hasta el final del contenedor
-    // if (!scrollListenerAttached) {
-    //   console.log(scrollListenerAttached);
-    // contendorMessages.addEventListener('scroll', () => {
-
-    //   scrollListenerAttached = true;
-
-    // }
-
-
-
     function cargarMensajeScroll() {
-      console.log("Se ejecuta cargarMensajeScroll");
-      console.log("cargarMensajeScroll", isLoadingOlderMessages);
-      console.log("Scroll", contendorMessages.scrollTop);
-      // if (contendorMessages.scrollTop + contendorMessages.clientHeight >= contendorMessages.scrollHeight) {
-      // if (contendorMessages.scrollTop === 0 && isLoadingOlderMessages === false) {
       if (contendorMessages.scrollTop === 0 && !isLoadingOlderMessages) {
-        console.log("------Se llama cargarMesAnterior-----", isLoadingOlderMessages);
-        // if (contendorMessages.scrollTop === 0) {
         isLoadingOlderMessages = true;
         // Si llegamos al tope superior, cargar los mensajes del mes anterior
-        cargarMesAnterior(); // Esta función debe determinar qué mes cargar
+        cargarMesAnterior();
 
       }
     };
 
-    // contendorMessages.addEventListener('scroll', cargarMensajeScroll);
-
-
     function verificarScrollInicial() {
       if (contendorMessages.scrollHeight <= contendorMessages.clientHeight) {
-        console.log("VerificarScrollInicial");
         // Si el contenedor no tiene suficiente contenido para el scroll, cargar más mensajes
         cargarMesAnterior();
       }
@@ -2847,15 +2785,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     function cargarMesAnterior() {
-      console.log("Se ejecuta cargarMesAnterior")
-      console.log("cargarMesAnterior", mesesMostrados);
-      const ultimoMesMostrado = mesesMostrados[mesesMostrados.length - 1]; // Último mes cargado
-      console.log("cargarMesAnterior", ultimoMesMostrado);
-
+      const ultimoMesMostrado = mesesMostrados[mesesMostrados.length - 1];
       // Restar un mes al último mes mostrado
       const mesAnterior = restarMes(ultimoMesMostrado);
-      console.log("cargarMesAnterior", mesAnterior);
-
       // Verificar si tenemos mensajes para ese mes anterior
       if (chatMessages[0].messages[mesAnterior]) {
         const noMessagesElement = document.createElement('div');
@@ -2868,19 +2800,11 @@ document.addEventListener("DOMContentLoaded", function () {
 
         cargarMessages(mesAnterior); // Mostrar los chats del mes anterior
         mesesMostrados.push(mesAnterior); // Agregar el nuevo mes a la lista de meses mostrados
-        console.log("Meses cargarMesAnterior", mesesMostrados);
-        console.log("Meses cargarMesAnterior: Muestra con este mes", mesAnterior);
-        // Si el mensaje "No hay más mensajes" ya fue mostrado, lo ocultamos
-        // noMoreMessagesShown = false; // Restablecer la variable
       } else {
-        console.log('No hay más mensajes para mostrar.');
-
-
         const fechaElement = document.createElement('div');
         fechaElement.className = 'no-more-messages';
         fechaElement.textContent = ultimoMesMostrado;
 
-        // Insertar el mensaje en la parte superior del contenedor de mensajes
         const contenedorMessages = document.getElementById('messages');
         contenedorMessages.insertBefore(fechaElement, contenedorMessages.firstChild);
 
@@ -2890,14 +2814,9 @@ document.addEventListener("DOMContentLoaded", function () {
         noMessagesElement.className = 'no-more-messages';
         noMessagesElement.textContent = 'No hay más mensajes para mostrar.';
 
-        // Insertar el mensaje en la parte superior del contenedor de mensajes
-        // const contenedorMessages = document.getElementById('messages');
         contenedorMessages.insertBefore(noMessagesElement, contenedorMessages.firstChild);
 
         isLoadingOlderMessages = true;
-        // Marcar que el mensaje ha sido mostrado
-        // noMoreMessagesShown = true;
-        // }
       }
     }
 
@@ -2905,50 +2824,33 @@ document.addEventListener("DOMContentLoaded", function () {
       return [user1, user2].sort().join('-');
     }
 
-
-
-
-    // btnSendMensaje.addEventListener('click', enviarMensaje);
     let clickListenerAttached = false;
+    function mensajeriaPadre() {
 
-    function mensajeriaPadre(padre) {
-      // const btnSendMensaje = document.getElementById("sendBtn");
-
-      // btnSendMensaje.removeEventListener('click', enviarMensaje);
       document.getElementById('messageInput').addEventListener('keyup', (event) => {
         if (event.code === 'Enter') {
           btnSendMensaje.click();
         }
       });
-
-
-
       // Agregar el event listener solo una vez
       if (!clickListenerAttached) {
         btnSendMensaje.addEventListener('click', enviarMensaje);
         clickListenerAttached = true;
       }
 
-      // btnSendMensaje.addEventListener('click', () => {
-      // btnSendMensaje.addEventListener('click', enviarMensaje);
       function enviarMensaje() {
         const messageInput = document.getElementById('messageInput');
         const message = messageInput.value;
-        console.log("SokectID", padre);
-        console.log("SokectID", padre.id);
-        // console.log("SokectID", padre.socketId);
-
         if (message) {
-
           if (messageInput.value && roomId) {
             const message = {
               text: messageInput.value,
               user: user,
               timestamp: Date(),
               senderId: acuarelaId,
-              receiverId: padre.id,
+              receiverId: userIdPadre,
               roomId,
-              socketid: padre.socketId,
+              socketid: socketPadre,
             };
             socket.emit('sendMessage', message);
 
@@ -2978,7 +2880,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function showNotification(notificationMessage, notificationtitle) {
-      console.log("Hola ya entró");
       if (!("Notification" in window)) {
         console.error("Este navegador no soporta notificaciones.");
         return;
@@ -3004,7 +2905,7 @@ document.addEventListener("DOMContentLoaded", function () {
     socket.off('receiveMessage');
 
     socket.on('receiveMessage', (message) => {
-      if (message.sender === userId) {
+      if (message.sender === userIdPadre) {
         const messageElement = document.createElement('div');
         messageElement.className = 'mensaje-recibido';
 
@@ -3029,7 +2930,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
     socket.on('newMessageNotification', (msg) => {
       const { message: { sender, content } } = msg;
-      // Mostrar notificación, por ejemplo en un badge de notificaciones
       showNotification(content, sender);
 
     });
@@ -3043,11 +2943,12 @@ document.addEventListener("DOMContentLoaded", function () {
         icons.pop();
       }
       sessionStorage.setItem('icons', JSON.stringify(icons));
-      cargarIcons(padre);
+      // cargarIcons(padre);
+      cargarIcons();
     }
     cargarIcons();
 
-    function cargarIcons() {
+    async function cargarIcons() {
       const ulOpciones = document.getElementById('opciones-mensajeria');
       const itemsToRemove = ulOpciones.querySelectorAll('li.chat-icon');
 
@@ -3056,8 +2957,9 @@ document.addEventListener("DOMContentLoaded", function () {
       });
 
       const icons = JSON.parse(sessionStorage.getItem('icons')) || [];
-      icons.forEach(chatContent => {
 
+      // Cambia el forEach por un for...of
+      for (const icon of icons) {
         const iconElement = document.createElement('li');
         iconElement.className = 'chat-icon';
 
@@ -3066,24 +2968,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
         iconElement.appendChild(imgIcon);
         ulOpciones.appendChild(iconElement);
-        iconElement.addEventListener('click', () => {
+
+        iconElement.addEventListener('click', async () => {
           if (iconElement.classList.contains('active')) {
-            console.log("Activo");
-            // mostrarChat(iconElement);
             cerrarChat.click();
-            // mostrarChat(iconElement);
             return;
           }
-          console.log("Click al icon");
-          console.log(iconElement);
-          cargarChatPadre(chatContent);
-          mostrarChat(iconElement);
+          let usuario;
+          try {
+            const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${icon}`, {
+              method: 'GET',
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            });
 
-          mensajeriaPadre(arguments);
-        })
-      });
+            usuario = await usuarioInfo.json();
+            console.log(usuario);
+
+          } catch (error) {
+            console.error(error);
+          }
+
+          userIdPadre = usuario.id;
+          socketPadre = usuario.socketId;
+          cargarChatPadre(icon);
+          mostrarChat(iconElement);
+          mensajeriaPadre();
+        });
+      }
+
       chatButton = document.querySelectorAll(".chat-icon");
     }
+
   }
 
 });
