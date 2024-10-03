@@ -2658,25 +2658,23 @@ document.addEventListener("DOMContentLoaded", function () {
       // contendorMessages.removeEventListener('scroll', () => { })
       mostrarChat(selectedButton);
     });
-    let mesesMostrados = [];
+
 
     // let scrollListenerAttached = false;
     // contendorMessages.addEventListener('scroll', cargarMensajeScroll);
-
+    let chatMessages = [];
+    let mesesMostrados = [];
+    let isLoadingOlderMessages = false;
     async function cargarChatPadre(userId) {
-      let isLoadingOlderMessages = false;
 
-      console.log("Desde Cargar chat padre");
-      // if (scrollListenerAttached) {
-      // contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
-      //   scrollListenerAttached = false;
-      // }
-      contendorMessages.innerHTML = '';
+
+      // let chatMessages = [];
       contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
 
+      console.log("Desde Cargar chat padre");
 
-      // limpiarContenedorMensajes();
-      // eliminarEventosScroll();
+      contendorMessages.innerHTML = '';
+
 
       try {
         const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${userId}`, {
@@ -2709,11 +2707,8 @@ document.addEventListener("DOMContentLoaded", function () {
             'Content-Type': 'application/json'
           }
         });
-
-
-        const chatMessages = await messages.json();
+        chatMessages = await messages.json();
         console.log(chatMessages);
-
         const currentMonth = new Date().toISOString().slice(0, 7);
 
         mesesMostrados = [currentMonth];
@@ -2721,164 +2716,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
         isLoadingOlderMessages = false;
 
-        // let noMoreMessagesShown = false; // Variable para controlar la visualización del mensaje
-
-        function cargarMessages(mes) {
-          if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
-            const messagesMonths = chatMessages[0].messages;
-
-            // Insertar los mensajes del mes en orden descendente (del más reciente al más antiguo)
-            const mensajesDelMes = messagesMonths[mes].slice().reverse(); // Clonamos y revertimos el array
-
-            // Guardar la posición actual del scroll antes de añadir mensajes antiguos
-            const currentScrollPosition = contendorMessages.scrollHeight - contendorMessages.scrollTop;
-
-            mensajesDelMes.forEach(msg => {
-              const messageElement = document.createElement('div');
-              const mensajeElement = document.createElement('p');
-              const horaElement = document.createElement('p');
-              horaElement.className = 'chat-hora';
-
-              const horaMenssage = new Date(msg.timestamp);
-              const options = { hour: '2-digit', minute: '2-digit', hour12: true };
-              const formattedTime = horaMenssage.toLocaleTimeString([], options);
-              horaElement.textContent = formattedTime;
-
-              mensajeElement.textContent = `${msg.content}`;
-              messageElement.appendChild(mensajeElement);
-              messageElement.appendChild(horaElement);
-
-              messageElement.className = msg.sender === acuarelaId ? 'mensaje-enviado' : 'mensaje-recibido';
-
-              contendorMessages.insertBefore(messageElement, contendorMessages.firstChild);
-            });
-
-            // Ajustar la posición del scroll para evitar saltos
-            contendorMessages.scrollTop = contendorMessages.scrollHeight - currentScrollPosition;
-
-            isLoadingOlderMessages = false; // Terminar la carga
-            contendorMessages.scroll = 1;
-            // verificarScrollInicial();
-
-          } else {
-            const noMessagesElement = document.createElement('div');
-            noMessagesElement.className = 'no-more-messages';
-            noMessagesElement.id = "messages";
-            noMessagesElement.textContent = 'No hay mensajes previos.';
-            document.getElementById('messages').appendChild(noMessagesElement);
-          }
-
-        }
-
         cargarMessages(currentMonth);
-
-        // Detectar cuando se hace scroll hasta el final del contenedor
-        // if (!scrollListenerAttached) {
-        //   console.log(scrollListenerAttached);
-        // contendorMessages.addEventListener('scroll', () => {
         contendorMessages.addEventListener('scroll', cargarMensajeScroll);
-        //   scrollListenerAttached = true;
-
-        // }
-
-        function cargarMensajeScroll() {
-          console.log("Se ejecuta cargarMensajeScroll");
-          console.log("cargarMensajeScroll", isLoadingOlderMessages);
-          console.log("Scroll", contendorMessages.scrollTop);
-          // if (contendorMessages.scrollTop + contendorMessages.clientHeight >= contendorMessages.scrollHeight) {
-          // if (contendorMessages.scrollTop === 0 && isLoadingOlderMessages === false) {
-          if (contendorMessages.scrollTop === 1 && !isLoadingOlderMessages) {
-            console.log("Se llama cargarMesAnterior", isLoadingOlderMessages);
-            // if (contendorMessages.scrollTop === 0) {
-            isLoadingOlderMessages = true;
-            // Si llegamos al tope superior, cargar los mensajes del mes anterior
-            cargarMesAnterior(); // Esta función debe determinar qué mes cargar
-
-          }
-        };
-
-
-        function verificarScrollInicial() {
-          if (contendorMessages.scrollHeight <= contendorMessages.clientHeight) {
-            console.log("VerificarScrollInicial");
-            // Si el contenedor no tiene suficiente contenido para el scroll, cargar más mensajes
-            cargarMesAnterior();
-          }
-        }
-
-
-        function restarMes(mes) {
-          const [year, month] = mes.split('-').map(Number); // Dividimos el año y el mes
-          let newYear = year;
-          let newMonth = month - 1; // Restamos 1 mes
-          // Si el mes es 0, restamos un año y ponemos el mes a 12 (diciembre)
-          if (newMonth === 0) {
-            newMonth = 12;
-            newYear -= 1;
-          }
-          // Formatear el mes con dos dígitos (01, 02,...)
-          const formattedMonth = newMonth < 10 ? `0${newMonth}` : newMonth;
-          // Retornamos la nueva fecha en formato 'YYYY-MM'
-          return `${newYear}-${formattedMonth}`;
-        }
-
-
-
-        function cargarMesAnterior() {
-          console.log("Se ejecuta cargarMesAnterior")
-          console.log("cargarMesAnterior", mesesMostrados);
-          const ultimoMesMostrado = mesesMostrados[mesesMostrados.length - 1]; // Último mes cargado
-          console.log("cargarMesAnterior", ultimoMesMostrado);
-
-          // Restar un mes al último mes mostrado
-          const mesAnterior = restarMes(ultimoMesMostrado);
-          console.log("cargarMesAnterior", mesAnterior);
-
-          // Verificar si tenemos mensajes para ese mes anterior
-          if (chatMessages[0].messages[mesAnterior]) {
-            const noMessagesElement = document.createElement('div');
-            noMessagesElement.className = 'no-more-messages';
-            noMessagesElement.textContent = ultimoMesMostrado;
-
-            // Insertar el mensaje en la parte superior del contenedor de mensajes
-            const contenedorMessages = document.getElementById('messages');
-            contenedorMessages.insertBefore(noMessagesElement, contenedorMessages.firstChild);
-
-            cargarMessages(mesAnterior); // Mostrar los chats del mes anterior
-            mesesMostrados.push(mesAnterior); // Agregar el nuevo mes a la lista de meses mostrados
-            console.log("Meses cargarMesAnterior", mesesMostrados);
-            console.log("Meses cargarMesAnterior: Muestra con este mes", mesAnterior);
-            // Si el mensaje "No hay más mensajes" ya fue mostrado, lo ocultamos
-            // noMoreMessagesShown = false; // Restablecer la variable
-          } else {
-            console.log('No hay más mensajes para mostrar.');
-
-
-            const fechaElement = document.createElement('div');
-            fechaElement.className = 'no-more-messages';
-            fechaElement.textContent = ultimoMesMostrado;
-
-            // Insertar el mensaje en la parte superior del contenedor de mensajes
-            const contenedorMessages = document.getElementById('messages');
-            contenedorMessages.insertBefore(fechaElement, contenedorMessages.firstChild);
-
-            // Solo mostrar el mensaje si no se ha mostrado antes
-            // if (!noMoreMessagesShown) {
-            const noMessagesElement = document.createElement('div');
-            noMessagesElement.className = 'no-more-messages';
-            noMessagesElement.textContent = 'No hay más mensajes para mostrar.';
-
-            // Insertar el mensaje en la parte superior del contenedor de mensajes
-            // const contenedorMessages = document.getElementById('messages');
-            contenedorMessages.insertBefore(noMessagesElement, contenedorMessages.firstChild);
-
-
-            // Marcar que el mensaje ha sido mostrado
-            // noMoreMessagesShown = true;
-            // }
-          }
-        }
-
 
       } catch (error) {
         console.error('Error fetching chat messages:', error);
@@ -2889,11 +2728,186 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById('messages').appendChild(errorElement);
       }
 
-      function getRoomName(user1, user2) {
-        return [user1, user2].sort().join('-');
-      }
-      // contendorMessages.removeEventListener('scroll', cargarMensajeScroll);
+
+
+      // let noMoreMessagesShown = false; // Variable para controlar la visualización del mensaje
+
+
     }
+
+    function cargarMessages(mes) {
+      console.log("Se ejecuta cargarMessages");
+      if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
+
+        console.log("Entra al condicional");
+        const messagesMonths = chatMessages[0].messages;
+
+        // Insertar los mensajes del mes en orden descendente (del más reciente al más antiguo)
+        const mensajesDelMes = messagesMonths[mes].slice().reverse(); // Clonamos y revertimos el array
+
+        // Guardar la posición actual del scroll antes de añadir mensajes antiguos
+        const currentScrollPosition = contendorMessages.scrollHeight - contendorMessages.scrollTop;
+
+        mensajesDelMes.forEach(msg => {
+          const messageElement = document.createElement('div');
+          const mensajeElement = document.createElement('p');
+          const horaElement = document.createElement('p');
+          horaElement.className = 'chat-hora';
+
+          const horaMenssage = new Date(msg.timestamp);
+          const options = { hour: '2-digit', minute: '2-digit', hour12: true };
+          const formattedTime = horaMenssage.toLocaleTimeString([], options);
+          horaElement.textContent = formattedTime;
+
+          mensajeElement.textContent = `${msg.content}`;
+          messageElement.appendChild(mensajeElement);
+          messageElement.appendChild(horaElement);
+
+          messageElement.className = msg.sender === acuarelaId ? 'mensaje-enviado' : 'mensaje-recibido';
+
+          contendorMessages.insertBefore(messageElement, contendorMessages.firstChild);
+        });
+
+        // Ajustar la posición del scroll para evitar saltos
+        contendorMessages.scrollTop = contendorMessages.scrollHeight - currentScrollPosition;
+
+        isLoadingOlderMessages = false; // Terminar la carga
+        // contendorMessages.scroll = 1;
+
+        verificarScrollInicial();
+        // contendorMessages.addEventListener('scroll', cargarMensajeScroll);
+
+
+      } else {
+        const noMessagesElement = document.createElement('div');
+        noMessagesElement.className = 'no-more-messages';
+        noMessagesElement.id = "messages";
+        noMessagesElement.textContent = 'No hay mensajes previos.';
+        document.getElementById('messages').appendChild(noMessagesElement);
+      }
+
+    }
+
+
+
+    // Detectar cuando se hace scroll hasta el final del contenedor
+    // if (!scrollListenerAttached) {
+    //   console.log(scrollListenerAttached);
+    // contendorMessages.addEventListener('scroll', () => {
+
+    //   scrollListenerAttached = true;
+
+    // }
+
+
+
+    function cargarMensajeScroll() {
+      console.log("Se ejecuta cargarMensajeScroll");
+      console.log("cargarMensajeScroll", isLoadingOlderMessages);
+      console.log("Scroll", contendorMessages.scrollTop);
+      // if (contendorMessages.scrollTop + contendorMessages.clientHeight >= contendorMessages.scrollHeight) {
+      // if (contendorMessages.scrollTop === 0 && isLoadingOlderMessages === false) {
+      if (contendorMessages.scrollTop === 0 && !isLoadingOlderMessages) {
+        console.log("------Se llama cargarMesAnterior-----", isLoadingOlderMessages);
+        // if (contendorMessages.scrollTop === 0) {
+        isLoadingOlderMessages = true;
+        // Si llegamos al tope superior, cargar los mensajes del mes anterior
+        cargarMesAnterior(); // Esta función debe determinar qué mes cargar
+
+      }
+    };
+
+    // contendorMessages.addEventListener('scroll', cargarMensajeScroll);
+
+
+    function verificarScrollInicial() {
+      if (contendorMessages.scrollHeight <= contendorMessages.clientHeight) {
+        console.log("VerificarScrollInicial");
+        // Si el contenedor no tiene suficiente contenido para el scroll, cargar más mensajes
+        cargarMesAnterior();
+      }
+    }
+
+
+    function restarMes(mes) {
+      const [year, month] = mes.split('-').map(Number); // Dividimos el año y el mes
+      let newYear = year;
+      let newMonth = month - 1; // Restamos 1 mes
+      // Si el mes es 0, restamos un año y ponemos el mes a 12 (diciembre)
+      if (newMonth === 0) {
+        newMonth = 12;
+        newYear -= 1;
+      }
+      // Formatear el mes con dos dígitos (01, 02,...)
+      const formattedMonth = newMonth < 10 ? `0${newMonth}` : newMonth;
+      // Retornamos la nueva fecha en formato 'YYYY-MM'
+      return `${newYear}-${formattedMonth}`;
+    }
+
+
+
+    function cargarMesAnterior() {
+      console.log("Se ejecuta cargarMesAnterior")
+      console.log("cargarMesAnterior", mesesMostrados);
+      const ultimoMesMostrado = mesesMostrados[mesesMostrados.length - 1]; // Último mes cargado
+      console.log("cargarMesAnterior", ultimoMesMostrado);
+
+      // Restar un mes al último mes mostrado
+      const mesAnterior = restarMes(ultimoMesMostrado);
+      console.log("cargarMesAnterior", mesAnterior);
+
+      // Verificar si tenemos mensajes para ese mes anterior
+      if (chatMessages[0].messages[mesAnterior]) {
+        const noMessagesElement = document.createElement('div');
+        noMessagesElement.className = 'no-more-messages';
+        noMessagesElement.textContent = ultimoMesMostrado;
+
+        // Insertar el mensaje en la parte superior del contenedor de mensajes
+        const contenedorMessages = document.getElementById('messages');
+        contenedorMessages.insertBefore(noMessagesElement, contenedorMessages.firstChild);
+
+        cargarMessages(mesAnterior); // Mostrar los chats del mes anterior
+        mesesMostrados.push(mesAnterior); // Agregar el nuevo mes a la lista de meses mostrados
+        console.log("Meses cargarMesAnterior", mesesMostrados);
+        console.log("Meses cargarMesAnterior: Muestra con este mes", mesAnterior);
+        // Si el mensaje "No hay más mensajes" ya fue mostrado, lo ocultamos
+        // noMoreMessagesShown = false; // Restablecer la variable
+      } else {
+        console.log('No hay más mensajes para mostrar.');
+
+
+        const fechaElement = document.createElement('div');
+        fechaElement.className = 'no-more-messages';
+        fechaElement.textContent = ultimoMesMostrado;
+
+        // Insertar el mensaje en la parte superior del contenedor de mensajes
+        const contenedorMessages = document.getElementById('messages');
+        contenedorMessages.insertBefore(fechaElement, contenedorMessages.firstChild);
+
+        // Solo mostrar el mensaje si no se ha mostrado antes
+        // if (!noMoreMessagesShown) {
+        const noMessagesElement = document.createElement('div');
+        noMessagesElement.className = 'no-more-messages';
+        noMessagesElement.textContent = 'No hay más mensajes para mostrar.';
+
+        // Insertar el mensaje en la parte superior del contenedor de mensajes
+        // const contenedorMessages = document.getElementById('messages');
+        contenedorMessages.insertBefore(noMessagesElement, contenedorMessages.firstChild);
+
+        isLoadingOlderMessages = true;
+        // Marcar que el mensaje ha sido mostrado
+        // noMoreMessagesShown = true;
+        // }
+      }
+    }
+
+    function getRoomName(user1, user2) {
+      return [user1, user2].sort().join('-');
+    }
+
+
+
+
     // btnSendMensaje.addEventListener('click', enviarMensaje);
     let clickListenerAttached = false;
 
