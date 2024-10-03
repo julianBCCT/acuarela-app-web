@@ -2158,9 +2158,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 
+//Funcionalidad de Mensajería
+
 // document.addEventListener("DOMContentLoaded", function () {
 
-const currentPath = window.location.pathname;
+
 let roomId;
 let user;
 let userIdPadre;
@@ -2191,7 +2193,6 @@ const agregarButton = document.getElementById("agregar-mensajeria");
 const agregarMensajeria = document.getElementById("chats-agregados");
 let chatButton = document.querySelectorAll(".chat-icon");
 const chatMensajeria = document.querySelector(".chat-individual");
-// const opcionesMensajeria = document.getElementById("opcines-mensajeria");
 const btnSendMensaje = document.getElementById("sendBtn");
 const chatList = document.getElementById('opciones-mensajeria');
 const contendorMessages = document.getElementById("messages");
@@ -2204,9 +2205,6 @@ mensajeButton.addEventListener("click", function () {
   }
 });
 
-// document.getElementById('closeAgregar').addEventListener('click', () => {
-//   divNuevoChat();
-// });
 
 async function buscarPadres() {
   try {
@@ -2359,22 +2357,30 @@ function mostrarPadres(padres) {
   }
 };
 
-
 agregarButton.addEventListener('click', divNuevoChat);
-// agregarButton.addEventListener("click", async function () {
 async function divNuevoChat() {
+  chatButton = document.querySelectorAll(".chat-icon");
   if (agregarButton.classList.contains("active")) {
     agregarButton.classList.remove("active");
     buscarMensajeria.classList.remove("inactive");
+    buscarMensajeria.addEventListener('click', divBuscarActivos);
+
     chatButton.forEach((boton) => {
       boton.classList.remove("inactive");
+      boton.addEventListener('click', activosListener);
+
     });
   } else {
     agregarButton.classList.add("active");
     buscarMensajeria.classList.add("inactive");
+    buscarMensajeria.removeEventListener('click', divBuscarActivos);
+
     chatButton.forEach((boton) => {
+      console.log(boton);
       boton.classList.add("inactive");
+      boton.removeEventListener('click', activosListener);
     });
+
   }
 
   if (agregarMensajeria.style.display === "none") {
@@ -2447,22 +2453,26 @@ document.getElementById('closeBuscador').addEventListener('click', () => {
   buscarMensajeria.click();
 });
 
-buscarMensajeria.addEventListener("click", async function () {
+// buscarMensajeria.addEventListener("click", async function () {
+buscarMensajeria.addEventListener("click", divBuscarActivos);
+async function divBuscarActivos() {
+  chatButton = document.querySelectorAll(".chat-icon");
 
   if (buscarMensajeria.classList.contains("active")) {
     buscarMensajeria.classList.remove("active");
     agregarButton.classList.remove("inactive");
-    // opcionesMensajeria.classList.remove("inactive");
+    agregarButton.addEventListener('click', divNuevoChat);
     chatButton.forEach((boton) => {
       boton.classList.remove("inactive");
-      boton.disabled = true;
+      boton.addEventListener('click', activosListener);
     });
   } else {
     buscarMensajeria.classList.add("active");
     agregarButton.classList.add("inactive");
+    agregarButton.removeEventListener('click', divNuevoChat);
     chatButton.forEach((boton) => {
       boton.classList.add("inactive");
-      boton.disabled = false;
+      boton.removeEventListener('click', activosListener);
 
     });
   }
@@ -2576,7 +2586,11 @@ buscarMensajeria.addEventListener("click", async function () {
     buscadorMensajeria.style.display = "none";
     document.getElementById('buscador-chat').value = "";
   }
-});
+  // });
+};
+
+
+//--------------
 
 
 
@@ -2692,12 +2706,6 @@ async function cargarChatPadre(userIdPadre) {
     errorElement.textContent = 'Error al cargar los mensajes.';
     document.getElementById('messages').appendChild(errorElement);
   }
-
-
-
-  // let noMoreMessagesShown = false; // Variable para controlar la visualización del mensaje
-
-
 }
 
 function cargarMessages(mes) {
@@ -2947,20 +2955,106 @@ function agregarIcon(padre) {
 }
 cargarIcons();
 
+// async function cargarIcons() {
+//   const ulOpciones = document.getElementById('opciones-mensajeria');
+//   const itemsToRemove = ulOpciones.querySelectorAll('li.chat-icon');
+
+//   itemsToRemove.forEach(item => {
+//     ulOpciones.removeChild(item);
+//   });
+
+//   const icons = JSON.parse(sessionStorage.getItem('icons')) || [];
+
+//   // Cambia el forEach por un for...of
+//   for (const icon of icons) {
+//     const iconElement = document.createElement('li');
+//     iconElement.className = 'chat-icon';
+
+//     const imgIcon = document.createElement('img');
+//     imgIcon.src = 'https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png';
+
+//     iconElement.appendChild(imgIcon);
+//     ulOpciones.appendChild(iconElement);
+
+//     iconElement.addEventListener('click', async () => {
+//       if (iconElement.classList.contains('active')) {
+//         cerrarChat.click();
+//         return;
+//       }
+//       let usuario;
+//       try {
+//         const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${icon}`, {
+//           method: 'GET',
+//           headers: {
+//             'Content-Type': 'application/json'
+//           }
+//         });
+
+//         usuario = await usuarioInfo.json();
+//       } catch (error) {
+//         console.error(error);
+//       }
+
+//       userIdPadre = usuario.id;
+//       socketPadre = usuario.socketId;
+//       cargarChatPadre(icon);
+//       mostrarChat(iconElement);
+//       mensajeriaPadre();
+//     });
+//   }
+
+//   chatButton = document.querySelectorAll(".chat-icon");
+// }
+
+async function activosListener() {
+  if (this.classList.contains('active')) {
+    cerrarChat.click();
+    agregarButton.addEventListener('click', divNuevoChat);
+    buscarMensajeria.addEventListener('click', divBuscarActivos);
+    return;
+  }
+  agregarButton.removeEventListener('click', divNuevoChat);
+  buscarMensajeria.removeEventListener('click', divBuscarActivos);
+
+  let usuario;
+  try {
+    const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${this.dataset.iconId}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    usuario = await usuarioInfo.json();
+  } catch (error) {
+    console.error(error);
+  }
+
+  userIdPadre = usuario.id;
+  socketPadre = usuario.socketId;
+  cargarChatPadre(this.dataset.iconId);
+  mostrarChat(this);
+  mensajeriaPadre();
+}
+
 async function cargarIcons() {
   const ulOpciones = document.getElementById('opciones-mensajeria');
   const itemsToRemove = ulOpciones.querySelectorAll('li.chat-icon');
 
+  // Remover íconos anteriores
   itemsToRemove.forEach(item => {
     ulOpciones.removeChild(item);
   });
 
   const icons = JSON.parse(sessionStorage.getItem('icons')) || [];
 
-  // Cambia el forEach por un for...of
+  // Crear íconos
   for (const icon of icons) {
     const iconElement = document.createElement('li');
     iconElement.className = 'chat-icon';
+
+    // Guardar el id del ícono en un atributo data para accederlo dentro de la función
+    iconElement.dataset.iconId = icon;
 
     const imgIcon = document.createElement('img');
     imgIcon.src = 'https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png';
@@ -2968,33 +3062,11 @@ async function cargarIcons() {
     iconElement.appendChild(imgIcon);
     ulOpciones.appendChild(iconElement);
 
-    iconElement.addEventListener('click', async () => {
-      if (iconElement.classList.contains('active')) {
-        cerrarChat.click();
-        return;
-      }
-      let usuario;
-      try {
-        const usuarioInfo = await fetch(`https://acuarelacore.com/api/acuarelausers/${icon}`, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-
-        usuario = await usuarioInfo.json();
-      } catch (error) {
-        console.error(error);
-      }
-
-      userIdPadre = usuario.id;
-      socketPadre = usuario.socketId;
-      cargarChatPadre(icon);
-      mostrarChat(iconElement);
-      mensajeriaPadre();
-    });
+    // Agregar listener
+    iconElement.addEventListener('click', activosListener);
   }
 
+  // Obtener todos los botones para poder eliminar el listener después
   chatButton = document.querySelectorAll(".chat-icon");
 }
 
