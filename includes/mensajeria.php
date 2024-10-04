@@ -4,7 +4,7 @@
     </button> -->
 
     <div class="icons">
-        <ul>
+        <ul id="opciones-mensajeria">
             <li id="buscar-mensajeria">
                 <i class="acuarela acuarela-Buscar"></i>
             </li>
@@ -12,14 +12,15 @@
                 <i class="acuarela acuarela-Agregar"></i>
             </li>
             <li class="chat-icon">
-                <img src="./img/Chat.png" alt="">
+                <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
+            </li>
+            <!--
+            <li class="chat-icon">
+                <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             </li>
             <li class="chat-icon">
-                <img src="./img/chat2.png" alt="">
-            </li>
-            <li class="chat-icon">
-                <img src="./img/Chat3.png" alt="">
-            </li>
+                <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
+            </li> -->
             <!-- <li id="opcines-mensajeria">
                 <i class="acuarela acuarela-Opciones"></i>
             </li> -->
@@ -30,9 +31,9 @@
         <div class="buscador-mensajeria">
             <i id="btn-buscador-chat" class="acuarela acuarela-Buscar"></i>
             <input id="buscador-chat" type="text">
-            <i class="acuarela acuarela-Cancelar"></i>
+            <i id="closeBuscador" class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div id="chats-padres">
+        <div id="chats-padres" class="chats-padres">
 
         </div>
         <!-- <div class="chats-mensajeria">
@@ -51,11 +52,11 @@
 
     <div id="chats-agregados" class="chats-buscados" style="display: none;">
         <div class="buscador-mensajeria">
-            <i class="acuarela acuarela-Agregar"></i>
-            <input type="text">
-            <i class="acuarela acuarela-Cancelar"></i>
+            <i id="btn-invitar" class="acuarela acuarela-Agregar"></i>
+            <input id="agregar-chat" type="text">
+            <i id="closeAgregar" class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div id="chats-padres">
+        <div id="padres-inactivos" class="chats-padres">
 
         </div>
         <!-- <div class="chats-mensajeria">
@@ -74,7 +75,7 @@
 
     <div id="chat-individual" class="chat-individual" style="display: none;">
         <div class="info-chat">
-            <img id="imgUser" src="./img/Chat.png" alt="">
+            <img id="imgUser" src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             <p id="userChat"></p>
             <!-- <i class="acuarela acuarela-Usuario"></i> -->
             <i id="closeChat" class="acuarela acuarela-Cancelar"></i>
@@ -106,5 +107,8 @@
         </div>
     </div>
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+
+
+
 
 </div>

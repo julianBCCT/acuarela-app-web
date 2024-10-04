@@ -1,11 +1,12 @@
-<?php $classBody ="inspeccion"; include "includes/header.php" ?>
+<?php $classBody = "inspeccion";
+include "includes/header.php" ?>
 <main>
     <?php
-    $mainHeaderTitle = "Modo inspección" ;
+    $mainHeaderTitle = "Modo inspección";
     $action = '<button type="button" onclick="generateReport()" class="btn btn-action-secondary enfasis btn-big">Generar informe</button>';
     $videoPath = 'videos/inspeccion.mp4';
     include "templates/sectionHeader.php";
-?>
+    ?>
     <div class="content">
         <h2>Fecha del informe</h2>
         <p>Utiliza el filtro de fecha para generar el informe desde y hasta la fecha que lo necesites</p>
@@ -59,7 +60,13 @@
                 <span> Payrolls</span>
             </div> -->
         </div>
-        <input type="hidden" name="daycare" id="daycare" value="<?=$a->daycareID?>">
+        <input type="hidden" name="daycare" id="daycare" value="<?= $a->daycareID ?>">
+    </div>
+    <div class="mensajeria-content">
+        <?php include "includes/mensajeria.php" ?>
+        <button id="mainButton" class="main-button">
+            <i class="acuarela acuarela-Mensajes"></i>
+        </button>
     </div>
 </main>
 <?php include "includes/footer.php" ?>
