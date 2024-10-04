@@ -2169,6 +2169,7 @@ let userIdPadre;
 let socketPadre;
 let userIdAcuarela = acuarelaId;
 let padres = [];
+let chatsActivos = [];
 let padre = [];
 
 // if (currentPath == "/miembros/acuarela-app-web/") {
@@ -2207,6 +2208,7 @@ mensajeButton.addEventListener("click", function () {
 
 
 async function buscarPadres() {
+  console.log("Se ejecuta buscarPadres");
   try {
     const padresInfo = await fetch(`https://acuarelacore.com/api/acuarelausers?rols=5ff790045d6f2e272cfd7394&daycare=${daycareActiveId}`, {
       method: 'GET',
@@ -2235,6 +2237,7 @@ async function buscarPadres() {
 };
 
 async function buscarChatsActivos() {
+  console.log("Se ejecuta buscarChatsActivos")
   try {
     const response = await fetch(`https://acuarelacore.com/api/chats?room_contains=${userIdAcuarela}`, {
       method: 'GET',
@@ -2242,7 +2245,7 @@ async function buscarChatsActivos() {
         'Content-Type': 'application/json'
       }
     });
-    const chatsActivos = await response.json();
+    chatsActivos = await response.json();
     return chatsActivos;
 
   } catch (error) {
@@ -2328,7 +2331,6 @@ function mostrarPadres(padres) {
         btnChatear.textContent = 'Chatear';
         padreElement.appendChild(btnChatear);
 
-
         btnChatear.addEventListener('click', () => {
           userIdPadre = padre.id;
           socketPadre = padre.socketId;
@@ -2338,6 +2340,8 @@ function mostrarPadres(padres) {
           selectedButton = btnChatear;
 
           mensajeriaPadre();
+          // buscarChatsActivos();
+          // console.log(padres);
         });
 
       }
@@ -2376,7 +2380,6 @@ async function divNuevoChat() {
     buscarMensajeria.removeEventListener('click', divBuscarActivos);
 
     chatButton.forEach((boton) => {
-      console.log(boton);
       boton.classList.add("inactive");
       boton.removeEventListener('click', activosListener);
     });
@@ -2388,7 +2391,8 @@ async function divNuevoChat() {
     // const btnCerrarAgregar = document.getElementById('closeAgregar');
     document.getElementById('closeAgregar').addEventListener('click', divNuevoChat);
 
-    padres = await buscarPadres();
+    //REVISAR
+    const padres = await buscarPadres();
     divPadresInactivos.innerHTML = "";
 
     const chatsActivos = await buscarChatsActivos();
@@ -2444,6 +2448,7 @@ async function divNuevoChat() {
     agregarMensajeria.style.display = "none";
     document.getElementById('agregar-chat').value = "";
     document.getElementById('closeAgregar').removeEventListener('click', divNuevoChat);
+    buscarChatsActivos();
 
   }
   // agregarButton.removeEventListener('click', divNuevoChat);
@@ -2455,6 +2460,7 @@ document.getElementById('closeBuscador').addEventListener('click', () => {
 
 // buscarMensajeria.addEventListener("click", async function () {
 buscarMensajeria.addEventListener("click", divBuscarActivos);
+
 async function divBuscarActivos() {
   chatButton = document.querySelectorAll(".chat-icon");
 
@@ -2479,11 +2485,17 @@ async function divBuscarActivos() {
 
   if (buscadorMensajeria.style.display === "none") {
     buscadorMensajeria.style.display = "block";
+    console.log(padres);
+    console.log(padres.length);
 
-    const padres = await buscarPadres();
+    if (padres.length === 0) {
+      padres = await buscarPadres();
+      chatsActivos = await buscarChatsActivos();
+      console.log("Entra al condicional de padres", padres)
+    }
 
     padresActivos = padres.filter(padre => padre.status === true);
-    const chatsActivos = await buscarChatsActivos();
+
 
     //Se compara el json de padres con el de chats activos para mostrar solo los padres que tengan chats activos
     let padresFiltrados = padresActivos.filter(item1 =>
@@ -2552,6 +2564,8 @@ async function divBuscarActivos() {
 
     }
 
+
+
     if (padresFiltrados.length > 0) {
       mostrarPadres(padresFiltrados);
     } else {
@@ -2586,13 +2600,7 @@ async function divBuscarActivos() {
     buscadorMensajeria.style.display = "none";
     document.getElementById('buscador-chat').value = "";
   }
-  // });
 };
-
-
-//--------------
-
-
 
 function mostrarChat(boton) {
   selectedButton = boton;
@@ -2648,6 +2656,7 @@ cerrarChat.addEventListener('click', () => {
   const messageInput = document.getElementById('messageInput');
   messageInput.value = "";
   mostrarChat(selectedButton);
+  // activosListener();
 });
 
 let chatMessages = [];
@@ -3009,12 +3018,12 @@ cargarIcons();
 async function activosListener() {
   if (this.classList.contains('active')) {
     cerrarChat.click();
-    agregarButton.addEventListener('click', divNuevoChat);
-    buscarMensajeria.addEventListener('click', divBuscarActivos);
+    // agregarButton.addEventListener('click', divNuevoChat);
+    // buscarMensajeria.addEventListener('click', divBuscarActivos);
     return;
   }
-  agregarButton.removeEventListener('click', divNuevoChat);
-  buscarMensajeria.removeEventListener('click', divBuscarActivos);
+  // agregarButton.removeEventListener('click', divNuevoChat);
+  // buscarMensajeria.removeEventListener('click', divBuscarActivos);
 
   let usuario;
   try {
