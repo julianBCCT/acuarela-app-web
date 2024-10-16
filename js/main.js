@@ -2227,7 +2227,7 @@ let chatsActivos = [];
 let padre = [];
 
 // if (currentPath == "/miembros/acuarela-app-web/") {
-console.log("Id Acuarela", acuarelaId);
+// console.log("Id Acuarela", acuarelaId);
 
 const socket = io("https://acuarelacore.com", {
   transports: ["websocket", "polling"],
@@ -2261,7 +2261,6 @@ mensajeButton.addEventListener("click", function () {
 });
 
 async function buscarPadres() {
-  console.log("Se ejecuta buscarPadres");
   try {
     const padresInfo = await fetch(
       `https://acuarelacore.com/api/acuarelausers?rols=5ff790045d6f2e272cfd7394&daycare=${daycareActiveId}`,
@@ -2538,8 +2537,6 @@ async function divBuscarActivos() {
 
   if (buscadorMensajeria.style.display === "none") {
     buscadorMensajeria.style.display = "block";
-    console.log(padres);
-    console.log(padres.length);
 
     if (padres.length === 0) {
       padres = await buscarPadres();
