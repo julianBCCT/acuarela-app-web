@@ -2284,3 +2284,113 @@ function closeVideoModal() {
     modal.remove(); // Eliminar el modal del DOM
   }
 }
+
+// Pop up crear publicación
+document.addEventListener("DOMContentLoaded", () => {
+  // Obtener los elementos del DOM
+  const postModal = document.getElementById("postModal");
+  const openModalButton = document.getElementById("openModalButton");
+  const closeModal = document.getElementById("closeModal");
+  const publishButton = document.getElementById("publishButton");
+  const uploadImageButton = document.getElementById("uploadImageButton");
+  const imageInput = document.getElementById("imageInput");
+  const imagePreview = document.getElementById("imagePreview");
+  const postContent = document.getElementById("postContent");
+  const activitiesListContainer = document.getElementById("activitiesListContainer");
+
+  // Verificar si los elementos necesarios existen
+  if (postModal && openModalButton) {
+    // Abrir el modal al hacer clic en el botón "Publicar"
+    openModalButton.addEventListener("click", () => {
+      postModal.style.display = "block";
+    });
+  }
+
+  if (postModal && closeModal) {
+    // Cerrar el modal al hacer clic en el botón de cerrar
+    closeModal.addEventListener("click", () => {
+      // Limpiar el formulario y cerrar el modal
+      postContent.value = "";
+      imagePreview.innerHTML = "";
+      postModal.style.display = "none";
+    });
+
+    // Cerrar modal si el usuario hace clic fuera del contenido
+    window.addEventListener("click", (event) => {
+      if (event.target === postModal) {
+        // Limpiar el formulario y cerrar el modal
+        postContent.value = "";
+        imagePreview.innerHTML = "";
+        postModal.style.display = "none";
+      }
+    });
+  }
+
+  if (uploadImageButton && imageInput && imagePreview) {
+    // Subir imagen
+    uploadImageButton.addEventListener("click", () => {
+      imageInput.click();
+    });
+
+    imageInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa de la imagen">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  }
+
+  // Verificar que el contenedor de actividades exista
+  if (activitiesListContainer) {
+    // Renderizar las actividades
+    activitiesList.forEach((activity) => {
+      const activityItem = document.createElement("div");
+      activityItem.classList.add("activity-item");
+      activityItem.style.backgroundColor = activity.bgcolor;
+      activityItem.style.color = activity.color;
+      activityItem.innerHTML = activity.icon;
+      activityItem.dataset.id = activity.id;
+
+      // Añadir evento para selección
+      activityItem.addEventListener("click", () => {
+        // Desmarcar todas las actividades
+        document
+          .querySelectorAll(".activity-item.selected")
+          .forEach((item) => item.classList.remove("selected"));
+
+        // Marcar la actividad seleccionada
+        activityItem.classList.add("selected");
+      });
+
+      // Agregar actividad al contenedor
+      activitiesListContainer.appendChild(activityItem);
+    });
+  }
+
+  if (publishButton && postContent) {
+    // Publicar contenido
+    publishButton.addEventListener("click", () => {
+      const content = postContent.value.trim();
+      if (content === "") {
+        alert("Escribe algo para publicar.");
+        return;
+      }
+
+      // Lógica para enviar datos al servidor
+      alert("¡Publicación realizada!");
+      console.log({
+        content,
+        image: imageInput.files[0] || null, // Imagen subida (si existe)
+      });
+
+      // Limpiar el formulario y cerrar el modal
+      postContent.value = "";
+      imagePreview.innerHTML = "";
+      postModal.style.display = "none";
+    });
+  }
+});
