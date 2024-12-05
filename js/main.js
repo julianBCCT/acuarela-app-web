@@ -2298,55 +2298,39 @@ document.addEventListener("DOMContentLoaded", () => {
   const postContent = document.getElementById("postContent");
   const activitiesListContainer = document.getElementById("activitiesListContainer");
 
-  // Verificar si los elementos necesarios existen
+  // Abrir modal
   if (postModal && openModalButton) {
     // Abrir el modal al hacer clic en el botón "Publicar"
     openModalButton.addEventListener("click", () => {
       postModal.style.display = "block";
     });
   }
-
-  if (postModal && closeModal) {
-    // Cerrar el modal al hacer clic en el botón de cerrar
-    closeModal.addEventListener("click", () => {
-      // Limpiar el formulario y cerrar el modal
-      postContent.value = "";
-      imagePreview.innerHTML = "";
-      postModal.style.display = "none";
-    });
-
-    // Cerrar modal si el usuario hace clic fuera del contenido
-    window.addEventListener("click", (event) => {
-      if (event.target === postModal) {
-        // Limpiar el formulario y cerrar el modal
-        postContent.value = "";
-        imagePreview.innerHTML = "";
-        postModal.style.display = "none";
-      }
-    });
-  }
-
+  
+  // Subir imágenes
   if (uploadImageButton && imageInput && imagePreview) {
-    // Subir imagen
     uploadImageButton.addEventListener("click", () => {
       imageInput.click();
     });
 
     imageInput.addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      if (file) {
+      const files = Array.from(event.target.files); // Convierte FileList a array
+      imagePreview.innerHTML = ""; // Limpia las imágenes previas
+
+      files.forEach((file) => {
         const reader = new FileReader();
         reader.onload = (e) => {
-          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Vista previa de la imagen">`;
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.alt = "Vista previa de la imagen";
+          imagePreview.appendChild(img);
         };
         reader.readAsDataURL(file);
-      }
+      });
     });
   }
 
-  // Verificar que el contenedor de actividades exista
+  // Renderizar actividades (si es necesario)
   if (activitiesListContainer) {
-    // Renderizar las actividades
     activitiesList.forEach((activity) => {
       const activityItem = document.createElement("div");
       activityItem.classList.add("activity-item");
@@ -2371,26 +2355,114 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  if (publishButton && postContent) {
-    // Publicar contenido
-    publishButton.addEventListener("click", () => {
-      const content = postContent.value.trim();
-      if (content === "") {
-        alert("Escribe algo para publicar.");
-        return;
-      }
+// Publicar contenido
+if (publishButton && postContent) {
+  // Crear contenedores de mensajes de error
+  const contentError = document.createElement("div");
+  const imageError = document.createElement("div");
+  const activityError = document.createElement("div");
 
-      // Lógica para enviar datos al servidor
-      alert("¡Publicación realizada!");
-      console.log({
-        content,
-        image: imageInput.files[0] || null, // Imagen subida (si existe)
-      });
+  // Estilo para los mensajes de error
+  const setErrorStyle = (element) => {
+    element.style.color = "red";
+    element.style.fontSize = "1.1em";
+    element.style.marginTop = "5px";
+    element.style.display = "none";
+  };
 
-      // Limpiar el formulario y cerrar el modal
+  // Aplicar estilo a los mensajes
+  setErrorStyle(contentError);
+  setErrorStyle(imageError);
+  setErrorStyle(activityError);
+
+  // Insertar mensajes en el DOM
+  postContent.insertAdjacentElement("afterend", contentError);
+  imagePreview.insertAdjacentElement("afterend", imageError);
+  activitiesListContainer.insertAdjacentElement("afterend", activityError);
+
+  // Función para deseleccionar todas las actividades
+  const clearSelectedActivities = () => {
+    document
+      .querySelectorAll(".activity-item.selected")
+      .forEach((item) => item.classList.remove("selected"));
+  };
+
+  // Cerrar modal
+  if (closeModal) {
+    closeModal.addEventListener("click", () => {
       postContent.value = "";
       imagePreview.innerHTML = "";
+      clearSelectedActivities(); // Deseleccionar actividades
       postModal.style.display = "none";
     });
+
+    window.addEventListener("click", (event) => {
+      if (event.target === postModal) {
+        postContent.value = "";
+        imagePreview.innerHTML = "";
+        clearSelectedActivities(); // Deseleccionar actividades
+        postModal.style.display = "none";
+      }
+    });
   }
+
+  // Publicar contenido
+  publishButton.addEventListener("click", () => {
+    let isValid = true;
+
+    // Validar contenido del input
+    const content = postContent.value.trim();
+    if (!content) {
+      contentError.textContent = "Por favor, escribe algo antes de publicar.";
+      contentError.style.display = "block";
+      isValid = false;
+    } else {
+      contentError.style.display = "none";
+    }
+
+    // Validar imágenes
+    const images = Array.from(imageInput.files);
+    if (images.length === 0) {
+      imageError.textContent = "Por favor, sube al menos una imagen.";
+      imageError.style.display = "block";
+      isValid = false;
+    } else {
+      imageError.style.display = "none";
+    }
+
+    // Validar actividad seleccionada
+    const selectedActivity = activitiesListContainer.querySelector(".activity-item.selected");
+    if (!selectedActivity) {
+      activityError.textContent = "Por favor, selecciona una actividad.";
+      activityError.style.display = "block";
+      isValid = false;
+    } else {
+      activityError.style.display = "none";
+    }
+
+    // Si no pasa alguna validación, detener la publicación
+    if (!isValid) return;
+
+    // Datos para enviar al servidor
+    console.log({
+      content,
+      images,
+      activity: selectedActivity ? selectedActivity.dataset.id : null,
+    });
+
+    // Limpia el formulario
+    postContent.value = "";
+    imagePreview.innerHTML = "";
+    imageInput.value = "";
+    clearSelectedActivities(); // Deseleccionar actividades
+    postModal.style.display = "none";
+
+    // Ocultar mensajes de error
+    contentError.style.display = "none";
+    imageError.style.display = "none";
+    activityError.style.display = "none";
+
+    alert("¡Publicación realizada!");
+  });
+}
 });

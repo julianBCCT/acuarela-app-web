@@ -21,9 +21,9 @@
       <h2>Crear publicación</h2>
       <textarea id="postContent" placeholder="Escribe algo..."></textarea>
       <div class="image-preview" id="imagePreview"></div>
-      <button class="btn btn-secondary" id="uploadImageButton">Subir Imagen</button>
-      <input type="file" id="imageInput" style="display: none;" accept="image/*" />
-      
+      <button class="btn btn-secondary" id="uploadImageButton">Subir Imágenes</button>
+      <input type="file" id="imageInput" style="display: none;" accept="image/*" multiple />
+
       <div id="activitiesContainer">
         <h3>Vincular publicación a:</h3>
         <div class="activities-list" id="activitiesListContainer"></div>
