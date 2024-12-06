@@ -335,6 +335,37 @@ class Acuarela {
         return $resp;
     }
 
+    function uploadImage($file) {
+        $url = "https://acuarelacore.com/api/upload";
+        $headers = [
+            "content-type: multipart/form-data ",
+        ];
+    
+        $postFields = [
+            "files" => new CURLFile($file['tmp_name'], $file['type'], $file['name']),
+        ];
+    
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $postFields);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+    
+        $response = curl_exec($ch);
+        $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+    
+        if ($status === 200) {
+            return json_decode($response, true)[0];
+        } else {
+            return null;
+        }
+    }    
+    function createPost($data) {
+        $data["daycare"] = $this->daycareID;
+        return $this->queryStrapi("/posts", $data, "POST");
+    }
+
      // UTILITY
      function get_alias($String)
      {

@@ -2305,7 +2305,7 @@ document.addEventListener("DOMContentLoaded", () => {
       postModal.style.display = "block";
     });
   }
-  
+
   // Subir imágenes
   if (uploadImageButton && imageInput && imagePreview) {
     uploadImageButton.addEventListener("click", () => {
@@ -2387,12 +2387,19 @@ if (publishButton && postContent) {
       .forEach((item) => item.classList.remove("selected"));
   };
 
+  const clearErrors = () => {
+    contentError.style.display = "none";
+    imageError.style.display = "none";
+    activityError.style.display = "none";
+  };
+
   // Cerrar modal
   if (closeModal) {
     closeModal.addEventListener("click", () => {
       postContent.value = "";
       imagePreview.innerHTML = "";
-      clearSelectedActivities(); // Deseleccionar actividades
+      clearSelectedActivities();
+      clearErrors();
       postModal.style.display = "none";
     });
 
@@ -2400,14 +2407,15 @@ if (publishButton && postContent) {
       if (event.target === postModal) {
         postContent.value = "";
         imagePreview.innerHTML = "";
-        clearSelectedActivities(); // Deseleccionar actividades
+        clearSelectedActivities();
+        clearErrors();
         postModal.style.display = "none";
       }
     });
   }
 
   // Publicar contenido
-  publishButton.addEventListener("click", () => {
+  publishButton.addEventListener("click", async () => {
     let isValid = true;
 
     // Validar contenido del input
@@ -2450,11 +2458,36 @@ if (publishButton && postContent) {
       activity: selectedActivity ? selectedActivity.dataset.id : null,
     });
 
+    const formData = new FormData();
+    formData.append("content", content);
+    formData.append("activity", selectedActivity.dataset.id);
+    images.forEach((image) => formData.append("images[]", image));
+
+    try {
+      const response = await fetch("s/addPost/", {
+        method: "POST",
+        body: formData,
+      });
+  
+      const result = await response.json();
+      if (response.ok) {
+        alert("¡Publicación realizada!");
+        console.log(result);
+      } else {
+        console.error(result.error);
+        alert("Error al realizar la publicación.");
+      }
+    } catch (error) {
+      console.error("Error en la solicitud:", error);
+      alert("Ocurrió un error al realizar la publicación.");
+    }
+
     // Limpia el formulario
     postContent.value = "";
     imagePreview.innerHTML = "";
     imageInput.value = "";
-    clearSelectedActivities(); // Deseleccionar actividades
+    clearSelectedActivities();
+    clearErrors();
     postModal.style.display = "none";
 
     // Ocultar mensajes de error
