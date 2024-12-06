@@ -21,7 +21,9 @@
       <h2>Crear publicación</h2>
       <textarea id="postContent" placeholder="Escribe algo..."></textarea>
       <div class="image-preview" id="imagePreview"></div>
-      <button class="btn btn-secondary" id="uploadImageButton">Subir Imágenes</button>
+      <button class="btn btn-secondary" id="uploadImageButton">
+        <i class="acuarela acuarela-Importar acuarela-24 "></i>
+      </button>
       <input type="file" id="imageInput" style="display: none;" accept="image/*" multiple />
 
       <div id="activitiesContainer">

@@ -2417,7 +2417,7 @@ if (publishButton && postContent) {
   // Publicar contenido
   publishButton.addEventListener("click", async () => {
     let isValid = true;
-
+  
     // Validar contenido del input
     const content = postContent.value.trim();
     if (!content) {
@@ -2427,7 +2427,7 @@ if (publishButton && postContent) {
     } else {
       contentError.style.display = "none";
     }
-
+  
     // Validar imágenes
     const images = Array.from(imageInput.files);
     if (images.length === 0) {
@@ -2437,7 +2437,7 @@ if (publishButton && postContent) {
     } else {
       imageError.style.display = "none";
     }
-
+  
     // Validar actividad seleccionada
     const selectedActivity = activitiesListContainer.querySelector(".activity-item.selected");
     if (!selectedActivity) {
@@ -2447,22 +2447,19 @@ if (publishButton && postContent) {
     } else {
       activityError.style.display = "none";
     }
-
+  
     // Si no pasa alguna validación, detener la publicación
     if (!isValid) return;
-
-    // Datos para enviar al servidor
-    console.log({
-      content,
-      images,
-      activity: selectedActivity ? selectedActivity.dataset.id : null,
-    });
-
+  
+    // Cambiar texto del botón a "Publicando..."
+    publishButton.textContent = "Publicando...";
+    publishButton.disabled = true;
+  
     const formData = new FormData();
     formData.append("content", content);
     formData.append("activity", selectedActivity.dataset.id);
     images.forEach((image) => formData.append("images[]", image));
-
+  
     try {
       const response = await fetch("s/addPost/", {
         method: "POST",
@@ -2471,31 +2468,28 @@ if (publishButton && postContent) {
   
       const result = await response.json();
       if (response.ok) {
-        alert("¡Publicación realizada!");
+        // Cambiar el texto del botón y añadir la animación
+        publishButton.textContent = "¡Publicación realizada!";
+        publishButton.classList.add("success-message");
+        publishButton.disabled = true;
+  
+        // Añadir animación para desvanecer el botón
+        setTimeout(() => {
+          publishButton.classList.add("fade-out");
+        }, 1000);
+  
+        // Recargar la página después de la animación
+        setTimeout(() => {
+          location.reload();
+        }, 2000);
+  
         console.log(result);
       } else {
         console.error(result.error);
-        alert("Error al realizar la publicación.");
       }
     } catch (error) {
       console.error("Error en la solicitud:", error);
-      alert("Ocurrió un error al realizar la publicación.");
     }
-
-    // Limpia el formulario
-    postContent.value = "";
-    imagePreview.innerHTML = "";
-    imageInput.value = "";
-    clearSelectedActivities();
-    clearErrors();
-    postModal.style.display = "none";
-
-    // Ocultar mensajes de error
-    contentError.style.display = "none";
-    imageError.style.display = "none";
-    activityError.style.display = "none";
-
-    alert("¡Publicación realizada!");
-  });
+  });  
 }
 });
