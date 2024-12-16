@@ -1,3 +1,0 @@
-[30-Jul-2024 21:12:04 UTC] PHP Warning:  Undefined array key "activeDaycare" in /home/oldmacdonald/public_html/dev/miembros/acuarela-app-web/includes/sdk.php on line 16
-[30-Jul-2024 21:12:04 UTC] PHP Warning:  Undefined variable $classBody in /home/oldmacdonald/public_html/dev/miembros/acuarela-app-web/includes/head.php on line 43
-[30-Jul-2024 21:12:04 UTC] PHP Fatal error:  Cannot declare class Acuarela, because the name is already in use in /home/oldmacdonald/public_html/dev/miembros/acuarela-app-web/includes/sdk.php on line 3

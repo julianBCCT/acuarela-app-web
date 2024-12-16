@@ -4,6 +4,7 @@
     justify-content: center;
     align-items: center;
   }
+
   .dialog-container {
     display: none;
     font-family: "Montserrat";
@@ -136,10 +137,12 @@
           background: #f0feff;
           box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
           margin-bottom: 30px;
+
           img {
             width: 50px;
             height: 50px;
           }
+
           p {
             margin: 0;
           }
@@ -167,6 +170,7 @@
 
       &#exitoCodigo {
         display: none;
+
         .checkmark_circle_error {
           stroke-dasharray: 166;
           stroke-dashoffset: 166;
@@ -223,6 +227,7 @@
           50% {
             stroke-dashoffset: 0;
           }
+
           100% {
             stroke-dashoffset: -130;
           }
@@ -235,10 +240,12 @@
         }
 
         @keyframes scale {
+
           0%,
           100% {
             transform: none;
           }
+
           50% {
             transform: scale3d(1.1, 1.1, 1);
           }
@@ -253,6 +260,7 @@
 
       &#errorCodigo {
         display: none;
+
         .checkmark_circle_error {
           stroke-dasharray: 166;
           stroke-dashoffset: 166;
@@ -309,6 +317,7 @@
           50% {
             stroke-dashoffset: 0;
           }
+
           100% {
             stroke-dashoffset: -130;
           }
@@ -321,10 +330,12 @@
         }
 
         @keyframes scale {
+
           0%,
           100% {
             transform: none;
           }
+
           50% {
             transform: scale3d(1.1, 1.1, 1);
           }
@@ -338,6 +349,7 @@
       }
     }
   }
+
   main {
     padding: 0;
 
@@ -429,14 +441,14 @@
           .image {
             position: relative;
 
-            & > img {
+            &>img {
               border: 4px solid;
               height: 115px;
               width: 115px;
               border-radius: 50%;
             }
 
-            & > i {
+            &>i {
               position: absolute;
               bottom: 0;
               right: 0;
@@ -506,6 +518,7 @@
                 width: 120px;
                 text-align: left;
                 transform: translateY(-50%);
+
                 @media only screen and (max-width: 768px) {
                   display: block;
                 }
@@ -527,7 +540,7 @@
             }
 
             .image {
-              & > i {
+              &>i {
                 display: none;
               }
             }
@@ -552,7 +565,7 @@
               border-color: var(--cielo);
             }
 
-            & > i {
+            &>i {
               background-color: var(--cielo);
             }
           }
@@ -566,7 +579,7 @@
               border-color: var(--pollito);
             }
 
-            & > i {
+            &>i {
               background-color: var(--pollito);
             }
           }
@@ -582,7 +595,7 @@
               border-color: var(--gris1);
             }
 
-            & > i {
+            &>i {
               background-color: var(--gris1);
             }
           }
@@ -643,5 +656,73 @@
         transform: scale(1.1);
       }
     }
+  }
+}
+
+.methods-finanzas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  p {
+    color: #333b5c;
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+
+  ul {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    margin-bottom: 30px;
+    // list-style-type: disc;
+  }
+
+  li {
+    position: relative;
+    padding-left: 20px;
+    color: #333b5c;
+    font-size: 14px;
+    margin-bottom: 10px;
+
+    &::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      transform: translateY(-50%);
+      width: 5px;
+      height: 5px;
+      background-color: black;
+      border-radius: 50%;
+    }
+  }
+}
+
+.precios span {
+  color: #333b5c;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 32px;
+}
+
+.precios p {
+  color: #333b5c;
+  font-size: 24px;
+  font-weight: bold;
+  line-height: 32px;
+  margin-top: 27px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 4px;
+    width: 40px;
+    background-color: #30f77e;
+    margin-top: 15px;
   }
 }
