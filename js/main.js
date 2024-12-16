@@ -1410,12 +1410,9 @@ function validarSuscripcion() {
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
 finanzas_lightbox.addEventListener("click", function (event) {
-  event.preventDefault(); // Evitar el comportamiento predeterminado del clic
-
   if (validarSuscripcion()) {
     // Si el ID es correcto, redirigir a la página de finanzas
-    window.location.href =
-      "https://dev.bilingualchildcaretraining.com/miembros/acuarela-app-web/finanzas";
+    window.location.href = "/miembros/acuarela-app-web/finanzas";
   } else {
     // Si no, mostrar el lightbox
     showLightboxFinanzas();
