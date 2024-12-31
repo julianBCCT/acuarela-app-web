@@ -1341,8 +1341,7 @@ const subirplan = () => {
   contentContainer.classList.add("methods-register");
 
   const linkMensual = document.createElement("a");
-  linkMensual.href =
-    "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
+  linkMensual.href = "https://buy.stripe.com/9AQbMx2Fa7zHb2E7sV";
   linkMensual.classList.add("precios");
   linkMensual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1350,8 +1349,7 @@ const subirplan = () => {
     <p class=price">$24 / mes</p>
   `;
   const linkAnual = document.createElement("a");
-  linkAnual.href =
-    "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
+  linkAnual.href = "https://buy.stripe.com/28o2bXcfK6vDgmYbJa";
   linkAnual.classList.add("precios");
   linkAnual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1379,7 +1377,7 @@ function showLightboxFinanzas() {
       <li>Administra tus gastos, reportes financieros avanzados.</li>
       <li>Administra tus ingresos.</li>
       <li>Facturación automática y profesional para padres.</li>
-      <li>Recibe pagos electrónicos de padres.</li>
+      <li>Recibe pagos electrónicos de padres. (Comisión por transacción: USD0.50)</li>
     </ul>
   `;
 
@@ -1409,15 +1407,17 @@ function validarSuscripcion() {
 
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
-finanzas_lightbox.addEventListener("click", function (event) {
-  if (validarSuscripcion()) {
-    // Si el ID es correcto, redirigir a la página de finanzas
-    window.location.href = "/miembros/acuarela-app-web/finanzas";
-  } else {
-    // Si no, mostrar el lightbox
-    showLightboxFinanzas();
-  }
-});
+if (finanzas_lightbox) {
+  finanzas_lightbox.addEventListener("click", function (event) {
+    if (validarSuscripcion()) {
+      // Si el ID es correcto, redirigir a la página de finanzas
+      window.location.href = "/miembros/acuarela-app-web/finanzas";
+    } else {
+      // Si no, mostrar el lightbox
+      showLightboxFinanzas();
+    }
+  });
+}
 
 // Validar acceso al cargar la página directamente
 document.addEventListener("DOMContentLoaded", function () {
