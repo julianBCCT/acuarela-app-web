@@ -184,7 +184,7 @@ if (editAsistenteForm) {
   // Función de manejo de respuesta dinámica Login
   async function handleResponse(data) {
     fadeOut(preloader);
-    // window.location.reload();
+    window.location.reload();
   }
   const validator = new FormValidator(
     editAsistenteForm,
