@@ -37,12 +37,5 @@ include "includes/header.php" ?>
   </div>
 </main>
 
-<div class="mensajeria-content">
-  <?php include "includes/mensajeria.php" ?>
-
-  <button id="mainButton" class="main-button">
-    <i class="acuarela acuarela-Mensajes"></i>
-  </button>
-</div>
 <?php include "boxes/tour.php" ?>
 <?php include "includes/footer.php" ?>
