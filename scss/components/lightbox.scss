@@ -12,7 +12,6 @@
 
   &-content {
     max-width: 640px;
-    min-height: 400px;
     max-height: 90%;
     position: relative;
     border-radius: 16px;
@@ -23,7 +22,7 @@
     /* Drop Shadow_Regular */
     box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
     @media only screen and (max-width: 768px) {
-      align-items: center;       
+      align-items: center;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -74,10 +73,7 @@
     right: 30px;
     width: 32px;
     height: 32px;
-
   }
-
-
 
   .apps {
     display: flex;
@@ -90,7 +86,7 @@
       background: #00c6d1;
       border-radius: 8px;
       border: 1px solid #fff;
-      transition: all .6s cubic-bezier(0.16, 1, 0.3, 1);
+      transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
       color: #fff;
       display: inline-flex;
       flex-direction: row;

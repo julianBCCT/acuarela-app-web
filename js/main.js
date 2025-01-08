@@ -264,7 +264,11 @@ const handleInscripcion = async () => {
 
           if (dataToSend.parents && dataToSend.parents.length > 0) {
             try {
-              await sendEmailsToParents(body.parents, daycareName, formValues);
+              await sendEmailsToParents(
+                body.parents,
+                foundDaycare.name,
+                formValues
+              );
               fadeOut(preloader);
             } catch (error) {
               // Handle error if necessary
@@ -408,6 +412,9 @@ const addReaction = async (body, element) => {
   const reactionData = await reactionResponse.json();
 };
 const addComment = async (body, inputID) => {
+  document.querySelectorAll("#add-comment button").forEach((btn) => {
+    btn.setAttribute("disabled", true);
+  });
   body.content = document.querySelector(inputID).value;
   const commentResponse = await fetch("s/addComment/", {
     method: "POST",
@@ -417,6 +424,9 @@ const addComment = async (body, inputID) => {
   const reactionData = await commentResponse.json();
   Fancybox.close();
   location.reload();
+  document.querySelectorAll("#add-comment button").forEach((btn) => {
+    btn.setAttribute("disabled", false);
+  });
 };
 const showReactions = (element) => {
   let postArticle = document.getElementById(element);
@@ -717,6 +727,8 @@ const requestinscripciones = async () => {
           let { name, lastname, status, percentaje, id, child } = insc;
           let template = ``;
           if (child) {
+            console.log(percentaje);
+
             template = `<li class="${percentaje >= 100 ? "complete" : ""}">
               <span id="options">
                 <i class="acuarela acuarela-Opciones"></i>
@@ -1241,7 +1253,7 @@ const getChildren = async () => {
             sendEmailRegisterCheck(
               kid.name,
               parentName,
-              daycareName,
+              foundDaycare.name,
               parentName,
               parentEmail,
               "checkout"
@@ -1589,31 +1601,33 @@ const getInfoNewGroup = () => {
           if (photo) {
             url = photo.url;
           }
-          document.querySelector(".children").innerHTML += `<li >
-                        <input type="checkbox" name="${id}" id="${id}" ${
-            group && !acuarelauser ? `disabled` : ``
-          } ${childrenGroup.includes(id) ? `checked` : ``}>
-                        <label for="${id}">
-                             ${
-                               photo
-                                 ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
-                                 : `${
-                                     kid.gender === "Masculino"
-                                       ? `<img src="img/mal.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "Femenino"
-                                       ? `<img src="img/fem.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "X"
-                                       ? `<img src="img/Nonbinary.png" alt="">`
-                                       : ""
-                                   }`
-                             }
-                            <span>${name}</span>
-                        </label>
-                    </li>`;
+          if (!group) {
+            document.querySelector(".children").innerHTML += `<li >
+                          <input type="checkbox" name="${id}" id="${id}" ${
+              childrenGroup.includes(id) ? `checked` : ``
+            }>
+                          <label for="${id}">
+                               ${
+                                 photo
+                                   ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
+                                   : `${
+                                       kid.gender === "Masculino"
+                                         ? `<img src="img/mal.png" alt="">`
+                                         : ""
+                                     }${
+                                       kid.gender === "Femenino"
+                                         ? `<img src="img/fem.png" alt="">`
+                                         : ""
+                                     }${
+                                       kid.gender === "X"
+                                         ? `<img src="img/Nonbinary.png" alt="">`
+                                         : ""
+                                     }`
+                               }
+                              <span>${name}</span>
+                          </label>
+                      </li>`;
+          }
         });
         fadeOut(preloader);
       })
@@ -2096,7 +2110,7 @@ const sendInspectionModeMail = async (userName, email, link) => {
   formdata.append("email", email);
   formdata.append("admin", userName);
   formdata.append("link", link);
-  formdata.append("daycare", daycareName);
+  formdata.append("daycare", foundDaycare.name);
 
   var requestOptions = {
     method: "POST",
@@ -2369,10 +2383,10 @@ function mostrarPadres(padres) {
         padreElement.appendChild(btnInvitar);
 
         btnInvitar.addEventListener("click", function () {
-          console.log("Hola", daycareName, padre.email);
+          console.log("Hola", foundDaycare.name, padre.email);
           sendRegisterEmailChat(
             "padre",
-            daycareName,
+            foundDaycare.name,
             padre.email,
             `https://acuarelacore.com/auth/register/${padre.id}`,
             padre.children[0].name
@@ -3406,3 +3420,65 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function handleAddCategories(event, type) {
+  event.preventDefault(); // Prevent the form from reloading the page
+
+  const input = document.getElementById("categories-input").value.trim();
+
+  if (!input) {
+    alert("Por favor, ingrese al menos una categoría.");
+    return;
+  }
+
+  // Split categories by comma and trim extra spaces
+  const categories = input
+    .split(",")
+    .map((category) => category.trim())
+    .filter((category) => category);
+
+  if (categories.length === 0) {
+    alert("No se detectaron categorías válidas.");
+    return;
+  }
+
+  // Function to send each category to the server
+  const sendCategory = async (category) => {
+    const formdata = new FormData();
+    formdata.append("name", category); // Assuming `category` is the name
+    formdata.append("type", type); // Replace "gasto" with dynamic type if needed
+
+    try {
+      const response = await fetch("s/addCategories/", {
+        method: "POST",
+        body: formdata,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al enviar la categoría: ${category}`);
+      }
+
+      const result = await response.json();
+      console.log(`Categoría "${category}" procesada con éxito:`, result);
+    } catch (error) {
+      console.error(`Error al procesar la categoría "${category}":`, error);
+      throw error; // To ensure Promise.all catches this error
+    }
+  };
+
+  // Process each category asynchronously
+  const promises = categories.map(sendCategory);
+
+  // Wait for all promises to resolve
+  Promise.all(promises)
+    .then(() => {
+      alert("Todas las categorías han sido procesadas.");
+      document.getElementById("categories-input").value = ""; // Clear the input
+      fadeOut(document.querySelector("#lightbox-categories-gastos"));
+    })
+    .catch((error) => {
+      alert(
+        `Ocurrió un error al procesar algunas categorías: ${error.message}`
+      );
+    });
+}

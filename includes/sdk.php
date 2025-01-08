@@ -334,6 +334,15 @@ class Acuarela {
     
         return $resp;
     }
+    
+    function getCategories(){
+        $categories = $this->queryStrapi("categories");
+        return $categories;
+    }
+    function setCategories($data){
+        $categories = $this->queryStrapi("categories", $data, "POST");
+        return $categories;
+    }
 
     function uploadImage($file) {
         $url = "https://acuarelacore.com/api/upload";
