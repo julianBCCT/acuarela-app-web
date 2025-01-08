@@ -1669,7 +1669,10 @@ const getInfoNewAsistente = () => {
 };
 const fields = document.querySelectorAll("input[required], select[required]");
 const percentageSpan = document.querySelector(".percentage");
-
+fields.forEach((field) => {
+  field.parentElement.querySelector("label").innerHTML +=
+    "<span class='required'>*</span>";
+});
 function updatePercentage() {
   const totalFields = fields.length;
   let filledFields = 0;
@@ -1764,8 +1767,10 @@ if (tabs.length > 0) {
       updateUnderline();
     });
   }
-  tabs.forEach((tab) => {
+  tabs.forEach((tab, i) => {
     tab.addEventListener("click", () => {
+      const indexTabSelected = tab.getAttribute("data-index");
+      indexTab = indexTabSelected;
       tabs.forEach((t) => t.classList.remove("active"));
       tab.classList.add("active");
       const target = tab.getAttribute("data-target");

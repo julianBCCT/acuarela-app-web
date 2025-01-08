@@ -10,8 +10,7 @@ include "includes/header.php" ?>
   <div class="content">
     <div class="emptyElement">
       <h2>No hay post disponibles</h2>
-      <p>Para compartir fotos con padres y asistentes, utiliza tu app de Acuarela para iPad.</p>
-      <a href="https://apps.apple.com/us/app/acuarela-daycares/id1573321954" target="_blank" class="btn btn-action-primary enfasis btn-big">Descarga la app</a>
+      <p>Para compartir fotos con padres y asistentes, haz clic en el botón <strong>PUBLICAR</strong> </p>
     </div>
     <section class="post-list"></section>
   </div>

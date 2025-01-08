@@ -10,11 +10,11 @@ $inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
   include "templates/sectionHeader.php";
   ?>
   <div class="navtabs">
-    <div class="navtab active" data-target="basica">Información básica</div>
-    <div class="navtab" data-target="familia">Familia</div>
-    <div class="navtab" data-target="pagos">Horarios y pagos</div>
-    <div class="navtab" data-target="adjuntos">Adjuntos</div>
-    <div class="navtab" data-target="resumen">Resumen</div>
+    <div class="navtab active" data-index="0" data-target="basica">Información básica</div>
+    <div class="navtab" data-index="1" data-target="familia">Familia</div>
+    <div class="navtab" data-index="2" data-target="pagos">Horarios y pagos</div>
+    <div class="navtab" data-index="3" data-target="adjuntos">Adjuntos</div>
+    <div class="navtab" data-index="4" data-target="resumen">Resumen</div>
     <div class="underline"></div>
   </div>
   <div class="content">
@@ -238,22 +238,22 @@ $inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Nombres</label>
-                <input type="text" name="guardian2_name" id="guardian2_name" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_name : "" ?>" required />
+                <input type="text" name="guardian2_name" id="guardian2_name" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_name : "" ?>"  />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Apellidos</label>
-                <input type="text" name="guardian2_lastname" id="guardian2_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_lastname : "" ?>" required />
+                <input type="text" name="guardian2_lastname" id="guardian2_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_lastname : "" ?>"  />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Celular</label>
-                <input type="text" name="guardian2_phone" id="guardian2_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_phone : "" ?>" required />
+                <input type="text" name="guardian2_phone" id="guardian2_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_phone : "" ?>"  />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Correo electrónico</label>
-                <input type="text" name="guardian2_email" id="guardian2_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_email : "" ?>" required />
+                <input type="text" name="guardian2_email" id="guardian2_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_email : "" ?>"  />
               </span>
               <span>
                 <div class="cntr-check">
