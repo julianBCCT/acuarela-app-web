@@ -222,7 +222,7 @@ $balance = $ingresosTotal - $gastosTotal;
             <button type="submit" class="btn btn-action-primary enfasis btn-big">Agregar</button>
         </form>
         <button id="activities-close-button"
-            onclick="fadeOut(document.querySelector('#lightbox-categories-gastos'))"
+            onclick="fadeOut(document.querySelector('#lightbox-categories-ingresos'))"
             class="lightbox-button">
             <!-- SVG content as provided -->
             <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -4,6 +4,9 @@ form {
     align-items: center;
     justify-content: space-between;
     margin-bottom: 40px;
+    @media only screen and (max-width: 768px) {
+      flex-direction: column;
+    }
 
     strong {
       color: var(--gris2, #55637e);
@@ -13,6 +16,9 @@ form {
       line-height: 20px;
       /* 133.333% */
       display: flex;
+      @media only screen and (max-width: 768px) {
+        flex-direction: column;
+      }
     }
   }
 

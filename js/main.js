@@ -2124,7 +2124,18 @@ const sendInspectionModeMail = async (userName, email, link) => {
     requestOptions
   )
     .then((response) => response.json())
-    .then((result) => fadeOut(preloader))
+    .then((result) => {
+      fadeOut(preloader);
+      Toastify({
+        text: "Informe enviado a tu correo " + emailAdmin,
+        close: true,
+        stopOnFocus: true,
+        style: {
+          background: "linear-gradient(to right, #0cb5c3, #098892)",
+        },
+        duration: 10000,
+      }).showToast();
+    })
     .catch((error) => console.log("error", error));
   return true;
 };
@@ -3422,6 +3433,8 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function handleAddCategories(event, type) {
+  document.querySelector("#addCategoriesGastos button").innerHTML =
+    "Guardando...";
   event.preventDefault(); // Prevent the form from reloading the page
 
   const input = document.getElementById("categories-input").value.trim();
@@ -3459,6 +3472,8 @@ function handleAddCategories(event, type) {
       }
 
       const result = await response.json();
+      document.querySelector("#addCategoriesGastos button").innerHTML =
+        "Agregar";
       console.log(`Categoría "${category}" procesada con éxito:`, result);
     } catch (error) {
       console.error(`Error al procesar la categoría "${category}":`, error);
