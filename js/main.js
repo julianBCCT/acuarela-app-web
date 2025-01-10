@@ -2266,6 +2266,7 @@ const socket = io("https://acuarelacore.com", {
 socket.emit("register", { userId: acuarelaId });
 
 const asideMensajeria = document.getElementById("mesajeria-menu");
+const icono = document.getElementById("icono");
 const mensajeButton = document.getElementById("mainButton");
 const buscarMensajeria = document.getElementById("buscar-mensajeria");
 const buscadorMensajeria = document.getElementById("chats-buscados");
@@ -2278,13 +2279,42 @@ const chatMensajeria = document.querySelector(".chat-individual");
 const btnSendMensaje = document.getElementById("sendBtn");
 const chatList = document.getElementById("opciones-mensajeria");
 const contendorMessages = document.getElementById("messages");
+let isChatOpen = false;
 
 mensajeButton.addEventListener("click", function () {
-  if (asideMensajeria.style.display === "none") {
-    asideMensajeria.style.display = "block";
-  } else {
-    asideMensajeria.style.display = "none";
-  }
+  // Añadir clase para ocultar el ícono actual
+  icono.classList.add("icon-hidden");
+
+  setTimeout(() => {
+    if (!isChatOpen) {
+      // Mostrar asideMensajeria con animación
+      asideMensajeria.style.display = "flex"; // Asegurar que sea visible
+      setTimeout(() => {
+        asideMensajeria.classList.remove("menu-hidden");
+        asideMensajeria.classList.add("menu-visible");
+      }, 10); // Breve retraso para permitir la transición
+
+      // Cambiar el ícono a "Cancelar"
+      icono.classList.remove("acuarela-Habla", "icon-chat");
+      icono.classList.add("acuarela-Cancelar", "icon-close");
+    } else {
+      // Ocultar asideMensajeria con animación
+      asideMensajeria.classList.remove("menu-visible");
+      asideMensajeria.classList.add("menu-hidden");
+
+      setTimeout(() => {
+        asideMensajeria.style.display = "none"; // Ocultar después de la animación
+      }, 300); // Duración de la animación en CSS
+
+      // Cambiar el ícono a "Habla"
+      icono.classList.remove("acuarela-Cancelar", "icon-close");
+      icono.classList.add("acuarela-Habla", "icon-chat");
+    }
+
+    // Mostrar el nuevo ícono
+    icono.classList.remove("icon-hidden");
+    isChatOpen = !isChatOpen; // Alternar estado
+  }, 300); // Coincidir con la duración de la animación del ícono
 });
 
 async function buscarPadres() {

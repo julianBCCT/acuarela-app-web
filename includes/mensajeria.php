@@ -101,7 +101,7 @@
             </div>
         </div>
         <div class="chat-barra-mensajes">
-            <input id="messageInput" type="text">
+            <input id="messageInput" type="text" placeholder="Mensaje">
             <i id="sendBtn" class="acuarela acuarela-Enviar"></i>
             <!-- <i class="acuarela acuarela-Adjuntar"></i> -->
         </div>

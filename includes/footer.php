@@ -51,7 +51,7 @@
   <?php include "includes/mensajeria.php" ?>
 
   <button id="mainButton" class="main-button">
-    <i class="acuarela acuarela-Habla"></i>
+    <i id="icono" class="acuarela acuarela-Habla"></i>
   </button>
 </div>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
