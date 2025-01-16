@@ -1417,6 +1417,72 @@ function validarSuscripcion() {
   return accesoPermitido;
 }
 
+// Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
+const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
+if (emergencycontact_lightbox) {
+  emergencycontact_lightbox.addEventListener("click", function (event) {
+      showLightboxEmergency();
+  });
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxEmergency() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkEmergencia = document.createElement("a");
+  linkEmergencia.classList.add("emergency");
+  linkEmergencia.innerHTML = `
+    <img src="img/icons/telefono.svg"" alt="file">
+    <span>Llamar a emergencias </span>
+  `;
+  const linkPariente = document.createElement("a");
+  linkPariente.classList.add("emergency");
+  linkPariente.innerHTML = `
+    <img src="img/icons/familia.svg" alt="file">
+    <span>Contactar al pariente</span>
+  `;
+  linkPariente.addEventListener("click", (event) => {
+    showLightboxParient(); // Llama a tu función
+  });
+
+  contentContainer.appendChild(linkEmergencia);
+  contentContainer.appendChild(linkPariente);
+
+  showInfoLightbox(
+    "Contacto de emergencia",
+    contentContainer
+  );
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxParient() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkGrave = document.createElement("a");
+  linkGrave.classList.add("emergency");
+  linkGrave.innerHTML = `
+    <img src="img/icons/ambossandia.svg"" alt="file">
+    <span>Caso grave </span>
+  `;
+  
+  const linkModerado = document.createElement("a");
+  linkModerado.classList.add("emergency");
+  linkModerado.innerHTML = `
+    <img src="img/icons/ambospollito.svg"" alt="file">
+    <span>Caso leve o moderado </span>
+  `;
+
+  contentContainer.appendChild(linkGrave);
+  contentContainer.appendChild(linkModerado);
+
+  showInfoLightbox(
+    "Contactar con pariente según nivel de gravedad",
+    contentContainer
+  );
+}
+
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
 if (finanzas_lightbox) {

@@ -90,6 +90,93 @@
         }
       }
 
+      #salud {
+        .saludcontainer {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+
+          .saludinfo {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+
+            .saludhistorial {
+              background-color: white;
+              height: auto;
+              width: 50%;
+              border-radius: 8px;
+              box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25); 
+              padding: 15px 35px;
+            }
+
+            &-add {
+              display: flex;
+              flex-direction: column;
+              gap: 20px;
+              width: 50%;
+
+              .saludunguentos {
+                background-color: white;
+                height: auto;
+                border-radius: 8px;
+                box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+                padding: 15px 35px; 
+              }
+            }
+          }
+
+          .saludinfoadd {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: white;
+            width: auto;
+            border-radius: 8px;
+            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+
+            a {
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              color: var(--cielo);
+              font-size: 12px;
+              font-weight: 700;
+              margin: 10px;
+            }
+          }
+        }
+
+        .saludincidentes {
+          background-color: white;
+          height: auto;
+          border-radius: 8px;
+          box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+          padding: 15px 35px;
+        }
+
+        p {
+          display: flex;
+          justify-content: start;
+          color: var(--gris2);
+          gap: 15px;
+
+          .hs-sep {
+            display: flex;
+            justify-content: start;
+            align-items: center;
+            width: 40%;
+            gap: 10px;
+
+            span {
+              color: var(--gris1);
+              font-size: 11px;
+              font-weight: regular;
+            }
+          }
+        }
+      }
+
       #actividades {
         .actividadescontainer {
           max-width: 600px;

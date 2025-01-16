@@ -20,14 +20,32 @@
     <div class="content">
         <div class="basicinfo">
             <div class="txt">
-                <p><i class="acuarela acuarela-Evento"></i> <span>Fecha de nacimiento</span> <strong>
-                        <?=$birthdate_formateada?>
-                    </strong></p>
-                <p><i class="acuarela acuarela-Calendario"></i> <span>Inscrito desde</span> <strong>
-                        <?=$published_at_formateada?>
-                    </strong></p>
-                <p><i class="acuarela acuarela-Localizacion"></i> <span>Ciudad</span> <strong><?=$kid->city?></strong>
-                </p>
+                <div class="txt_data">
+                    <p><i class="acuarela acuarela-Evento"></i> <span>Fecha de nacimiento</span> <strong>
+                            <?=$birthdate_formateada?>
+                        </strong></p>
+                    <p><i class="acuarela acuarela-Calendario"></i> <span>Inscrito desde</span> <strong>
+                            <?=$published_at_formateada?>
+                        </strong></p>
+                    <p><i class="acuarela acuarela-Localizacion"></i> <span>Ciudad</span> <strong><?=$kid->city?></strong>
+                    </p>
+                    <p><i class="acuarela acuarela-Telefono"></i> <span>Número Mamá</span> <strong><?=$kid->acuarelausers[0]->phone?></strong>
+                    </p>
+                    <p><i class="acuarela acuarela-Mensajes"></i> <span>Correo Mamá</span> <strong><?=$kid->acuarelausers[0]->mail?></strong>
+                    </p>
+                    <p><i class="acuarela acuarela-Telefono"></i> <span>Número Papá</span> <strong><?=$kid->acuarelausers[1]->phone?></strong>
+                    </p>
+                    <p><i class="acuarela acuarela-Mensajes"></i> <span>Correo Papá</span> <strong><?=$kid->acuarelausers[1]->mail?></strong>
+                    </p>
+
+                    <?php
+                        // echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
+                        // echo '<pre>';
+                        //     var_dump($kid);
+                        // echo '</pre>';
+                    ?>
+                </div>
+                <button class="emergency_contact" href="javascript:;" id="lightbox-emergencycontact">Contacto de Emergencia</button>
             </div>
             <div class="photo">
                 <?php
@@ -50,6 +68,8 @@
         </div>
         <div class="navtabs">
             <div class="navtab active" data-target="familia">Familia</div>
+            <div class="navtab" data-target="salud">Salud</div>
+            <div class="navtab" data-target="health_check">Health Check</div>
             <div class="navtab" data-target="actividades">Actividades</div>
             <div class="navtab" data-target="pagos">Pagos</div>
             <!-- <div class="navtab" data-target="registro">Registro</div> -->
@@ -86,20 +106,54 @@
                 ?>
                 <li>
                     <div class="image">
-                        <?= $parent->photo
-                      ? "<img src='https://acuarelacore.com/api/{$parent->photo->formats->small->url}' alt='{$parent->name}'>"
-                      : "<i class='acuarela acuarela-Camara'></i>" ?>
-
-
+                        <?= isset($guardian->photo) && isset($guardian->photo->formats->small->url)
+                        ? "<img src='https://acuarelacore.com/api/{$guardian->photo->formats->small->url}' alt='{$guardian->guardian_name}'>"
+                        : "<i class='acuarela acuarela-Camara'></i>" ?>
                     </div>
-                    <?php if(  $parent->is_principal){ ?>
+                    <?php if (isset($guardian->guardian_emergency) && $guardian->guardian_emergency) { ?>
                     <i class="acuarela acuarela-Estrella"></i>
                     <?php } ?>
-                    <span class="name"><?=$parent->name?> <?=$parent->lastname?></span>
+                    <span class="name"><?=$guardian->guardian_name?> <?=$guardian->guardian_lastname?></span>
                 </li>
                 <?php } ?>
             </ul>
         </div>
+
+        <div id="salud" class="tab-content">
+            <div class="saludcontainer">
+                <div class="saludinfo">
+                    <div class="saludhistorial">
+                        <h3>Historial de salud</h3>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias: </span> </span>  Hola </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Asma: </span> </span>  Hola </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Medicamentos: </span> </span>  Hola </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Vacunas: </span> </span>  Hola </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Otras:: </span> </span>  Hola </p>
+                    </div>
+                    <div class="saludinfo-add">
+                        <div class="saludunguentos">
+                            <h3>Ungüentos autorizados</h3>
+                            <p>Bloqueador solar</p>
+                            <p>Repelente de insectos</p>
+                        </div>
+                        <div class="saludunguentos">
+                            <h3>Información</h3>
+                            <p><strong>Doctor: </strong>Nombre del doctor</p>
+                            <p><strong>Telefono: </strong>0000000000</p>
+                            <p><strong>Correo: </strong>doctor@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="saludinfoadd">
+                    <a href="#"><i class="acuarela acuarela-Agregar"></i> Agregar datos de salud </a>
+                </div>
+                <div class="saludincidentes">
+                    <h3>Incidentes</h3>
+                </div>
+                
+            </div>
+        </div>
+
         <div id="actividades" class="tab-content">
             <div class="actividadescontainer">
                 <div class="header">
@@ -115,6 +169,7 @@
                 <div id="no-activities" class="no-activities">No hay actividades registradas</div>
             </div>
         </div>
+
         <div id="pagos" class="tab-content">
             <ul>
                 <?php 
@@ -146,6 +201,7 @@
 
             </ul>
         </div>
+
         <!-- <div id="registro" class="tab-content"></div> -->
         <div id="Adjuntos" class="tab-content ">
         <ul>
