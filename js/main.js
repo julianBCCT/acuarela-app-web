@@ -1417,6 +1417,72 @@ function validarSuscripcion() {
   return accesoPermitido;
 }
 
+// Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
+const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
+if (emergencycontact_lightbox) {
+  emergencycontact_lightbox.addEventListener("click", function (event) {
+      showLightboxEmergency();
+  });
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxEmergency() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkEmergencia = document.createElement("a");
+  linkEmergencia.classList.add("emergency");
+  linkEmergencia.innerHTML = `
+    <img src="img/icons/telefono.svg"" alt="file">
+    <span>Llamar a emergencias </span>
+  `;
+  const linkPariente = document.createElement("a");
+  linkPariente.classList.add("emergency");
+  linkPariente.innerHTML = `
+    <img src="img/icons/familia.svg" alt="file">
+    <span>Contactar al pariente</span>
+  `;
+  linkPariente.addEventListener("click", (event) => {
+    showLightboxParient(); // Llama a tu función
+  });
+
+  contentContainer.appendChild(linkEmergencia);
+  contentContainer.appendChild(linkPariente);
+
+  showInfoLightbox(
+    "Contacto de emergencia",
+    contentContainer
+  );
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxParient() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkGrave = document.createElement("a");
+  linkGrave.classList.add("emergency");
+  linkGrave.innerHTML = `
+    <img src="img/icons/ambossandia.svg"" alt="file">
+    <span>Caso grave </span>
+  `;
+  
+  const linkModerado = document.createElement("a");
+  linkModerado.classList.add("emergency");
+  linkModerado.innerHTML = `
+    <img src="img/icons/ambospollito.svg"" alt="file">
+    <span>Caso leve o moderado </span>
+  `;
+
+  contentContainer.appendChild(linkGrave);
+  contentContainer.appendChild(linkModerado);
+
+  showInfoLightbox(
+    "Contactar con pariente según nivel de gravedad",
+    contentContainer
+  );
+}
+
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
 if (finanzas_lightbox) {
@@ -2266,6 +2332,7 @@ const socket = io("https://acuarelacore.com", {
 socket.emit("register", { userId: acuarelaId });
 
 const asideMensajeria = document.getElementById("mesajeria-menu");
+const icono = document.getElementById("icono");
 const mensajeButton = document.getElementById("mainButton");
 const buscarMensajeria = document.getElementById("buscar-mensajeria");
 const buscadorMensajeria = document.getElementById("chats-buscados");
@@ -2278,13 +2345,42 @@ const chatMensajeria = document.querySelector(".chat-individual");
 const btnSendMensaje = document.getElementById("sendBtn");
 const chatList = document.getElementById("opciones-mensajeria");
 const contendorMessages = document.getElementById("messages");
+let isChatOpen = false;
 
 mensajeButton.addEventListener("click", function () {
-  if (asideMensajeria.style.display === "none") {
-    asideMensajeria.style.display = "block";
-  } else {
-    asideMensajeria.style.display = "none";
-  }
+  // Añadir clase para ocultar el ícono actual
+  icono.classList.add("icon-hidden");
+
+  setTimeout(() => {
+    if (!isChatOpen) {
+      // Mostrar asideMensajeria con animación
+      asideMensajeria.style.display = "flex"; // Asegurar que sea visible
+      setTimeout(() => {
+        asideMensajeria.classList.remove("menu-hidden");
+        asideMensajeria.classList.add("menu-visible");
+      }, 10); // Breve retraso para permitir la transición
+
+      // Cambiar el ícono a "Cancelar"
+      icono.classList.remove("acuarela-Habla", "icon-chat");
+      icono.classList.add("acuarela-Cancelar", "icon-close");
+    } else {
+      // Ocultar asideMensajeria con animación
+      asideMensajeria.classList.remove("menu-visible");
+      asideMensajeria.classList.add("menu-hidden");
+
+      setTimeout(() => {
+        asideMensajeria.style.display = "none"; // Ocultar después de la animación
+      }, 300); // Duración de la animación en CSS
+
+      // Cambiar el ícono a "Habla"
+      icono.classList.remove("acuarela-Cancelar", "icon-close");
+      icono.classList.add("acuarela-Habla", "icon-chat");
+    }
+
+    // Mostrar el nuevo ícono
+    icono.classList.remove("icon-hidden");
+    isChatOpen = !isChatOpen; // Alternar estado
+  }, 300); // Coincidir con la duración de la animación del ícono
 });
 
 async function buscarPadres() {
