@@ -240,7 +240,6 @@
         }
 
         @keyframes scale {
-
           0%,
           100% {
             transform: none;
@@ -330,7 +329,6 @@
         }
 
         @keyframes scale {
-
           0%,
           100% {
             transform: none;
@@ -355,6 +353,9 @@
 
     .content {
       padding: 40px clamp(20px, 3vw, 80px) 120px;
+      @media only screen and (max-width: 768px) {
+        padding: 40px clamp(20px, 3vw, 80px) 200px;
+      }
 
       .info {
         margin-bottom: 30px;
@@ -441,14 +442,14 @@
           .image {
             position: relative;
 
-            &>img {
+            & > img {
               border: 4px solid;
               height: 115px;
               width: 115px;
               border-radius: 50%;
             }
 
-            &>i {
+            & > i {
               position: absolute;
               bottom: 0;
               right: 0;
@@ -540,7 +541,7 @@
             }
 
             .image {
-              &>i {
+              & > i {
                 display: none;
               }
             }
@@ -566,7 +567,7 @@
               border-color: var(--cielo);
             }
 
-            &>i {
+            & > i {
               background-color: var(--cielo);
             }
           }
@@ -580,7 +581,7 @@
               border-color: var(--pollito);
             }
 
-            &>i {
+            & > i {
               background-color: var(--pollito);
             }
           }
@@ -596,7 +597,7 @@
               border-color: var(--gris1);
             }
 
-            &>i {
+            & > i {
               background-color: var(--gris1);
             }
           }
