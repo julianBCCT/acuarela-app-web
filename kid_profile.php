@@ -2,6 +2,7 @@
 ?>
 <script>
     let activities = <?= json_encode($kid->childrenactivities) ?>;
+    let kidData = <?= json_encode($kid) ?>;
 </script>
 <main>
     <?php
@@ -39,10 +40,10 @@
                     </p>
 
                     <?php
-                        // echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
-                        // echo '<pre>';
-                        //     var_dump($kid);
-                        // echo '</pre>';
+                        echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
+                        echo '<pre>';
+                            var_dump($kid);
+                        echo '</pre>';
                     ?>
                 </div>
                 <button class="emergency_contact" href="javascript:;" id="lightbox-emergencycontact">Contacto de Emergencia</button>
@@ -144,11 +145,36 @@
                         </div>
                     </div>
                 </div>
-                <div class="saludinfoadd">
+                <div class="saludinfoadd saludinfoadd-shadow">
                     <a href="#"><i class="acuarela acuarela-Agregar"></i> Agregar datos de salud </a>
                 </div>
                 <div class="saludincidentes">
                     <h3>Incidentes</h3>
+                    <div class="incidentnino" id="incidentes">
+                        <div class="incidentnino-desp">
+                            <h4>Incidente 1</h4>
+                            <p class="iconincid"><i class="acuarela acuarela-Flecha_arriba"></i></p>
+                        </div>
+                        <div class="incidentinfo">
+                            <div class="incidentreport">
+                                <p>Reportado por Nancy Dominguez</p>
+                                <p><i class="acuarela acuarela-Horario"></i> 10:00 AM</p>
+                                <p><i class="acuarela acuarela-Calendario"></i> 16/01/2025</p>
+                            </div>
+                            <div class="incidentdetails">
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span> Presenta dolor de estomago</p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span> (leve, moderado, grave)</p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span> 32 °C </p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span> Texto...</p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span> Se llamo a los padres y recogieron a la niña al daycare</p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span> El padre o acudiente recoja al niño</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="saludinfoadd">
+                        <a href="#"><i class="acuarela acuarela-Agregar"></i> Agregar nuevo reporte </a>
+                    </div>
+                    
                 </div>
                 
             </div>

@@ -133,8 +133,12 @@
             background-color: white;
             width: auto;
             border-radius: 8px;
-            box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+            margin-top: 10px;
 
+            &-shadow {
+              margin-top: 0;
+              box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
+            }
             a {
               display: flex;
               align-items: center;
@@ -153,6 +157,40 @@
           border-radius: 8px;
           box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.25);
           padding: 15px 35px;
+
+          .incidentnino {
+            display: flex;
+            flex-direction: column;
+            border-bottom: 1px solid var(--gris4);
+
+            &-desp {
+              display: flex;
+              justify-content: space-between;
+
+              .iconincid {
+                display: flex;
+                justify-content: center;
+              }
+            }
+
+            .incidentinfo {
+              display: flex;
+              flex-direction: column;
+            
+              .incidentreport {
+                display: grid;
+                grid-template-columns: 2fr 1fr 1fr;
+                p {
+                  justify-self: start; 
+                }
+            
+                p:nth-child(2),
+                p:nth-child(3) {
+                  justify-self: end; 
+                }
+              }
+            }
+          }
         }
 
         p {

@@ -1417,7 +1417,9 @@ function validarSuscripcion() {
   return accesoPermitido;
 }
 
-// Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
+
+
+//==> AL HACER CLICK EN EL BOTON CONTACTO DE EMERGENCIAS
 const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
 if (emergencycontact_lightbox) {
   emergencycontact_lightbox.addEventListener("click", function (event) {
@@ -1425,7 +1427,7 @@ if (emergencycontact_lightbox) {
   });
 }
 
-// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+// Lightbox CONTACTO DE EMERGENCIA 
 function showLightboxEmergency() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-emergency");
@@ -1436,6 +1438,9 @@ function showLightboxEmergency() {
     <img src="img/icons/telefono.svg"" alt="file">
     <span>Llamar a emergencias </span>
   `;
+  linkEmergencia.addEventListener("click", (event) => {
+    showLightboxCallEmergency(); 
+  });
   const linkPariente = document.createElement("a");
   linkPariente.classList.add("emergency");
   linkPariente.innerHTML = `
@@ -1443,7 +1448,11 @@ function showLightboxEmergency() {
     <span>Contactar al pariente</span>
   `;
   linkPariente.addEventListener("click", (event) => {
-    showLightboxParient(); // Llama a tu función
+    showLightboxParient(); 
+    const email = kids;
+
+    // Mostrar en consola
+    console.log(email);
   });
 
   contentContainer.appendChild(linkEmergencia);
@@ -1455,7 +1464,99 @@ function showLightboxEmergency() {
   );
 }
 
-// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+// Lightbox LLAMAR A EMERGENCIAS 
+function showLightboxCallEmergency() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const Urgencias = document.createElement("a");
+  Urgencias.classList.add("emergency");
+  Urgencias.innerHTML = `
+    <img src="img/icons/ambossandia.svg"" alt="file">
+    <span>Caso grave </span>
+  `;
+  
+  const Policia = document.createElement("a");
+  Policia.classList.add("emergency");
+  Policia.innerHTML = `
+    <img src="img/icons/ambospollito.svg"" alt="file">
+    <span>Caso leve o moderado </span>
+  `;
+
+  const Otro = document.createElement("a");
+  Otro.classList.add("emergency");
+  Otro.innerHTML = `
+    <img src="img/icons/ambospollito.svg"" alt="file">
+    <span>Caso leve o moderado </span>
+  `;
+
+  contentContainer.appendChild(Urgencias);
+  contentContainer.appendChild(Policia);
+  contentContainer.appendChild(Otro);
+
+  showInfoLightbox(
+    "Contactar con pariente según nivel de gravedad",
+    contentContainer
+  );
+}
+
+// Función para mostrar el mensaje dinámico
+function showMessage(container, text, isError = false) {
+  // Elimina mensajes previos
+  const existingMessage = container.querySelector(".response-message");
+  if (existingMessage) {
+    existingMessage.remove();
+  }
+  // Crea el mensaje
+  const message = document.createElement("p");
+  message.classList.add("response-message");
+
+  message.innerHTML = `
+  <i class="acuarela acuarela-Informacion"></i>
+  ${text}
+  `;
+
+  // Agrega el mensaje al contenedor
+  container.appendChild(message);
+}
+
+// Función para ENVIAR CORREO  de emergencias
+function sendEmergencyEmail(gravedad, email, name, incidentType, temperature, actionsTaken, severityLevel, daycareName, suggestedActions) {
+  let messagegrav = "";
+  if (gravedad === "grave") {
+    messagegrav = `Estimado/a ${name},\n\nSe ha contactado a emergencias. Por favor, acuda al daycare inmediatamente.`;
+  } else {
+    messagegrav = `Estimado/a ${name},\n\nQueremos informarle que su hijo ha presentado ${incidentType} durante su estancia en el daycare. Actualmente, su temperatura es de ${temperature} y, aunque ${actionsTaken}, consideramos que el nivel de gravedad es ${severityLevel}. Le solicitamos amablemente que ${suggestedActions} para garantizar su bienestar.\n\n Agradecemos su comprensión y pronta respuesta.\n Atentamente,\n ${daycareName}`;
+  }
+  // Datos que se enviarán al webhook
+  const data = {
+    subject: "Urgencia de salud - Favor recoger a su hijo",
+    message: messagegrav,
+    to: email,
+  };
+  const container = document.querySelector(".methods-emergency");
+  // Enviar solicitud al webhook de Make
+  fetch("https://hook.us1.make.com/mtmdvt7v8sbd0bdalpyjngbxbhi3sryr", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+  .then((response) => {
+    if (response.ok) {
+      showMessage(container, "Se ha enviado un mensaje de aviso al pariente.");
+    } else {
+      showMessage(container, "Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.", true);
+    }
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+    showMessage(container, "Hubo un error al enviar el correo.", true);
+  });
+}
+
+// Lightbox CONTACTAR PARIENTE SEGÚN GRAVEDAD
 function showLightboxParient() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-emergency");
@@ -1464,15 +1565,33 @@ function showLightboxParient() {
   linkGrave.classList.add("emergency");
   linkGrave.innerHTML = `
     <img src="img/icons/ambossandia.svg"" alt="file">
-    <span>Caso grave </span>
+    <span>Caso Urgente</span>
   `;
-  
+  linkGrave.addEventListener("click", () => {
+    const gravedad = "grave"; 
+    const email = kidData.guardians[0].guardian_email; 
+    const name = kidData.guardians[0].guardian_name; //Nombre del pariente
+    sendEmergencyEmail(gravedad, email, name);
+  });
+
   const linkModerado = document.createElement("a");
   linkModerado.classList.add("emergency");
   linkModerado.innerHTML = `
     <img src="img/icons/ambospollito.svg"" alt="file">
-    <span>Caso leve o moderado </span>
+    <span>Enviar reporte detallado</span>
   `;
+  linkModerado.addEventListener("click", () => {
+    const gravedad = "moderado"; 
+    const email = kidData.guardians[0].guardian_email; 
+    const name = kidData.guardians[0].guardian_name; 
+    const incidentType = "[Tipo de incidencia]"; 
+    const temperature = "[Temperatura]"; 
+    const actionsTaken = "[Acciones tomadas]"; 
+    const severityLevel = "[Nivel de gravedad]"; 
+    const daycareName = "[Nombre del Daycare]"; 
+    const suggestedActions = "[Acciones esperadas]";
+    sendEmergencyEmail(gravedad, email, name, incidentType, temperature, actionsTaken, severityLevel, daycareName, suggestedActions);
+  });
 
   contentContainer.appendChild(linkGrave);
   contentContainer.appendChild(linkModerado);
@@ -1482,6 +1601,39 @@ function showLightboxParient() {
     contentContainer
   );
 }
+
+
+// // Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+// function showLightboxParient() {
+//   const contentContainer = document.createElement("div");
+//   contentContainer.classList.add("methods-emergency");
+
+//   const linkGrave = document.createElement("a");
+//   linkGrave.classList.add("emergency");
+//   linkGrave.innerHTML = `
+//     <img src="img/icons/ambossandia.svg"" alt="file">
+//     <span>Caso grave </span>
+//   `;
+  
+//   const linkModerado = document.createElement("a");
+//   linkModerado.classList.add("emergency");
+//   linkModerado.innerHTML = `
+//     <img src="img/icons/ambospollito.svg"" alt="file">
+//     <span>Caso leve o moderado </span>
+//   `;
+
+//   contentContainer.appendChild(linkGrave);
+//   contentContainer.appendChild(linkModerado);
+
+//   showInfoLightbox(
+//     "Contactar con pariente según nivel de gravedad",
+//     contentContainer
+//   );
+// }
+
+
+
+
 
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
