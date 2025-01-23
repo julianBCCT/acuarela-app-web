@@ -138,6 +138,11 @@ class Acuarela {
             return $respInscripcionComplete;
         }
     }
+    function postHealthInfo($data) {
+        $response = $this->queryStrapi("healthinfo", $data, "POST");
+        return $response;
+    }
+    
     function putInscripcion($data){
         $data = json_decode($data);
         if($data->status == "Borrador"){

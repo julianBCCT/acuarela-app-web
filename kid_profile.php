@@ -40,10 +40,10 @@
                     </p>
 
                     <?php
-                        echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
-                        echo '<pre>';
-                            var_dump($kid);
-                        echo '</pre>';
+                        // echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
+                        // echo '<pre>';
+                        //     var_dump($kid);
+                        // echo '</pre>';
                     ?>
                 </div>
                 <button class="emergency_contact" href="javascript:;" id="lightbox-emergencycontact">Contacto de Emergencia</button>
@@ -125,11 +125,15 @@
                 <div class="saludinfo">
                     <div class="saludhistorial">
                         <h3>Historial de salud</h3>
-                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias: </span> </span>  Hola </p>
-                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Asma: </span> </span>  Hola </p>
-                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Medicamentos: </span> </span>  Hola </p>
-                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Vacunas: </span> </span>  Hola </p>
-                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Otras:: </span> </span>  Hola </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias: </span> </span>  <?=$kid->healthinfo->allergies?> </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Asma: </span> </span>  <?=$kid->healthinfo->asthma?> </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Medicamentos: </span> </span>  <?=$kid->healthinfo->medicines?>  </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Vacunas: </span> </span>  <?=$kid->healthinfo->vacination?>  </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Accidentes: </span> </span>  <?=$kid->healthinfo->accidents?>  </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud física: </span> </span>  <?=$kid->healthinfo->physical_health?>  </p>
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud emocional: </span> </span>  <?=$kid->healthinfo->emotional_health?>  </p>
+                        <!-- <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Sospecha de abuso: </span> </span>  <?=$kid->healthinfo->suspected_abuse?>  </p> -->
+                        <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Otras: </span> </span>  <?=$kid->healthinfo->other?>  </p>
                     </div>
                     <div class="saludinfo-add">
                         <div class="saludunguentos">
@@ -139,15 +143,14 @@
                         </div>
                         <div class="saludunguentos">
                             <h3>Información</h3>
-                            <p><strong>Doctor: </strong>Nombre del doctor</p>
-                            <p><strong>Telefono: </strong>0000000000</p>
-                            <p><strong>Correo: </strong>doctor@gmail.com</p>
+                            <p><strong>Doctor: </strong> <?=$kid->healthinfo->pediatrician?>  </p>
+                            <p><strong>Telefono: </strong> <?=$kid->healthinfo->pediatrician_number?> </p>
+                            <p><strong>Correo: </strong> <?=$kid->healthinfo->pediatrician_email?>  </p>
                         </div>
                     </div>
                 </div>
-                <div class="saludinfoadd saludinfoadd-shadow">
-                    <a href="#"><i class="acuarela acuarela-Agregar"></i> Agregar datos de salud </a>
-                </div>
+                <a class="saludinfoadd saludinfoadd-shadow" href="/miembros/acuarela-app-web/agregar-salud/<?= $kid->_id ?>"><i class="acuarela acuarela-Agregar"></i> Agregar datos de salud </a>
+
                 <div class="saludincidentes">
                     <h3>Incidentes</h3>
                     <div class="incidentnino" id="incidentes">
@@ -157,23 +160,21 @@
                         </div>
                         <div class="incidentinfo">
                             <div class="incidentreport">
-                                <p>Reportado por Nancy Dominguez</p>
-                                <p><i class="acuarela acuarela-Horario"></i> 10:00 AM</p>
-                                <p><i class="acuarela acuarela-Calendario"></i> 16/01/2025</p>
+                                <p> <?=$kid->incidents[0]->reported_for?> </p>
+                                <p><i class="acuarela acuarela-Horario"></i> <?=$kid->incidents[0]->reported_enh?> </p>
+                                <p><i class="acuarela acuarela-Calendario"></i> <?=$kid->incidents[0]->reported_enf?> </p>
                             </div>
                             <div class="incidentdetails">
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span> Presenta dolor de estomago</p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span> (leve, moderado, grave)</p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span> 32 °C </p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span> Texto...</p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span> Se llamo a los padres y recogieron a la niña al daycare</p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span> El padre o acudiente recoja al niño</p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span> <?=$kid->incidents[0]->description?> </p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span> <?=$kid->incidents[0]->gravedad?> </p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span> <?=$kid->incidents[0]->temperature?>°C </p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span> <?=$kid->incidents[0]->statehealth?> </p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span> <?=$kid->incidents[0]->actions_taken?> </p>
+                                <p><span class="hs-sep"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span> <?=$kid->incidents[0]->actions_expected?> </p>
                             </div>
                         </div>
                     </div>
-                    <div class="saludinfoadd">
-                        <a href="#"><i class="acuarela acuarela-Agregar"></i> Agregar nuevo reporte </a>
-                    </div>
+                    <a class="saludinfoadd" href="/miembros/acuarela-app-web/agregar-reporte/<?= $kid->_id ?>"><i class="acuarela acuarela-Agregar"></i> Agregar nuevo reporte </a>
                     
                 </div>
                 

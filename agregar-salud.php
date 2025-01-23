@@ -17,24 +17,27 @@
     // Formatea la fecha al formato MM-DD-YYYY
     $published_at_formateada = $published_at->format('m-d-Y');
 ?>
-    <form action="s/addAsistente/" id="createAsistente" method="POST">
+    <form action="s/createHealthInfo/" id="createAsistente" method="POST">
         <div class="content">
             <fieldset class="fieldsalud">
                 <h2>Información salud del niño </h2>
                 <div class="sectionsalud">
                     <h3 class="h3salud">Historial de salud: </h3>
                     <div class="decorative-line"></div>
-                    <span>
+                    <span class="input-group">
                         <label class="checkboxsalud" for="asma">Asma</label>
-                        <input type="checkbox" name="asma" id="asma">
+                        <input type="checkbox" name="asma" id="asma" value="1">
                         <span class="error-message"></span>
                     </span>
+
+                    <!-- Input para Alergias -->
                     <span>
-                        <label for="name">Alergias</label>
+                        <label for="alergias">Alergias</label>
                         <input type="text" placeholder="Agregar alergías" name="alergias" id="alergias">
                         <i class="acu acuarela acuarela-Agregar"></i>
                         <span class="error-message"></span>
                     </span>
+
                     <span>
                         <label for="name">Medicamentos</label>
                         <input type="text" placeholder="Agregar medicamentos" name="medicamentos" id="medicamentos">
@@ -44,6 +47,30 @@
                     <span>
                         <label for="name">Vacunas</label>
                         <input type="text" placeholder="Agregar vacunas" name="vacunas" id="vacunas">
+                        <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="error-message"></span>
+                    </span>
+                    <span>
+                        <label for="name">Accidentes</label>
+                        <input type="text" placeholder="Agregar accidentes" name="accidentes" id="vacunas">
+                        <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="error-message"></span>
+                    </span>
+                    <span>
+                        <label for="name">Salud fisica</label>
+                        <input type="text" placeholder="Agregar el estado de salud física" name="physical health" id="vacunas">
+                        <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="error-message"></span>
+                    </span>
+                    <span>
+                        <label for="name">Salud emocional</label>
+                        <input type="text" placeholder="Agregar su salud mental" name="physical health" id="vacunas">
+                        <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="error-message"></span>
+                    </span>
+                    <span>
+                        <label for="name">Sospecha de abuso</label>
+                        <input type="text" placeholder="En caso de existir sospecha agregar detalles" name="physical health" id="vacunas">
                         <i class="acu acuarela acuarela-Agregar"></i>
                         <span class="error-message"></span>
                     </span>
@@ -67,11 +94,17 @@
                         <input type="checkbox" name="repelenteinsectos" id="repelenteinsectos">
                         <span class="error-message"></span>
                     </span>
+                    <span>
+                        <label for="name">Otros</label>
+                        <input type="text" placeholder="Agregar otros datos de salud importantes" name="saludotros" id="saludotros">
+                        <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="error-message"></span>
+                    </span>
                 </div>
                 <div class="sectionsalud">
                     <h3 class="h3salud">Información de médico o pediatra: </h3>
                     <div class="decorative-line"></div>
-                    <span>
+                    <!-- <span>
                         <i class="acuarela acuarela-Usuario"></i>
                         <label for="name">Médico</label>
                         <input type="text" placeholder="Ingresar nombre del médico" name="medico" id="medico">
@@ -91,8 +124,11 @@
                         <input type="text" placeholder="Ingresar correo del médico" name="emailmedico" id="emailmedico">
                         <i class="acu acuarela acuarela-Agregar"></i>
                         <span class="error-message"></span>
-                    </span>
-                </div>               
+                    </span> -->
+                </div>    
+                <div class="send-salud">
+                    <button type="submit" class="btn btn-action-primary enfasis btn-big btn-add">Guardar</button>           
+                </div>
             </fieldset>
         </div>
     </form>
