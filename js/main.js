@@ -1173,6 +1173,15 @@ const getChildren = async () => {
           showInfoLightbox("Método por QR no disponible", fragment);
         };
 
+        // Función que abre la ventana para ingresar el código y procesa el registro
+        const manualHandle = (parentId, parentName, parentEmail) => {
+          // Abrir la ventana para ingresar el código
+          abriVentanaCodigo((code) => {
+            // Validar el código ingresado
+            validateAndProcessCheckout(parentId, parentName, parentEmail, code);
+          });
+        };
+
         const resetDialogStates = () => {
           const dialogCode = document.getElementById("dialog-code");
           const exitoCodigo = document.getElementById("exitoCodigo");
