@@ -138,11 +138,29 @@ class Acuarela {
             return $respInscripcionComplete;
         }
     }
-    function postHealthInfo($data) {
-        $response = $this->queryStrapi("healthinfo", $data, "POST");
-        return $response;
+    function getHealthinfo($id = "", $daycare = null){
+        if (is_null($daycare)) {
+            $daycare = $this->daycareID;
+        }
+        if($id == ""){
+            $resp = $this->queryStrapi("healthinfos?daycare=$daycare");
+        }else{
+            $resp = $this->queryStrapi("healthinfos/{$id}");
+        }
+        return $resp;
     }
-    
+    function postHealthInfo($data){
+        $data = json_decode($data);
+        if($data->status == "Borrador"){
+            $resp = $this->queryStrapi("healthinfos", $data, "POST");
+            return $resp;
+        }else{
+            $respHealthinfo = $this->queryStrapi("healthinfos", $data, "POST");
+            $data->healthinfo = $respHealthinfo->id;
+            $respHealthinfoComplete = $this->queryStrapi("healthinfos/complete", $data, "POST");
+            return $respHealthinfoComplete;
+        }
+    }   
     function putInscripcion($data){
         $data = json_decode($data);
         if($data->status == "Borrador"){

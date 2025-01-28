@@ -119,6 +119,50 @@ const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
 };
 const baseUrl = "https://acuarelacore.com/api";
 
+
+const handleHealthInfo = async (e) => {
+ 
+
+ // console.log("Evento manejado");
+  fadeIn(preloader);
+  
+  // Obtén los datos del formulario
+  const form = document.getElementById('healthInfoForm');
+  const inputs = form.querySelectorAll("input, select, textarea");
+
+  const formValues = {};
+  inputs.forEach((input) => {
+      formValues[input.name] = input.value;
+  });
+
+  let dataToSend = {
+      allergies: formValues.alergias, // Cambié 'allergies' a 'alergias' según tu HTML
+  };
+
+  console.log("Datos de alergias:");
+  console.log(dataToSend.allergies);
+
+  try {
+      const response = await fetch("s/create/Healthinfos", {
+          method: "POST",
+          body: JSON.stringify(dataToSend),
+          headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+
+      if (body.ok) {
+          window.location.href = `/miembros/acuarela-app-web/inscripciones`;
+      } else {
+          console.error("Error en la respuesta:", body);
+      }
+  } catch (error) {
+      console.error("Error en el registro de salud:", error);
+  } finally {
+      fadeOut(preloader); // Asegúrate de ocultar el loader
+  }
+}
+
+
 const handleInscripcion = async () => {
   fadeIn(preloader);
   let isComplete = updatePercentage() === 100;
@@ -1423,7 +1467,11 @@ function validarSuscripcion() {
 const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
 if (emergencycontact_lightbox) {
   emergencycontact_lightbox.addEventListener("click", function (event) {
+    if (window.innerWidth > 425) {
+      showLightboxParient();
+    } else {
       showLightboxEmergency();
+    }
   });
 }
 
@@ -1450,9 +1498,6 @@ function showLightboxEmergency() {
   linkPariente.addEventListener("click", (event) => {
     showLightboxParient(); 
     const email = kids;
-
-    // Mostrar en consola
-    console.log(email);
   });
 
   contentContainer.appendChild(linkEmergencia);
@@ -1467,27 +1512,29 @@ function showLightboxEmergency() {
 // Lightbox LLAMAR A EMERGENCIAS 
 function showLightboxCallEmergency() {
   const contentContainer = document.createElement("div");
-  contentContainer.classList.add("methods-emergency");
+  contentContainer.classList.add("methods-callemergency");
 
   const Urgencias = document.createElement("a");
+  Urgencias.setAttribute("href", "tel:911");
   Urgencias.classList.add("emergency");
   Urgencias.innerHTML = `
-    <img src="img/icons/ambossandia.svg"" alt="file">
-    <span>Caso grave </span>
+    <img src="img/icons/RH.svg"" alt="file">
+    <span>Urgenicas 911 </span>
   `;
   
   const Policia = document.createElement("a");
+  Policia.setAttribute("href", "tel:+12126391991");
   Policia.classList.add("emergency");
   Policia.innerHTML = `
-    <img src="img/icons/ambospollito.svg"" alt="file">
-    <span>Caso leve o moderado </span>
+    <img src="img/icons/Escudo.svg"" alt="file">
+    <span>Policía </span>
   `;
 
   const Otro = document.createElement("a");
   Otro.classList.add("emergency");
   Otro.innerHTML = `
-    <img src="img/icons/ambospollito.svg"" alt="file">
-    <span>Caso leve o moderado </span>
+    <img src="img/icons/telefono.svg"" alt="file">
+    <span>otro </span>
   `;
 
   contentContainer.appendChild(Urgencias);
@@ -1502,8 +1549,7 @@ function showLightboxCallEmergency() {
 
 // Función para mostrar el mensaje dinámico
 function showMessage(container, text, isError = false) {
-  // Elimina mensajes previos
-  const existingMessage = container.querySelector(".response-message");
+  const existingMessage = container.querySelector(".response-message"); // Elimina mensajes previos
   if (existingMessage) {
     existingMessage.remove();
   }
@@ -1515,9 +1561,12 @@ function showMessage(container, text, isError = false) {
   <i class="acuarela acuarela-Informacion"></i>
   ${text}
   `;
-
-  // Agrega el mensaje al contenedor
-  container.appendChild(message);
+  container.appendChild(message); // Agrega el mensaje al contenedor
+  setTimeout(() => {
+    if (message.parentElement) {
+      message.remove();
+    }
+  }, 3000); // 5000 ms = 5 segundos
 }
 
 // Función para ENVIAR CORREO  de emergencias
@@ -1556,7 +1605,86 @@ function sendEmergencyEmail(gravedad, email, name, incidentType, temperature, ac
   });
 }
 
-// Lightbox CONTACTAR PARIENTE SEGÚN GRAVEDAD
+// Botones flotantes del lightbox de EMERGENCIAS
+function buttonsFlot(linkElement, buttonData, top, left, width) {
+  if (document.querySelector(".new-buttons-container")) return; // Evitar duplicados
+
+  const buttonsContainer = document.createElement("div");
+  buttonsContainer.classList.add("new-buttons-container");
+  buttonsContainer.style.top = top;
+  buttonsContainer.style.left = left;
+  buttonsContainer.style.width = width;
+
+  buttonData.forEach(data => {
+    let newButton;
+    if (data.href) {
+      // Crear un enlace si hay un href
+      newButton = document.createElement("a");
+      newButton.href = data.href;
+      newButton.target = "_self"; 
+    } else {
+      // Crear un botón si no hay un href
+      newButton = document.createElement("p");
+      if (data.action) {
+        newButton.addEventListener("click", data.action);
+      }
+    }
+    newButton.classList.add("new-emergency");
+    newButton.innerHTML = `<i class="${data.iconClass}"></i> ${data.text}`;
+    buttonsContainer.appendChild(newButton);
+  });
+  linkElement.parentNode.appendChild(buttonsContainer);
+}
+
+// Mostrar los guardians e informacion escencial de contacto
+function dataParient(kidData) {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("parentslight");
+
+  // Verificar si existen guardianes
+  if (kidData.guardians && kidData.guardians.length > 0) {
+    kidData.guardians.forEach((guardian, index) => {
+      const parientsLight = document.createElement("div");
+      parientsLight.classList.add("parentslight-div");
+      const parienteContactContainer = document.createElement("div");
+      parienteContactContainer.classList.add("parentslight-left");
+      const parientecontact = document.createElement("p");
+
+      // Cambiar el mensaje según el índice
+      parientecontact.textContent = `Contacto de emergencia: ${index + 1}`;
+      parienteContactContainer.appendChild(parientecontact);
+
+      // Crear el contenedor para los datos del pariente (derecha)
+      const parienteDataContainer = document.createElement("div");
+      parienteDataContainer.classList.add("parentslight-right");
+      const datosPariente = [
+        `<strong>Nombre: </strong> ${guardian.guardian_name} ${guardian.guardian_lastname}`,
+        `<strong>Telefono: </strong> ${guardian.guardian_phone}`,
+        `<strong>Email: </strong> ${guardian.guardian_email}`,
+      ];
+
+      datosPariente.forEach(dato => {
+        const parienteData = document.createElement("p");
+        parienteData.classList.add("parentslight-contact");
+        parienteData.innerHTML = dato;
+        parienteDataContainer.appendChild(parienteData);
+      });
+
+      parientsLight.appendChild(parienteContactContainer);
+      parientsLight.appendChild(parienteDataContainer);
+      contentContainer.appendChild(parientsLight);
+    });
+  } else {
+    // Si no hay guardianes, mostrar mensaje "No existe contacto de emergencia"
+    const noContactMessage = document.createElement("p");
+    noContactMessage.textContent = "No existe contacto de emergencia";
+    noContactMessage.classList.add("no-contact-message");
+    contentContainer.appendChild(noContactMessage);
+  }
+  return contentContainer;
+}
+
+// Lightbox CONTACTO DE EMERGENCIA 
 function showLightboxParient() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-emergency");
@@ -1564,37 +1692,135 @@ function showLightboxParient() {
   const linkGrave = document.createElement("a");
   linkGrave.classList.add("emergency");
   linkGrave.innerHTML = `
-    <img src="img/icons/ambossandia.svg"" alt="file">
+    <img class="emergencyimg" src="img/icons/Padre.svg"" alt="file">
     <span>Caso Urgente</span>
   `;
   linkGrave.addEventListener("click", () => {
-    const gravedad = "grave"; 
-    const email = kidData.guardians[0].guardian_email; 
-    const name = kidData.guardians[0].guardian_name; //Nombre del pariente
-    sendEmergencyEmail(gravedad, email, name);
-  });
+    if (window.innerWidth <= 425) {
+      linkModerado.style.opacity = "0.5";
+      const buttonDataGrave = [
+        { text: "Llamar", iconClass: "acuarela acuarela-Telefono" },
+        { text: "Texto", iconClass: "acuarela acuarela-Habla" },
+        { text: "Email", 
+          iconClass: "acuarela acuarela-Mensajes", 
+          action: () => {
+            const gravedad = "grave";
+            const email = kidData.guardians[0].guardian_email;
+            const name = kidData.guardians[0].guardian_name;
+            sendEmergencyEmail(gravedad, email, name);
+          }
+        }
+      ];
+      buttonsFlot(linkGrave, buttonDataGrave, "145px", "70px", "86px");
+    } else {
+      const gravedad = "grave";
+      const email = kidData.guardians[0].guardian_email;
+      const name = kidData.guardians[0].guardian_name; 
+      sendEmergencyEmail(gravedad, email, name);
+    }
+});
 
   const linkModerado = document.createElement("a");
   linkModerado.classList.add("emergency");
   linkModerado.innerHTML = `
-    <img src="img/icons/ambospollito.svg"" alt="file">
+    <img class="emergencyimg-2" src="img/icons/Formulario.svg" alt="file">
     <span>Enviar reporte detallado</span>
   `;
   linkModerado.addEventListener("click", () => {
-    const gravedad = "moderado"; 
-    const email = kidData.guardians[0].guardian_email; 
-    const name = kidData.guardians[0].guardian_name; 
-    const incidentType = "[Tipo de incidencia]"; 
-    const temperature = "[Temperatura]"; 
-    const actionsTaken = "[Acciones tomadas]"; 
-    const severityLevel = "[Nivel de gravedad]"; 
-    const daycareName = "[Nombre del Daycare]"; 
-    const suggestedActions = "[Acciones esperadas]";
-    sendEmergencyEmail(gravedad, email, name, incidentType, temperature, actionsTaken, severityLevel, daycareName, suggestedActions);
+    const container = document.querySelector(".methods-emergency");
+    if (!kidData.incidents || kidData.incidents.length === 0) {  // Verificar si hay datos en kidData.incidents
+      // Si está vacío, mostrar un mensaje indicando que se debe llenar la incidencia
+      showMessage(container, "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
+      linkGrave.style.opacity = "0.5";
+      let topPosition = "170px";
+      let leftPosition = "500px";
+      if (window.innerWidth <= 768) { 
+        topPosition = "100px";
+        leftPosition = "470px";
+      }
+      if (window.innerWidth <= 425) { 
+        topPosition = "370px";
+        leftPosition = "250px";
+      }
+      if (window.innerWidth <= 320) { 
+        topPosition = "390px";
+        leftPosition = "200px";
+      }
+      const buttonDataModerado = [
+        { text: "Llenar reporte", 
+          iconClass: "acuarela acuarela-Telefono",
+          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`
+        },
+      ];
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
+      return; 
+    }
+
+    // Obtener la fecha actual ajustada a Nueva York (sin la hora)
+    const now = new Date();
+    const options = { timeZone: "America/New_York", year: "numeric", day: "2-digit", month: "2-digit"  };
+    const formatter = new Intl.DateTimeFormat("en-US", options);
+    const parts = formatter.formatToParts(now);
+    const todayNY = `${parts[4].value}-${parts[0].value}-${parts[2].value}`; // Año-Mes-Día
+    // console.log("Fecha de hoy (NY):", todayNY);
+    // console.log(kidData.incidents[2].reported_enf);
+    let matchFound = false; // Variable para saber si existe un match
+
+    for (let i = 0; i < kidData.incidents.length; i++) {
+      const incident = kidData.incidents[i];
+      const reportedDate = incident.reported_enf; 
+
+      if (reportedDate === todayNY) {
+        console.log(`Incidencia encontrada en el índice ${i} con fecha ${reportedDate}`);// Si hay coincidencia, ejecutar el código
+        const gravedad = "moderado";
+        const email = kidData.guardians[0].guardian_email;
+        const name = kidData.guardians[0].guardian_name;
+        const incidentType = incident.description || "[Tipo de incidencia]";
+        const temperature = incident.temperature || "[Temperatura]";
+        const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
+        const severityLevel = incident.gravedad || "[Nivel de gravedad]";
+        const daycareName = "[Nombre del Daycare]";
+        const suggestedActions = incident.actions_expected || "[Acciones esperadas]";
+        sendEmergencyEmail(gravedad, email, name, incidentType, temperature, actionsTaken, severityLevel, daycareName, suggestedActions);
+
+        matchFound = true; // Indicar que se encontro una coincidencia
+        break;
+      }
+    }
+
+    if (!matchFound) {
+      const container = document.querySelector(".methods-emergency");
+      showMessage(container, "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
+      linkGrave.style.opacity = "0.5";
+      let topPosition = "170px";
+      let leftPosition = "500px";
+      if (window.innerWidth <= 768) { 
+        topPosition = "100px";
+        leftPosition = "470px";
+      }
+      if (window.innerWidth <= 425) { 
+        topPosition = "370px";
+        leftPosition = "250px";
+      }
+      if (window.innerWidth <= 320) { 
+        topPosition = "390px";
+        leftPosition = "200px";
+      }
+      const buttonDataModerado = [
+        { text: "Llenar reporte", 
+          iconClass: "acuarela acuarela-Telefono",
+          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`
+        },
+      ];
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
+    }
   });
 
   contentContainer.appendChild(linkGrave);
   contentContainer.appendChild(linkModerado);
+
+  const parientsLight = dataParient(kidData);
+  contentContainer.appendChild(parientsLight);
 
   showInfoLightbox(
     "Contactar con pariente según nivel de gravedad",
