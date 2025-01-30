@@ -543,10 +543,16 @@ const requestposts = async () => {
         let templateMedia = ""; // Inicializa templateMedia para cada publicación
         post.media.forEach((singlemedia, index) => {
           let imageUrl;
-          if (singlemedia.formats.medium) {
-            imageUrl = singlemedia.formats.medium.url;
-          } else if (singlemedia.formats.large) {
-            imageUrl = singlemedia.formats.large.url;
+          console.log(singlemedia);
+
+          if (singlemedia.formats) {
+            if (singlemedia.formats.medium) {
+              imageUrl = singlemedia.formats.medium.url;
+            } else if (singlemedia.formats.large) {
+              imageUrl = singlemedia.formats.large.url;
+            } else {
+              imageUrl = singlemedia.url;
+            }
           } else {
             imageUrl = singlemedia.url;
           }
