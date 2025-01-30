@@ -16,11 +16,6 @@ include "includes/header.php"; ?>
 
         </ul>
     </div>
-    <div class="mensajeria-content">
-        <?php include "includes/mensajeria.php" ?>
-        <button id="mainButton" class="main-button">
-            <i class="acuarela acuarela-Mensajes"></i>
-        </button>
-    </div>
+   
 </main>
 <?php include "includes/footer.php" ?>

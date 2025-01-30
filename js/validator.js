@@ -151,7 +151,9 @@ if (createAsistenteForm) {
     };
     const baseLink = `https://acuarelacore.com/asistentes/register/${id}/${name}/${lastname}/${mail}/${phone}`;
     const emailAsistentes = await fetch(
-      `https://bilingualchildcaretraining.com/s/emailAsistentes/?name=${`${name} ${lastname}`}&daycare=${daycareName}&email=${mail}&link=${baseLink}`,
+      `https://bilingualchildcaretraining.com/s/emailAsistentes/?name=${`${name} ${lastname}`}&daycare=${
+        foundDaycare.name
+      }&email=${mail}&link=${baseLink}`,
       requestOptions
     )
       .then((response) => response.json())

@@ -40,7 +40,7 @@
             </div>
             <div class="photo">
                 <img loading="lazy" class="lazyload" src="img/placeholder.png"
-                    data-src="<?=$a->getSmallestImageUrl($asistente->photo)?>"
+                    data-src="<?=isset($asistente->photo) ? $a->getSmallestImageUrl($asistente->photo) : "img/placeholder.png"?>"
                     alt="<?=$asistente->photo->url?>">
             </div>
         </div>

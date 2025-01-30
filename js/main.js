@@ -264,7 +264,11 @@ const handleInscripcion = async () => {
 
           if (dataToSend.parents && dataToSend.parents.length > 0) {
             try {
-              await sendEmailsToParents(body.parents, daycareName, formValues);
+              await sendEmailsToParents(
+                body.parents,
+                foundDaycare.name,
+                formValues
+              );
               fadeOut(preloader);
             } catch (error) {
               // Handle error if necessary
@@ -408,6 +412,9 @@ const addReaction = async (body, element) => {
   const reactionData = await reactionResponse.json();
 };
 const addComment = async (body, inputID) => {
+  document.querySelectorAll("#add-comment button").forEach((btn) => {
+    btn.setAttribute("disabled", true);
+  });
   body.content = document.querySelector(inputID).value;
   const commentResponse = await fetch("s/addComment/", {
     method: "POST",
@@ -417,6 +424,9 @@ const addComment = async (body, inputID) => {
   const reactionData = await commentResponse.json();
   Fancybox.close();
   location.reload();
+  document.querySelectorAll("#add-comment button").forEach((btn) => {
+    btn.setAttribute("disabled", false);
+  });
 };
 const showReactions = (element) => {
   let postArticle = document.getElementById(element);
@@ -719,6 +729,8 @@ const requestinscripciones = async () => {
 
           let template = ``;
           if (child) {
+            console.log(percentaje);
+
             template = `<li class="${percentaje >= 100 ? "complete" : ""}">
               <span id="options">
                 <i class="acuarela acuarela-Opciones"></i>
@@ -1243,7 +1255,7 @@ const getChildren = async () => {
             sendEmailRegisterCheck(
               kid.name,
               parentName,
-              daycareName,
+              foundDaycare.name,
               parentName,
               parentEmail,
               "checkout"
@@ -1439,6 +1451,71 @@ function validarSuscripcion() {
   return accesoPermitido;
 }
 
+// Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
+const emergencycontact_lightbox = document.getElementById(
+  "lightbox-emergencycontact"
+);
+if (emergencycontact_lightbox) {
+  emergencycontact_lightbox.addEventListener("click", function (event) {
+    showLightboxEmergency();
+  });
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxEmergency() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkEmergencia = document.createElement("a");
+  linkEmergencia.classList.add("emergency");
+  linkEmergencia.innerHTML = `
+    <img src="img/icons/telefono.svg"" alt="file">
+    <span>Llamar a emergencias </span>
+  `;
+  const linkPariente = document.createElement("a");
+  linkPariente.classList.add("emergency");
+  linkPariente.innerHTML = `
+    <img src="img/icons/familia.svg" alt="file">
+    <span>Contactar al pariente</span>
+  `;
+  linkPariente.addEventListener("click", (event) => {
+    showLightboxParient(); // Llama a tu función
+  });
+
+  contentContainer.appendChild(linkEmergencia);
+  contentContainer.appendChild(linkPariente);
+
+  showInfoLightbox("Contacto de emergencia", contentContainer);
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxParient() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkGrave = document.createElement("a");
+  linkGrave.classList.add("emergency");
+  linkGrave.innerHTML = `
+    <img src="img/icons/ambossandia.svg"" alt="file">
+    <span>Caso grave </span>
+  `;
+
+  const linkModerado = document.createElement("a");
+  linkModerado.classList.add("emergency");
+  linkModerado.innerHTML = `
+    <img src="img/icons/ambospollito.svg"" alt="file">
+    <span>Caso leve o moderado </span>
+  `;
+
+  contentContainer.appendChild(linkGrave);
+  contentContainer.appendChild(linkModerado);
+
+  showInfoLightbox(
+    "Contactar con pariente según nivel de gravedad",
+    contentContainer
+  );
+}
+
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
 if (finanzas_lightbox) {
@@ -1623,31 +1700,33 @@ const getInfoNewGroup = () => {
           if (photo) {
             url = photo.url;
           }
-          document.querySelector(".children").innerHTML += `<li >
-                        <input type="checkbox" name="${id}" id="${id}" ${
-            group && !acuarelauser ? `disabled` : ``
-          } ${childrenGroup.includes(id) ? `checked` : ``}>
-                        <label for="${id}">
-                             ${
-                               photo
-                                 ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
-                                 : `${
-                                     kid.gender === "Masculino"
-                                       ? `<img src="img/mal.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "Femenino"
-                                       ? `<img src="img/fem.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "X"
-                                       ? `<img src="img/Nonbinary.png" alt="">`
-                                       : ""
-                                   }`
-                             }
-                            <span>${name}</span>
-                        </label>
-                    </li>`;
+          if (!group) {
+            document.querySelector(".children").innerHTML += `<li >
+                          <input type="checkbox" name="${id}" id="${id}" ${
+              childrenGroup.includes(id) ? `checked` : ``
+            }>
+                          <label for="${id}">
+                               ${
+                                 photo
+                                   ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
+                                   : `${
+                                       kid.gender === "Masculino"
+                                         ? `<img src="img/mal.png" alt="">`
+                                         : ""
+                                     }${
+                                       kid.gender === "Femenino"
+                                         ? `<img src="img/fem.png" alt="">`
+                                         : ""
+                                     }${
+                                       kid.gender === "X"
+                                         ? `<img src="img/Nonbinary.png" alt="">`
+                                         : ""
+                                     }`
+                               }
+                              <span>${name}</span>
+                          </label>
+                      </li>`;
+          }
         });
         fadeOut(preloader);
       })
@@ -1689,7 +1768,10 @@ const getInfoNewAsistente = () => {
 };
 const fields = document.querySelectorAll("input[required], select[required]");
 const percentageSpan = document.querySelector(".percentage");
-
+fields.forEach((field) => {
+  field.parentElement.querySelector("label").innerHTML +=
+    "<span class='required'>*</span>";
+});
 function updatePercentage() {
   const totalFields = fields.length;
   let filledFields = 0;
@@ -1784,8 +1866,10 @@ if (tabs.length > 0) {
       updateUnderline();
     });
   }
-  tabs.forEach((tab) => {
+  tabs.forEach((tab, i) => {
     tab.addEventListener("click", () => {
+      const indexTabSelected = tab.getAttribute("data-index");
+      indexTab = indexTabSelected;
       tabs.forEach((t) => t.classList.remove("active"));
       tab.classList.add("active");
       const target = tab.getAttribute("data-target");
@@ -2130,7 +2214,7 @@ const sendInspectionModeMail = async (userName, email, link) => {
   formdata.append("email", email);
   formdata.append("admin", userName);
   formdata.append("link", link);
-  formdata.append("daycare", daycareName);
+  formdata.append("daycare", foundDaycare.name);
 
   var requestOptions = {
     method: "POST",
@@ -2144,7 +2228,18 @@ const sendInspectionModeMail = async (userName, email, link) => {
     requestOptions
   )
     .then((response) => response.json())
-    .then((result) => fadeOut(preloader))
+    .then((result) => {
+      fadeOut(preloader);
+      Toastify({
+        text: "Informe enviado a tu correo " + emailAdmin,
+        close: true,
+        stopOnFocus: true,
+        style: {
+          background: "linear-gradient(to right, #0cb5c3, #098892)",
+        },
+        duration: 10000,
+      }).showToast();
+    })
     .catch((error) => console.log("error", error));
   return true;
 };
@@ -2270,6 +2365,7 @@ const socket = io("https://acuarelacore.com", {
 socket.emit("register", { userId: acuarelaId });
 
 const asideMensajeria = document.getElementById("mesajeria-menu");
+const icono = document.getElementById("icono");
 const mensajeButton = document.getElementById("mainButton");
 const buscarMensajeria = document.getElementById("buscar-mensajeria");
 const buscadorMensajeria = document.getElementById("chats-buscados");
@@ -2282,13 +2378,42 @@ const chatMensajeria = document.querySelector(".chat-individual");
 const btnSendMensaje = document.getElementById("sendBtn");
 const chatList = document.getElementById("opciones-mensajeria");
 const contendorMessages = document.getElementById("messages");
+let isChatOpen = false;
 
 mensajeButton.addEventListener("click", function () {
-  if (asideMensajeria.style.display === "none") {
-    asideMensajeria.style.display = "block";
-  } else {
-    asideMensajeria.style.display = "none";
-  }
+  // Añadir clase para ocultar el ícono actual
+  icono.classList.add("icon-hidden");
+
+  setTimeout(() => {
+    if (!isChatOpen) {
+      // Mostrar asideMensajeria con animación
+      asideMensajeria.style.display = "flex"; // Asegurar que sea visible
+      setTimeout(() => {
+        asideMensajeria.classList.remove("menu-hidden");
+        asideMensajeria.classList.add("menu-visible");
+      }, 10); // Breve retraso para permitir la transición
+
+      // Cambiar el ícono a "Cancelar"
+      icono.classList.remove("acuarela-Habla", "icon-chat");
+      icono.classList.add("acuarela-Cancelar", "icon-close");
+    } else {
+      // Ocultar asideMensajeria con animación
+      asideMensajeria.classList.remove("menu-visible");
+      asideMensajeria.classList.add("menu-hidden");
+
+      setTimeout(() => {
+        asideMensajeria.style.display = "none"; // Ocultar después de la animación
+      }, 300); // Duración de la animación en CSS
+
+      // Cambiar el ícono a "Habla"
+      icono.classList.remove("acuarela-Cancelar", "icon-close");
+      icono.classList.add("acuarela-Habla", "icon-chat");
+    }
+
+    // Mostrar el nuevo ícono
+    icono.classList.remove("icon-hidden");
+    isChatOpen = !isChatOpen; // Alternar estado
+  }, 300); // Coincidir con la duración de la animación del ícono
 });
 
 async function buscarPadres() {
@@ -2403,10 +2528,10 @@ function mostrarPadres(padres) {
         padreElement.appendChild(btnInvitar);
 
         btnInvitar.addEventListener("click", function () {
-          console.log("Hola", daycareName, padre.email);
+          console.log("Hola", foundDaycare.name, padre.email);
           sendRegisterEmailChat(
             "padre",
-            daycareName,
+            foundDaycare.name,
             padre.email,
             `https://acuarelacore.com/auth/register/${padre.id}`,
             padre.children[0].name
@@ -3440,3 +3565,69 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+function handleAddCategories(event, type) {
+  document.querySelector("#addCategoriesGastos button").innerHTML =
+    "Guardando...";
+  event.preventDefault(); // Prevent the form from reloading the page
+
+  const input = document.getElementById("categories-input").value.trim();
+
+  if (!input) {
+    alert("Por favor, ingrese al menos una categoría.");
+    return;
+  }
+
+  // Split categories by comma and trim extra spaces
+  const categories = input
+    .split(",")
+    .map((category) => category.trim())
+    .filter((category) => category);
+
+  if (categories.length === 0) {
+    alert("No se detectaron categorías válidas.");
+    return;
+  }
+
+  // Function to send each category to the server
+  const sendCategory = async (category) => {
+    const formdata = new FormData();
+    formdata.append("name", category); // Assuming `category` is the name
+    formdata.append("type", type); // Replace "gasto" with dynamic type if needed
+
+    try {
+      const response = await fetch("s/addCategories/", {
+        method: "POST",
+        body: formdata,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al enviar la categoría: ${category}`);
+      }
+
+      const result = await response.json();
+      document.querySelector("#addCategoriesGastos button").innerHTML =
+        "Agregar";
+      console.log(`Categoría "${category}" procesada con éxito:`, result);
+    } catch (error) {
+      console.error(`Error al procesar la categoría "${category}":`, error);
+      throw error; // To ensure Promise.all catches this error
+    }
+  };
+
+  // Process each category asynchronously
+  const promises = categories.map(sendCategory);
+
+  // Wait for all promises to resolve
+  Promise.all(promises)
+    .then(() => {
+      alert("Todas las categorías han sido procesadas.");
+      document.getElementById("categories-input").value = ""; // Clear the input
+      fadeOut(document.querySelector("#lightbox-categories-gastos"));
+    })
+    .catch((error) => {
+      alert(
+        `Ocurrió un error al procesar algunas categorías: ${error.message}`
+      );
+    });
+}

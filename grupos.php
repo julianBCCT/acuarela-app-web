@@ -4,6 +4,7 @@ include "includes/header.php" ?>
   <?php
   $mainHeaderTitle = "Grupos";
   $action = '<a href="/miembros/acuarela-app-web/grupos/nuevo-grupo" class="btn btn-action-primary enfasis btn-big">Crear grupo</a>';
+  $videoPath = 'videos/grupos.mp4';
   include "templates/sectionHeader.php";
   ?>
   <div class="content">
@@ -19,11 +20,6 @@ include "includes/header.php" ?>
 
     </ul>
   </div>
-  <div class="mensajeria-content">
-    <?php include "includes/mensajeria.php" ?>
-    <button id="mainButton" class="main-button">
-      <i class="acuarela acuarela-Mensajes"></i>
-    </button>
-  </div>
+ 
 </main>
 <?php include "includes/footer.php" ?>
