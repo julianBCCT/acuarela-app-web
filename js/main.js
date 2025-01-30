@@ -543,10 +543,16 @@ const requestposts = async () => {
         let templateMedia = ""; // Inicializa templateMedia para cada publicación
         post.media.forEach((singlemedia, index) => {
           let imageUrl;
-          if (singlemedia.formats.medium) {
-            imageUrl = singlemedia.formats.medium.url;
-          } else if (singlemedia.formats.large) {
-            imageUrl = singlemedia.formats.large.url;
+          console.log(singlemedia);
+
+          if (singlemedia.formats) {
+            if (singlemedia.formats.medium) {
+              imageUrl = singlemedia.formats.medium.url;
+            } else if (singlemedia.formats.large) {
+              imageUrl = singlemedia.formats.large.url;
+            } else {
+              imageUrl = singlemedia.url;
+            }
           } else {
             imageUrl = singlemedia.url;
           }
@@ -1418,10 +1424,12 @@ function validarSuscripcion() {
 }
 
 // Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
-const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
+const emergencycontact_lightbox = document.getElementById(
+  "lightbox-emergencycontact"
+);
 if (emergencycontact_lightbox) {
   emergencycontact_lightbox.addEventListener("click", function (event) {
-      showLightboxEmergency();
+    showLightboxEmergency();
   });
 }
 
@@ -1449,10 +1457,7 @@ function showLightboxEmergency() {
   contentContainer.appendChild(linkEmergencia);
   contentContainer.appendChild(linkPariente);
 
-  showInfoLightbox(
-    "Contacto de emergencia",
-    contentContainer
-  );
+  showInfoLightbox("Contacto de emergencia", contentContainer);
 }
 
 // Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
@@ -1466,7 +1471,7 @@ function showLightboxParient() {
     <img src="img/icons/ambossandia.svg"" alt="file">
     <span>Caso grave </span>
   `;
-  
+
   const linkModerado = document.createElement("a");
   linkModerado.classList.add("emergency");
   linkModerado.innerHTML = `
