@@ -82,6 +82,7 @@
                     <div class="navtab " data-target="Adjuntos">Adjuntos</div>
                     <div class="underline"></div>
                 </div>
+
                 <div id="familia" class="tab-content active">
                     <h3>Padres</h3>
                     <ul>
@@ -130,15 +131,67 @@
                         <div class="saludinfo">
                             <div class="saludhistorial">
                                 <h3>Historial de salud</h3>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias: </span> </span>  <?=$kid->healthinfo->allergies?> </p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Asma: </span> </span>  <?=$kid->healthinfo->asthma?> </p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Medicamentos: </span> </span>  <?=$kid->healthinfo->medicines?>  </p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Vacunas: </span> </span>  <?=$kid->healthinfo->vacination?>  </p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Accidentes: </span> </span>  <?=$kid->healthinfo->accidents?>  </p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud física: </span> </span>  <?=$kid->healthinfo->physical_health?>  </p>
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud emocional: </span> </span>  <?=$kid->healthinfo->emotional_health?>  </p>
-                                <!-- <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Sospecha de abuso: </span> </span>  <?=$kid->healthinfo->suspected_abuse?>  </p> -->
-                                <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Otras: </span> </span>  <?=$kid->healthinfo->other?>  </p>
+                                <!-- <p><span class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias: </span> </span>  <?=$kid->healthinfo->allergies?> </p> -->
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias:</span></p>
+                                    <div class="saludcampos-JSON">
+                                    <?php foreach ($kid->healthinfo->allergies ?? ['Ninguna'] as $alergia): ?>
+                                        <p><?= htmlspecialchars($alergia) ?></p>
+                                    <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Asma: </span></p>
+                                    <div class="saludcampos-JSON">
+                                        <p><?=$kid->healthinfo->asthma?> </p>
+                                    </div>
+                                </div>
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Medicamentos:</span></p>
+                                    <div class="saludcampos-JSON">
+                                    <?php foreach ($kid->healthinfo->medicines ?? ['Ninguna'] as $medicamento): ?>
+                                        <p><?= htmlspecialchars($medicamento) ?></p>
+                                    <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Vacunas:</span></p>
+                                    <div class="saludcampos-JSON">
+                                    <?php foreach ($kid->healthinfo->vacination ?? ['Ninguna'] as $vacuna): ?>
+                                        <p><?= htmlspecialchars($vacuna) ?></p>
+                                    <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Accidentes:</span></p>
+                                    <div class="saludcampos-JSON">
+                                    <?php foreach ($kid->healthinfo->accidents ?? ['Ninguna'] as $accidente): ?>
+                                        <p><?= htmlspecialchars($accidente) ?></p>
+                                    <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud física:</span></p>
+                                    <div class="saludcampos-JSON">
+                                    <?php foreach ($kid->healthinfo->physical_health ?? ['Ninguna'] as $salud_fisica): ?>
+                                        <p><?= htmlspecialchars($salud_fisica) ?></p>
+                                    <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud emocional:</span></p>
+                                    <div class="saludcampos-JSON">
+                                    <?php foreach ($kid->healthinfo->emotional_health ?? ['Ninguna'] as $salud_emocional): ?>
+                                        <p><?= htmlspecialchars($salud_emocional) ?></p>
+                                    <?php endforeach; ?>
+                                    </div>
+                                </div>
+                                <div class="saludcampos">
+                                    <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Sospecha de abuso: </span></p>
+                                    <div class="saludcampos-JSON">
+                                        <p><?=$kid->healthinfo->suspected_abuse?></p>
+                                    </div>
+                                </div>
                             </div>
                             <div class="saludinfo-add">
                                 <div class="saludunguentos">
@@ -147,8 +200,9 @@
                                         <p class="ung-btn"><i class="iconung acuarela acuarela-Flecha_arriba"></i></p>
                                     </div>
                                     <div class="unguentoscontent show">
-                                        <p>Bloqueador solar</p>
-                                        <p>Repelente de insectos</p>
+                                        <?php foreach ($kid->healthinfo->ointments ?? ['Ninguna'] as $unguento): ?>
+                                            <p><?= htmlspecialchars($unguento) ?></p>
+                                        <?php endforeach; ?>
                                     </div>
                                 </div>
                                 <div class="saludunguentos">
@@ -157,9 +211,9 @@
                                         <p class="ung-btn"><i class="iconung acuarela acuarela-Flecha_arriba"></i></p>
                                     </div>
                                     <div class="unguentoscontent show">
-                                        <p><strong>Doctor: </strong> <?=$kid->healthinfo->pediatrician?>  </p>
-                                        <p><strong>Telefono: </strong> <?=$kid->healthinfo->pediatrician_number?> </p>
-                                        <p><strong>Correo: </strong> <?=$kid->healthinfo->pediatrician_email?>  </p>
+                                        <p class="hs-sep3"><strong>Doctor: </strong> <?=$kid->healthinfo->pediatrician?>  </p>
+                                        <p class="hs-sep3"><strong>Teléfono: </strong> <?=$kid->healthinfo->pediatrician_number?> </p>
+                                        <p class="hs-sep3"><strong>Correo: </strong> <?=$kid->healthinfo->pediatrician_email?>  </p>
                                     </div>
                                 </div>
                             </div>
@@ -168,8 +222,8 @@
 
                         <div class="saludincidentes">
                             <h3 class="saludincidentes-title">Incidentes</h3>
-                            <?php if (!empty($kid->incidents)) : ?>
-                                <?php foreach ($kid->incidents as $index => $incident) : ?>
+                            <?php if (!empty($kid->healthinfo->incidents)) : ?>
+                                <?php foreach ($kid->healthinfo->incidents as $index => $incident) : ?>
                                     <div class="incidentnino" id="incidentes">
                                         <div class="incidentnino-desp">
                                             <h4>Incidente <?= $index + 1 ?></h4> <!-- Mostrará Incidente 1, Incidente 2, etc. -->
@@ -182,6 +236,7 @@
                                                 <p><i class="acuarela acuarela-Calendario"></i> <?= $incident->reported_enf ?> </p>
                                             </div>
                                             <div class="incidentdetails">
+                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Ayuda"></i> <span>Tipo de incidente </span></span>  <span class="inc-text"> <?= $incident->incident_type ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>  <span class="inc-text"> <?= $incident->description ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span>  <span class="inc-text"> <?= $incident->gravedad ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span>  <span class="inc-text"> <?= $incident->temperature ?> °F </span> </p>
@@ -204,14 +259,14 @@
                     <div class="health-calendar">
                         <div class="header">
                             <select id="year-select"></select>                   
-                            <!-- <select id="month-select"></select> -->
-                            <div class="month-selector">
+                            <select id="month-select"></select>
+                            <!-- <div class="month-selector">
                                 <button class="arrow left">&lt;</button>
                                 <div class="month-container">
-                                    <!-- Los meses se generan dinámicamente aquí -->
+                                    Los meses se generan dinámicamente aquí 
                                 </div>
                                 <button class="arrow right">&gt;</button>
-                            </div>
+                            </div> -->
                         </div>
                         <!-- Contenedor del calendario -->
                         <div id="calendar-container">

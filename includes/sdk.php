@@ -138,29 +138,33 @@ class Acuarela {
             return $respInscripcionComplete;
         }
     }
-    function getHealthinfo($id = "", $daycare = null){
+    function getHealthinfo($id = "", $daycare = null) {
         if (is_null($daycare)) {
             $daycare = $this->daycareID;
         }
-        if($id == ""){
+        if ($id == "") {
             $resp = $this->queryStrapi("healthinfos?daycare=$daycare");
-        }else{
+        } else {
             $resp = $this->queryStrapi("healthinfos/{$id}");
         }
         return $resp;
     }
-    function postHealthInfo($data){
+    
+    function postHealthinfo($data){
         $data = json_decode($data);
-        if($data->status == "Borrador"){
-            $resp = $this->queryStrapi("healthinfos", $data, "POST");
-            return $resp;
-        }else{
-            $respHealthinfo = $this->queryStrapi("healthinfos", $data, "POST");
-            $data->healthinfo = $respHealthinfo->id;
-            $respHealthinfoComplete = $this->queryStrapi("healthinfos/complete", $data, "POST");
-            return $respHealthinfoComplete;
+        $resp = $this->queryStrapi("healthinfos", $data, "POST");
+        return $resp;
+    }
+    function putHealthinfo($data){
+        $data = json_decode($data);
+        if (!isset($data->inscripcion) || empty($data->inscripcion)) {
+            return null; // Evitar enviar una petición sin ID
         }
-    }   
+        $resp = $this->queryStrapi("healthinfos/$data->inscripcion", $data, "PUT");
+        return $resp;
+    }
+    
+
     function putInscripcion($data){
         $data = json_decode($data);
         if($data->status == "Borrador"){

@@ -17,7 +17,7 @@
     // Formatea la fecha al formato MM-DD-YYYY
     $published_at_formateada = $published_at->format('m-d-Y');
 ?>
-    <form action="s/addAsistente/" id="incident-form" action="/submit" method="POST">
+    <form id="healthInfoForm" method="POST">
         <div class="content">
             <div class="contentninx">
                 <fieldset class="fieldsalud">
@@ -25,70 +25,84 @@
                     <div class="sectionsalud">
                         <h3 class="h3salud">Reportado por: </h3>
                         <div class="decorative-line"></div>
-                        <span>
-                            <i class="acuarela acuarela-Ayuda"></i>
-                            <label for="name">Tipo de incidente</label>
+
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Usuario"></i>
+                            <label class="labelpediatra" for="reportado_por">Reportado por: </label>
+                            <input type="text" placeholder="Describe los síntomas" name="reportado_por" id="reportado_por" 
+                                   value="<?= isset($kid->healthinfo->incidents->reported_for) ? $kid->healthinfo->incidents->reported_for : "" ?>" required>
+                            <span class="error-message"></span>
+                        </span>
+
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Ayuda"></i>
+                            <label class="labelpediatra" for="tipo-incidente">Tipo de incidente</label>
                             <select name="tipo-incidente" id="tipo-incidente" required>
-                                <option value="" disabled selected>Síntomas de enfermedad</option>
-                                <option value="Fiebre">Fiebre</option>
-                                <option value="Tos persistente">Tos persistente</option>
-                                <option value="Congestión nasal">Congestión nasal</option>
-                                <option value="Dolor de garganta">Dolor de garganta</option>
-                                <option value="Dificultad para respirar">Dificultad para respirar</option>
-                                <option value="Vómitos">Vómitos</option>
-                                <option value="Diarrea">Diarrea</option>
-                                <option value="Erupción cutánea">Erupción cutánea</option>
-                                <option value="Caída o golpe">Caída o golpe</option>
-                                <option value="Sangrado (herida leve)">Sangrado (herida leve)</option>
-                                <option value="Reacción alérgica">Reacción alérgica</option>
-                                <option value="Picadura de insecto">Picadura de insecto</option>
-                                <option value="Fractura o esguince">Fractura o esguince</option>
-                                <option value="Quemadura leve">Quemadura leve</option>
-                                <option value="Ingestión de objeto extraño">Ingestión de objeto extraño</option>
-                                <option value="Asfixia (obstrucción leve)">Asfixia (obstrucción leve)</option>
-                                <option value="Mareos o desmayo">Mareos o desmayo</option>
-                                <option value="Convulsiones">Convulsiones</option>
-                                <option value="Síntomas de deshidratación">Síntomas de deshidratación</option>
-                                <option value="Other">Other</option>
+                                <option value="" disabled <?= empty($kid->healthinfo->incidents->incident_type) ? 'selected' : '' ?>>Síntomas de enfermedad</option>
+                                <option value="Fiebre" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Fiebre" ? 'selected' : '' ?>>Fiebre</option>
+                                <option value="Tos persistente" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Tos persistente" ? 'selected' : '' ?>>Tos persistente</option>
+                                <option value="Congestión nasal" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Congestión nasal" ? 'selected' : '' ?>>Congestión nasal</option>
+                                <option value="Dolor de garganta" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Dolor de garganta" ? 'selected' : '' ?>>Dolor de garganta</option>
+                                <option value="Dificultad para respirar" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Dificultad para respirar" ? 'selected' : '' ?>>Dificultad para respirar</option>
+                                <option value="Vómitos" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Vómitos" ? 'selected' : '' ?>>Vómitos</option>
+                                <option value="Diarrea" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Diarrea" ? 'selected' : '' ?>>Diarrea</option>
+                                <option value="Erupción cutánea" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Erupción cutánea" ? 'selected' : '' ?>>Erupción cutánea</option>
+                                <option value="Caída o golpe" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Caída o golpe" ? 'selected' : '' ?>>Caída o golpe</option>
+                                <option value="Sangrado (herida leve)" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Sangrado (herida leve)" ? 'selected' : '' ?>>Sangrado (herida leve)</option>
+                                <option value="Reacción alérgica" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Reacción alérgica" ? 'selected' : '' ?>>Reacción alérgica</option>
+                                <option value="Picadura de insecto" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Picadura de insecto" ? 'selected' : '' ?>>Picadura de insecto</option>
+                                <option value="Fractura o esguince" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Fractura o esguince" ? 'selected' : '' ?>>Fractura o esguince</option>
+                                <option value="Quemadura leve" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Quemadura leve" ? 'selected' : '' ?>>Quemadura leve</option>
+                                <option value="Ingestión de objeto extraño" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Ingestión de objeto extraño" ? 'selected' : '' ?>>Ingestión de objeto extraño</option>
+                                <option value="Asfixia (obstrucción leve)" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Asfixia (obstrucción leve)" ? 'selected' : '' ?>>Asfixia (obstrucción leve)</option>
+                                <option value="Mareos o desmayo" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Mareos o desmayo" ? 'selected' : '' ?>>Mareos o desmayo</option>
+                                <option value="Convulsiones" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Convulsiones" ? 'selected' : '' ?>>Convulsiones</option>
+                                <option value="Síntomas de deshidratación" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Síntomas de deshidratación" ? 'selected' : '' ?>>Síntomas de deshidratación</option>
+                                <option value="Other" <?= isset($kid->healthinfo->incidents->incident_type) && $kid->healthinfo->incidents->incident_type == "Other" ? 'selected' : '' ?>>Other</option>
                             </select>
-                        <span class="error-message"></span>
-                        </span>
-                        <span>
-                            <i class="acuarela acuarela-Informacion"></i>
-                            <label for="name">Descripción</label>
-                            <input type="text" placeholder="Describe los síntomas" name="medico" id="medico">
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <i class="acuarela acuarela-Informacion"></i>
-                            <label for="temperatura">Temperatura</label>
-                            <input clse="tempinput" type="number" name="temperatura" id="temperatura" placeholder="32" step="0.1">
+
+
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Informacion"></i>
+                            <label class="labelpediatra" for="descripcion">Descripción</label>
+                            <input type="text" placeholder="Describe los síntomas" name="descripcion" id="descripcion" 
+                                   value="<?= isset($kid->healthinfo->incidents->description) ? $kid->healthinfo->incidents->description : "" ?>" required>
+                            <span class="error-message"></span>
+                        </span>
+
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Advertencia"></i>
+                            <label class="labelpediatra" for="temperatura">Temperatura</label>
+                            <input type="text" placeholder="Describe los síntomas" name="temperatura" id="temperatura" 
+                                   value="<?= isset($kid->healthinfo->incidents->temperature) ? $kid->healthinfo->incidents->temperature : "" ?>" required>
                             <span class="tempspan">°F</span>
+                            <span class="error-message"></span>
                         </span>
-                        <span>
-                            <i class="acuarela acuarela-Ayuda"></i>
-                            <label for="name">Nivel de gravedad</label>
+
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Prioridad"></i>
+                            <label class="labelpediatra" for="levelgrave">Nivel de gravedad</label>
                             <select name="levelgrave" id="levelgrave" required>
-                                <option value="" disabled selected>Agregar el nivel de gravedad del ninxs</option>
-                                <option value="Leve">Leve</option>
-                                <option value="Moderado">Moderado</option>
-                                <option value="Grave">Grave</option>
+                                <option value="" disabled <?= empty($kid->healthinfo->incidents->gravedad) ? 'selected' : '' ?>> Agregar el nivel de gravedad del ninxs </option>
+                                <option value="Leve" <?= isset($kid->healthinfo->incidents->gravedad) && $kid->healthinfo->incidents->gravedad == "Leve" ? 'selected' : '' ?>> Leve </option>
+                                <option value="Moderado" <?= isset($kid->healthinfo->incidents->gravedad) && $kid->healthinfo->incidents->gravedad == "Moderado" ? 'selected' : '' ?>> Moderado </option>
+                                <option value="Grave" <?= isset($kid->healthinfo->incidents->gravedad) && $kid->healthinfo->incidents->gravedad == "Grave" ? 'selected' : '' ?>> Grave </option>
                             </select>
                             <span class="error-message"></span>
                         </span>
-                        <span>
+
+                        <!-- <span>
                             <i class="acuarela acuarela-Salud"></i>
                             <label for="statehealth_text">Estado de salud</label>
                             <div class="state_health">
-                                <!-- Campo para descripción -->
                                 <input 
                                     type="text" 
                                     placeholder="Describa el estado de salud del niño o niña" 
                                     name="statehealth_text" 
                                     id="statehealth_text"
                                 >
-
-                                <!-- Menú desplegable para tipo de incidente -->
                                 <label for="type_incident">Tipo de incidente</label>
                                 <select name="type_incident" id="type_incident" required>
                                     <option value="" disabled selected>Seleccione el tipo de incidente</option>
@@ -100,8 +114,6 @@
                                     <option value="N">N (Náusea)</option>
                                     <option value="A">A (Alergia)</option>
                                 </select>
-
-                                <!-- Menú desplegable para nivel de gravedad -->
                                 <label for="statehealth_select">Nivel de gravedad</label>
                                 <select name="statehealth_select" id="statehealth_select" required>
                                     <option value="" disabled selected>Seleccione el nivel de gravedad</option>
@@ -113,30 +125,30 @@
                                     <option value="H">H (Cabeza)</option>
                                     <option value="T">T (Tronco)</option>
                                 </select>
-
-                                <!-- Indicador dinámico -->
                                 <span id="severity_label" class="severity-label">Seleccione un nivel de gravedad</span>
-
-                                <!-- Mensaje de error -->
                                 <span class="error-message"></span>
                             </div>
+                        </span> -->
+
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Informacion"></i>
+                            <label class="labelpediatra" for="acciones_tomadas">Acciones tomadas</label>
+                            <input type="text" placeholder="Describe las acciones realizadas" name="acciones_tomadas" id="acciones_tomadas" 
+                                   value="<?= isset($kid->healthinfo->incidents->actions_taken) ? $kid->healthinfo->incidents->actions_taken : "" ?>" required>
+                            <span class="error-message"></span>
                         </span>
 
-                        <span>
-                            <i class="acuarela acuarela-Informacion"></i>
-                            <label for="name">Acciones tomadas</label>
-                            <input type="text" placeholder="Describe las acciones realizadas" name="medico" id="medico">
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Informacion"></i>
+                            <label class="labelpediatra" for="acciones_esperadas">Acciones esperadas</label>
+                            <input type="text" placeholder="Describe las acciones que deberia realizar el acudiente" name="acciones_esperadas" id="acciones_esperadas" 
+                                   value="<?= isset($kid->healthinfo->incidents->actions_expected) ? $kid->healthinfo->incidents->actions_expected : "" ?>" required>
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <i class="acuarela acuarela-Informacion"></i>
-                            <label for="name">Acciones esperadas</label>
-                            <input type="text" placeholder="Describe las acciones que deberia realizar el acudiente" name="medico" id="medico">
-                            <span class="error-message"></span>
-                        </span>
+
                     </div>
                     <div class="send-salud">
-                        <button class="btn btn-action-primary enfasis btn-big btn-add" onclick="handleHealthInfo()"> Guardar </button>           
+                        <button class="btn btn-action-primary enfasis btn-big btn-add" type="button" onclick="handleReportInfo()"> Guardar </button>
                     </div>
                 </fieldset>
             </div>

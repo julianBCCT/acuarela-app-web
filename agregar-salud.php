@@ -1,14 +1,16 @@
 <?php $classBody ="agregarsalud"; include "includes/header.php"; 
 $kid = $a->getChildren($_GET['id']);
-$salud = isset($_GET['id']) ? $a->getHealthinfo($_GET['id']) : "";
 ?>
+<script>
+    let kidData = <?= json_encode($kid) ?>;
+</script>
 
 <main>
     <?php
     $mainHeaderTitle = "{$kid->name} {$kid->lastname}" ;
     include "templates/sectionHeader.php";    
 ?>
-    <form id="healthInfoForm">
+    <form id="healthInfoForm" method="POST">
         <div class="content">
             <div class="contentninx">
                 <fieldset class="fieldsalud">
@@ -18,107 +20,103 @@ $salud = isset($_GET['id']) ? $a->getHealthinfo($_GET['id']) : "";
                         <div class="decorative-line"></div>
                         <span class="input-group">
                             <label class="checkboxsalud" for="asma">Asma</label>
+                            <input type="hidden" name="asma" value="0">
                             <input type="checkbox" name="asma" id="asma" value="1">
                             <span class="error-message"></span>
                         </span>
-                        <span>
+                        <span class="input-group">
                             <label for="alergias">Alergias</label>
-                            <input type="text" placeholder="Agregar alergías" name="alergias" id="alergias" /
-                            value="<?= $salud != "" ? $salud->alergias : "" ?>" required>
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                            <input type="text" placeholder="Agregar alergías" name="alergias" id="alergias" 
+                                value="<?= isset($kid->healthinfo->allergies) && is_array($kid->healthinfo->allergies) ? implode(', ', $kid->healthinfo->allergies) : $kid->healthinfo->allergies ?>" required>
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
-
-                        <span>
-                            <label for="name">Medicamentos</label>
-                            <input type="text" placeholder="Agregar medicamentos" name="medicamentos" id="medicamentos">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <label for="medicamentos">Medicamentos</label>
+                            <input type="text" placeholder="Agregar medicamentos" name="medicamentos" id="medicamentos" 
+                                value="<?= isset($kid->healthinfo->medicines) && is_array($kid->healthinfo->medicines) ? implode(', ', $kid->healthinfo->medicines) : $kid->healthinfo->medicines ?>" required>
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <label for="name">Vacunas</label>
-                            <input type="text" placeholder="Agregar vacunas" name="vacunas" id="vacunas">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <label for="vacunas">Vacunas</label>
+                            <input type="text" placeholder="Agregar vacunas" name="vacunas" id="vacunas" 
+                                value="<?= isset($kid->healthinfo->vacination) && is_array($kid->healthinfo->vacination) ? implode(', ', $kid->healthinfo->vacination) : $kid->healthinfo->vacination ?>" required>
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <label for="name">Accidentes</label>
-                            <input type="text" placeholder="Agregar accidentes" name="accidentes" id="vacunas">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <label for="accidentes">Accidentes</label>
+                            <input type="text" placeholder="Agregar accidentes" name="accidentes" id="accidentes" 
+                                value="<?= isset($kid->healthinfo->accidents) && is_array($kid->healthinfo->accidents) ? implode(', ', $kid->healthinfo->accidents) : $kid->healthinfo->accidents ?>" required>
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <label for="name">Salud fisica</label>
-                            <input type="text" placeholder="Agregar el estado de salud física" name="physical health" id="vacunas">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <label for="salud_fisica">Salud fisica</label>
+                            <input type="text" placeholder="Agregar el estado de salud física" name="salud_fisica" id="salud_fisica" 
+                                   value="<?= isset($kid->healthinfo->physical_health) ? $kid->healthinfo->physical_health : "" ?>">
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <label for="name">Salud emocional</label>
-                            <input type="text" placeholder="Agregar su salud mental" name="physical health" id="vacunas">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <label for="salud_emocional">Salud emocional</label>
+                            <input type="text" placeholder="Agregar su salud mental" name="salud_emocional" id="salud_emocional" 
+                                   value="<?= isset($kid->healthinfo->emocional_health) ? $kid->healthinfo->emocional_health : "" ?>">
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <label for="name">Sospecha de abuso</label>
-                            <input type="text" placeholder="En caso de existir sospecha agregar detalles" name="physical health" id="vacunas">
-                            <i class="acu acuarela acuarela-Agregar"></i>
-                            <span class="error-message"></span>
-                        </span>
-                        <span>
-                            <label for="name">Otros</label>
-                            <input type="text" placeholder="Agregar otros datos de salud importantes" name="saludotros" id="saludotros">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <label for="sospecha_abuso">Sospecha de abuso</label>
+                            <input type="text" placeholder="En caso de existir sospecha agregar detalles" name="sospecha_abuso" id="sospecha_abuso" 
+                                   value="<?= isset($kid->healthinfo->suspected_abuse) ? $kid->healthinfo->suspected_abuse : "" ?>" required>
                             <span class="error-message"></span>
                         </span>
                     </div>
                     <div class="sectionsalud">
                         <h3 class="h3salud">Unguentos autorizados: </h3>
                         <div class="decorative-line"></div>
-                        <span>
-                            <label for="name">Bloqueador solar</label>
-                            <input type="checkbox" name="bloqueadorsolar" id="bloqueadorsolar">
-                            <span class="error-message"></span>
-                        </span>
-                        <span>
-                            <label for="name">Repelente de insectos</label>
-                            <input type="checkbox" name="repelenteinsectos" id="repelenteinsectos">
-                            <span class="error-message"></span>
-                        </span>
-                        <span>
-                            <label for="name">Otros</label>
-                            <input type="text" placeholder="Agregar otros datos de salud importantes" name="saludotros" id="saludotros">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <label for="name">Unguentos</label>
+                            <input type="text" placeholder="Agregar marcar de cremas, bloqueadores solares, etc" name="unguentos" id="unguentos" 
+                                   value="<?= isset($kid->healthinfo->ointments) && is_array($kid->healthinfo->ointments) ? implode(', ', $kid->healthinfo->ointments) : $kid->healthinfo->ointments ?>">
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
                     </div>
                     <div class="sectionsalud">
                         <h3 class="h3salud">Información de médico o pediatra: </h3>
                         <div class="decorative-line"></div>
-                        <span>
-                            <i class="acuarela acuarela-Usuario"></i>
-                            <label for="name">Médico</label>
-                            <input type="text" placeholder="Ingresar nombre del médico" name="medico" id="medico">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Usuario"></i>
+                            <label class="labelpediatra" for="name">Médico</label>
+                            <input type="text" placeholder="Ingresar nombre del médico" name="pedriatra" id="pedriatra" 
+                                   value="<?= isset($kid->healthinfo->pediatrician) ? $kid->healthinfo->pediatrician : "" ?>">
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <i class="acuarela acuarela-Telefono"></i>
-                            <label for="name">Teléfono</label>
-                            <input type="tel" placeholder="Ingresar teléfono del médico" name="telmedico" id="telmedico">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Telefono"></i>
+                            <label class="labelpediatra" for="name">Teléfono</label>
+                            <input type="text" placeholder="Agregar su salud mental" name="pedriatra_numero" id="pedriatra_numero" 
+                                   value="<?= isset($kid->healthinfo->pediatrician_number) ? $kid->healthinfo->pediatrician_number : "" ?>">
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
-                        <span>
-                            <i class="acuarela acuarela-Mensajes"></i>
-                            <label for="name">Correo electrónico</label>
-                            <input type="email" placeholder="Ingresar correo del médico" name="emailmedico" id="emailmedico">
-                            <i class="acu acuarela acuarela-Agregar"></i>
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Mensajes"></i>
+                            <label class="labelpediatra" for="name">Correo electrónico</label>
+                            <input type="text" placeholder="Agregar su salud mental" name="pedriatra_email" id="pedriatra_email" 
+                                   value="<?= isset($kid->healthinfo->pediatrician_email) ? $kid->healthinfo->pediatrician_email : "" ?>">
+                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
                     </div>    
                     <div class="send-salud">
-                        <button class="btn btn-action-primary enfasis btn-big btn-add" type="button" onclick="handleHealthInfo()"> Guardar </button>           
+                        <?php
+                            $buttonText = isset($kid->healthinfo) ? "Actualizar datos" : "Agregar datos"; // Verificar si existen datos de salud en el objeto $kid
+                        ?>
+                        <button id="saveButton" class="btn btn-action-primary enfasis btn-big btn-add" type="button" onclick="handleHealthInfo()">
+                            <?php echo $buttonText; ?>
+                        </button>
                     </div>
                 </fieldset>
             </div>
@@ -126,3 +124,22 @@ $salud = isset($_GET['id']) ? $a->getHealthinfo($_GET['id']) : "";
     </form>
 </main>
 <?php include "includes/footer.php" ?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".agregar-inputs").forEach(addButton => {
+            addButton.addEventListener("click", () => {
+                const container = addButton.closest(".input-group");
+                const originalInput = container.querySelector("input");
+                const newInput = document.createElement("input");
+                newInput.type = "text";
+                newInput.name = originalInput.name; 
+                newInput.placeholder = `Agregar otra ${originalInput.placeholder.toLowerCase()}`;
+                newInput.classList.add("extra-input");
+
+                // Insertar el nuevo input antes del botón "agregar"
+                container.insertBefore(newInput, addButton);
+            });
+        });
+    });
+</script>

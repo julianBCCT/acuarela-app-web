@@ -120,47 +120,136 @@ const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
 const baseUrl = "https://acuarelacore.com/api";
 
 
-const handleHealthInfo = async (e) => {
- 
-
- // console.log("Evento manejado");
-  fadeIn(preloader);
-  
-  // Obtén los datos del formulario
-  const form = document.getElementById('healthInfoForm');
+const handleHealthInfo = async () => {
+  fadeIn(preloader);  
+  const form = document.getElementById("healthInfoForm");
   const inputs = form.querySelectorAll("input, select, textarea");
 
   const formValues = {};
   inputs.forEach((input) => {
+    if (input.type === "checkbox") {
+      formValues[input.name] = input.checked ? input.value : "0"; 
+    } else {
       formValues[input.name] = input.value;
+    }
   });
 
   let dataToSend = {
-      allergies: formValues.alergias, // Cambié 'allergies' a 'alergias' según tu HTML
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    asthma: formValues.asma,
+    allergies: [...document.querySelectorAll("input[name='alergias']")].map(input => input.value),
+    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(input => input.value),
+    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(input => input.value),
+    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(input => input.value),
+    physical_health: formValues.salud_fisica,
+    emocional_health: formValues.salud_emocional,
+    suspected_abuse: formValues.sospecha_abuso,
+    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(input => input.value),
+    pediatrician: formValues.pedriatra,
+    pediatrician_number: formValues.pedriatra_numero,
+    pediatrician_email: formValues.pedriatra_email
   };
-
-  console.log("Datos de alergias:");
-  console.log(dataToSend.allergies);
+  console.log(dataToSend);
 
   try {
-      const response = await fetch("s/create/Healthinfos", {
-          method: "POST",
-          body: JSON.stringify(dataToSend),
-          headers: { "Content-Type": "application/json" },
+    if (!kidData.healthinfo || kidData.healthinfo.child !== kidData._id) {
+      const response = await fetch("s/createHealthInfo/", {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+      
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+      }
+    } else {
+      const response = await fetch("s/updateHealthInfo/", {
+        method: "PUT",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
       });
       const body = await response.json();
 
-      if (body.ok) {
-          window.location.href = `/miembros/acuarela-app-web/inscripciones`;
-      } else {
-          console.error("Error en la respuesta:", body);
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
       }
+      else {
+        console.error("Error al actualizar HealthInfo: ", body);
+      }
+    }
+
   } catch (error) {
-      console.error("Error en el registro de salud:", error);
-  } finally {
-      fadeOut(preloader); // Asegúrate de ocultar el loader
+    console.error("Error handling healthinfo:", error);
+    return false;
   }
 }
+
+const handleReportInfo = async () => {
+  fadeIn(preloader);
+  const form = document.getElementById("healthInfoForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+
+  const formValues = {};
+  inputs.forEach((input) => {
+    formValues[input.name] = input.value;
+  });
+
+  // // Objtener fechas de hoy en hora New York 
+  // const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  // // Formatear la fecha (31/01/2025)
+  // const dateObj = new Date(currentDate);
+  // const reportedenf = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
+  // // Formatear la hora (03:29)
+  // const hours = dateObj.getHours().toString().padStart(2, '0');
+  // const minutes = dateObj.getMinutes().toString().padStart(2, '0');
+  // const reportedenh = `${hours}:${minutes}`;
+
+  let newIncident = {
+    reported_for: formValues.reportado_por,
+    incident_type: formValues["tipo-incidente"], 
+    description: formValues.descripcion,
+    temperature: formValues.temperatura,
+    gravedad: formValues["levelgrave"],
+    actions_taken: formValues.acciones_tomadas,
+    actions_expected: formValues.acciones_esperadas
+    // reported_enf: reportedenf, 
+    // reported_enh: reportedenh  
+  };
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    incidents: kidData.healthinfo?.incidents 
+      ? [...kidData.healthinfo.incidents, newIncident] // Agrega el nuevo incidente
+      : [newIncident] // Si no existen incidentes, crea el array con el primero
+  };
+  console.log("Enviando datos:", dataToSend);
+
+  try {
+    const response = await fetch("s/updateHealthInfo/", {
+      method: "PUT",
+      body: JSON.stringify(dataToSend),
+      headers: { "Content-Type": "application/json" },
+    });
+    const result = await response.json();
+    console.log("Respuesta del servidor:", result);  // Verifica qué devuelve exactamente  
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${result.message}`);
+    }
+    // window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+    if (window.innerWidth > 425) {
+      showLightboxParient();
+    } else {
+      showLightboxEmergency();
+    }
+  } catch (error) {
+    console.error("Error al agregar incidente:", error);
+}
+};
+
 
 
 const handleInscripcion = async () => {
@@ -1570,18 +1659,36 @@ function showMessage(container, text, isError = false) {
 }
 
 // Función para ENVIAR CORREO  de emergencias
-function sendEmergencyEmail(gravedad, email, name, incidentType, temperature, actionsTaken, severityLevel, daycareName, suggestedActions) {
+function sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2, reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions) {
   let messagegrav = "";
+  let messagegrav2 = "";
   if (gravedad === "grave") {
-    messagegrav = `Estimado/a ${name},\n\nSe ha contactado a emergencias. Por favor, acuda al daycare inmediatamente.`;
+    messagegrav = `Queremos informarle que se ha presentado una situación que requiere atención inmediata. Hemos contactado a emergencias y tomado las medidas necesarias para garantizar la seguridad de su hijo/a.`;
+    messagegrav2 = `Le solicitamos amablemente que acuda al daycare lo antes posible para que podamos continuar brindando el mejor apoyo a su hijo/a junto con usted.`;
+
   } else {
-    messagegrav = `Estimado/a ${name},\n\nQueremos informarle que su hijo ha presentado ${incidentType} durante su estancia en el daycare. Actualmente, su temperatura es de ${temperature} y, aunque ${actionsTaken}, consideramos que el nivel de gravedad es ${severityLevel}. Le solicitamos amablemente que ${suggestedActions} para garantizar su bienestar.\n\n Agradecemos su comprensión y pronta respuesta.\n Atentamente,\n ${daycareName}`;
+    messagegrav = `Queremos informarle que su hijo/a ha tenido un incidente durante su estancia en el daycare. A continuación, le proporcionamos los detalles relevantes:`;
+    messagegrav2 = `Si bien hemos actuado de inmediato para atender la situación, consideramos importante su pronta presencia para garantizar el bienestar de su hijo/a y tomar cualquier acción adicional que sea necesaria.`;
+
   }
   // Datos que se enviarán al webhook
   const data = {
     subject: "Urgencia de salud - Favor recoger a su hijo",
+    name_user: name,
+    lastname_user: lastname,
+    name_user2: name2,
+    lastname_user2: lastname2,
+    reportado_por: reportedFor,
+    gravedad_buttom: gravedad,
+    gravedad_child: severityLevel,
+    tipo_incidente: incidentType,
+    temperatura: temperature,
+    acciones_tomadas: actionsTaken,
+    acciones_esperadas: suggestedActions,
     message: messagegrav,
+    message2: messagegrav2,
     to: email,
+    to2: email2,
   };
   const container = document.querySelector(".methods-emergency");
   // Enviar solicitud al webhook de Make
@@ -1705,18 +1812,26 @@ function showLightboxParient() {
           iconClass: "acuarela acuarela-Mensajes", 
           action: () => {
             const gravedad = "grave";
-            const email = kidData.guardians[0].guardian_email;
-            const name = kidData.guardians[0].guardian_name;
-            sendEmergencyEmail(gravedad, email, name);
+            const email = kidData.guardians[0]?.guardian_email || "";
+            const lastname = kidData.guardians[0]?.guardian_lastname || "";
+            const name = kidData.guardians[0]?.guardian_name || "";
+            const email2 = kidData.guardians[1]?.guardian_email || "";
+            const name2 = kidData.guardians[1]?.guardian_name || "";
+            const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
+            sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2);
           }
         }
       ];
       buttonsFlot(linkGrave, buttonDataGrave, "145px", "70px", "86px");
     } else {
       const gravedad = "grave";
-      const email = kidData.guardians[0].guardian_email;
-      const name = kidData.guardians[0].guardian_name; 
-      sendEmergencyEmail(gravedad, email, name);
+      const email = kidData.guardians[0]?.guardian_email || "";
+      const lastname = kidData.guardians[0]?.guardian_lastname || "";
+      const name = kidData.guardians[0]?.guardian_name || "";
+      const email2 = kidData.guardians[1]?.guardian_email || "";
+      const name2 = kidData.guardians[1]?.guardian_name || "";
+      const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
+      sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2);
     }
 });
 
@@ -1769,19 +1884,22 @@ function showLightboxParient() {
     for (let i = 0; i < kidData.incidents.length; i++) {
       const incident = kidData.incidents[i];
       const reportedDate = incident.reported_enf; 
+      const reportedFor = incident.reported_for; 
 
       if (reportedDate === todayNY) {
-        console.log(`Incidencia encontrada en el índice ${i} con fecha ${reportedDate}`);// Si hay coincidencia, ejecutar el código
         const gravedad = "moderado";
-        const email = kidData.guardians[0].guardian_email;
-        const name = kidData.guardians[0].guardian_name;
+        const email = kidData.guardians[0]?.guardian_email || "";
+        const lastname = kidData.guardians[0]?.guardian_lastname || "";
+        const name = kidData.guardians[0]?.guardian_name || "";
+        const email2 = kidData.guardians[1]?.guardian_email || "";
+        const name2 = kidData.guardians[1]?.guardian_name || "";
+        const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
         const incidentType = incident.description || "[Tipo de incidencia]";
         const temperature = incident.temperature || "[Temperatura]";
         const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
         const severityLevel = incident.gravedad || "[Nivel de gravedad]";
-        const daycareName = "[Nombre del Daycare]";
         const suggestedActions = incident.actions_expected || "[Acciones esperadas]";
-        sendEmergencyEmail(gravedad, email, name, incidentType, temperature, actionsTaken, severityLevel, daycareName, suggestedActions);
+        sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2, reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions);
 
         matchFound = true; // Indicar que se encontro una coincidencia
         break;
