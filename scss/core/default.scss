@@ -27,6 +27,10 @@ body {
   background: var(--Fondos-Fondo-1, #f0feff);
   grid-template-columns: 257px 1fr;
 
+  @media only screen and (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+
   main {
     position: relative;
     background-image: url(../img/manchas/inferior_derecha.svg);

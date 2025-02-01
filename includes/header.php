@@ -77,6 +77,7 @@ echo '</script>';
     <a href="/miembros/acuarela-app-web/asistencia" class="<?=$_GET['activeTab'] == 2 ? 'active':''?>"><i class="acuarela acuarela-Asistencia"></i>Asistencia</a>
     <a href="/miembros/acuarela-app-web/asistentes" class="<?=$_GET['activeTab'] == 3 ? 'active':''?>"><i class="acuarela acuarela-Asistente"></i>Asistentes</a>
     <a href="/miembros/acuarela-app-web/grupos" class="<?=$_GET['activeTab'] == 4 ? 'active':''?>"><i class="acuarela acuarela-Grupo"></i>Grupos</a>
+    <a href="/miembros/acuarela-app-web/administrador-tareas" class="<?=$_GET['activeTab'] == 5 ? 'active':''?>"><i class="acuarela acuarela-Checklist"></i>Administrador de tareas</a>
     <?php 
     $validIds = ["66df29c33f91241d635ae818", "66dfcce23f91241d635ae934"];
 

@@ -168,7 +168,7 @@
 
             // Step 3: Call PayPal partner referrals API
             const response = await fetch(
-              "https://api-m.paypal.com/v2/customer/partner-referrals",
+              "https://api-m.sandbox.paypal.com/v2/customer/partner-referrals",
               {
                 method: "POST",
                 headers,
