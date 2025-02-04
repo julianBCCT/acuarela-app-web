@@ -145,7 +145,7 @@
                                    value="<?= isset($kid->healthinfo->incidents->actions_expected) ? $kid->healthinfo->incidents->actions_expected : "" ?>" required>
                             <span class="error-message"></span>
                         </span>
-
+                        
                     </div>
                     <div class="send-salud">
                         <button class="btn btn-action-primary enfasis btn-big btn-add" type="button" onclick="handleReportInfo()"> Guardar </button>

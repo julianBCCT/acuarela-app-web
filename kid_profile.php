@@ -226,7 +226,7 @@
                                 <?php foreach ($kid->healthinfo->incidents as $index => $incident) : ?>
                                     <div class="incidentnino" id="incidentes">
                                         <div class="incidentnino-desp">
-                                            <h4>Incidente <?= $index + 1 ?></h4> <!-- Mostrará Incidente 1, Incidente 2, etc. -->
+                                            <h4 class="h4">Incidente <?= $index + 1 ?></h4> <!-- Mostrará Incidente 1, Incidente 2, etc. -->
                                             <p class="iconincid"><i class="acuarela acuarela-Flecha_arriba"></i></p>
                                         </div>
                                         <div class="incidentinfo">
@@ -260,26 +260,19 @@
                         <div class="header">
                             <select id="year-select"></select>                   
                             <select id="month-select"></select>
-                            <!-- <div class="month-selector">
-                                <button class="arrow left">&lt;</button>
-                                <div class="month-container">
-                                    Los meses se generan dinámicamente aquí 
-                                </div>
-                                <button class="arrow right">&gt;</button>
-                            </div> -->
                         </div>
                         <!-- Contenedor del calendario -->
                         <div id="calendar-container">
                             <table id="calendar">
                                 <thead>
                                     <tr>
-                                        <th>Dom</th>
-                                        <th>Lun</th>
-                                        <th>Mar</th>
-                                        <th>Mié</th>
-                                        <th>Jue</th>
-                                        <th>Vie</th>
-                                        <th>Sáb</th>
+                                        <th>D</th>
+                                        <th>L</th>
+                                        <th>M</th>
+                                        <th>M</th>
+                                        <th>J</th>
+                                        <th>V</th>
+                                        <th>S</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -289,8 +282,8 @@
                         </div>
                     </div>
                     <div class="health-buttoms">
-                        <button class="btn btn-action-secondary enfasis btn-big btn-disable"> Ver reporte </button>   
-                        <button class="btn btn-action-secondary enfasis btn-big btn-disable"> Agregar reporte </button>           
+                        <button id="btnView-reporte" class="btn btn-action-secondary enfasis btn-big btn-disable"> Ver reporte </button>   
+                        <button id="btnAgregar-reporte" class="btn btn-action-secondary enfasis btn-big btn-disable"> Agregar reporte </button>           
                     </div>
                 </div>
 
@@ -369,33 +362,26 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        // Selecciona todos los elementos con la clase .incidentnino
+        //==> Desplegar los Incidentes
         const incidents = document.querySelectorAll('.incidentnino');
-
         incidents.forEach(incident => {
-            // Selecciona el contenedor que se desplegará/plegará
             const toggleContainer = incident.querySelector('.incidentnino-desp');
             const incidentInfo = incident.querySelector('.incidentinfo');
             const iconContainer = incident.querySelector('.iconincid');
 
-            // Agrega el evento de clic
             toggleContainer.addEventListener('click', function () {
-                // Alternar clase para mostrar/ocultar contenido
                 incidentInfo.classList.toggle('incidentdesp');
-
-                // Alternar clase para la rotación del ícono
                 iconContainer.classList.toggle('rotate');
             });
         });
 
 
+        //==> Desplegar en vista para CELL el apartado UNGUENTOS
         document.querySelectorAll(".ung-btn").forEach((btn) => {
             btn.addEventListener("click", function () {
-                const content = this.parentElement.nextElementSibling; // Selecciona el contenedor del contenido
-                const icon = this.querySelector("i"); // Selecciona el ícono dentro del botón
-
-                // Alterna las clases del contenido
-                content.classList.toggle("show"); // Muestra u oculta el contenido
+                const content = this.parentElement.nextElementSibling; 
+                const icon = this.querySelector("i"); 
+                content.classList.toggle("show"); 
 
                 // Alterna las clases del ícono
                 if (icon.classList.contains("acuarela-Flecha_arriba")) {
@@ -408,14 +394,8 @@
             });
         });
 
-        // flatpickr("#calendar-input", {
-        //     dateFormat: "Y-m-d",
-        //     onChange: function (selectedDates, dateStr, instance) {
-        //         // Aquí puedes manejar lo que pasa al seleccionar una fecha
-        //         console.log("Fecha seleccionada: ", dateStr);
-        //     }
-        // });
 
+        //==> Calendario del HEALTH CHECK
         const calendar = document.querySelector('#calendar tbody');
         const monthSelect = document.querySelector('#month-select');
         const yearSelect = document.querySelector('#year-select');
@@ -448,38 +428,95 @@
             yearSelect.appendChild(option);
         }
 
-        // Función para generar el calendario
         function generateCalendar(year, month) {
             calendar.innerHTML = ''; // Limpia el calendario
-            const firstDay = new Date(year, month, 1).getDay(); // Primer día del mes (0 = Domingo)
-            const daysInMonth = new Date(year, month + 1, 0).getDate(); // Días en el mes
+
+            const firstDay = new Date(year, month, 1).getDay(); // Día de la semana del primer día del mes
+            const daysInMonth = new Date(year, month + 1, 0).getDate(); // Cantidad de días en el mes
+            const daysInPrevMonth = new Date(year, month, 0).getDate(); // Días en el mes anterior
 
             let date = 1;
+            let nextMonthDate = 1;
+            
             for (let i = 0; i < 6; i++) {
                 const row = document.createElement('tr');
+                let hasDays = false; // Para evitar agregar filas innecesarias
 
                 for (let j = 0; j < 7; j++) {
                     const cell = document.createElement('td');
+
                     if (i === 0 && j < firstDay) {
-                        cell.innerHTML = ''; // Vacío antes del primer día
+                        // Días del mes anterior (en gris)
+                        const dayNumber = daysInPrevMonth - (firstDay - j - 1);
+                        cell.appendChild(createDayCell(dayNumber, 'prev-month-cell', true));
                     } else if (date > daysInMonth) {
-                        cell.innerHTML = ''; // Vacío después del último día
+                        // Días del siguiente mes (en gris, pero solo hasta completar la semana)
+                        cell.appendChild(createDayCell(nextMonthDate, 'next-month-cell', true));
+                        nextMonthDate++;
                     } else {
-                        cell.innerHTML = date;
-                        if (
-                            date === today.getDate() &&
-                            year === today.getFullYear() &&
-                            month === today.getMonth()
-                        ) {
-                            cell.style.backgroundColor = '#f0f0f0'; // Resalta el día actual
+                        // Días del mes actual
+                        const dayCell = createDayCell(date);
+                        if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
+                            dayCell.style.backgroundColor = '#f0f0f0'; // Resalta el día actual
                         }
+                        cell.appendChild(dayCell);
                         date++;
+                        hasDays = true;
                     }
+
                     row.appendChild(cell);
                 }
-                calendar.appendChild(row);
+
+                // Solo agrega la fila si tiene días útiles
+                if (hasDays || i === 0) {
+                    calendar.appendChild(row);
+                } else {
+                    break;
+                }
             }
         }
+
+        // Función para crear un div con el número del día y los textos "Hola" y "Vamos"
+        function createDayCell(dayNumber, extraClass = '', isGrayed = false) {
+            const wrapper = document.createElement('div');
+            wrapper.classList.add('day-wrapper');
+            if (extraClass) {
+                wrapper.classList.add(extraClass);
+            }
+            const dayDiv = document.createElement('div');
+            dayDiv.textContent = dayNumber < 10 ? `0${dayNumber}` : dayNumber;  // Formato con 2 dígitos
+            dayDiv.classList.add('day-number');
+            wrapper.appendChild(dayDiv);
+
+            // Si el día está gris (fuera de los días actuales del mes)
+            if (!isGrayed) {
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('day-text');
+
+                const pHola = document.createElement('p');
+                pHola.textContent = '97°F';
+
+                const pGuion = document.createElement('p');
+                pGuion.textContent = '-';
+
+                const pVamos = document.createElement('p');
+                pVamos.textContent = 'OK';
+
+                textDiv.appendChild(pHola);
+                textDiv.appendChild(pGuion);
+                textDiv.appendChild(pVamos);
+
+                wrapper.appendChild(textDiv);
+            } else {
+                // Si el día es gris, solo agregamos el contenedor vacío
+                const textDiv = document.createElement('div');
+                textDiv.classList.add('day-text');
+                wrapper.appendChild(textDiv);
+                }
+
+            return wrapper;
+        }
+
 
         // Evento para actualizar el calendario al cambiar mes o año
         monthSelect.addEventListener('change', function () {
@@ -494,6 +531,44 @@
 
         // Generar el calendario inicial
         generateCalendar(currentYear, currentMonth);
+
+
+        const tds = document.querySelectorAll("#calendar td");
+        const btnAddreport = document.getElementById("btnAgregar-reporte");
+        const btnViewreport = document.getElementById("btnView-reporte");
+
+        // Deshabilitar el botón al inicio
+        btnAddreport.disabled = true;
+        btnViewreport.disabled = true;
+
+        tds.forEach(td => {
+            td.addEventListener("click", function () {
+                // Remover la clase 'active' de todos los td
+                tds.forEach(cell => cell.classList.remove("active"));
+
+                // Agregar la clase 'active' al td clickeado
+                this.classList.add("active");
+
+                // Habilitar el botón
+                btnAddreport.disabled = false;
+                btnAddreport.classList.add("active"); 
+                btnViewreport.disabled = false;
+                btnViewreport.classList.add("active"); 
+            });
+        });
+
+        // Agregar evento para mostrar el Lightbox
+        btnAddreport.addEventListener("click", function () {
+            if (!btnAddreport.disabled) {
+                showLightboxAddHealthCkeck();
+            }
+        });
+        // Agregar evento para mostrar el Lightbox
+        btnViewreport.addEventListener("click", function () {
+            if (!btnViewreport.disabled) {
+                showLightboxViewHealthCkeck();
+            }
+        });
     });
 
 </script>
