@@ -676,10 +676,16 @@ const requestposts = async () => {
         let templateMedia = ""; // Inicializa templateMedia para cada publicación
         post.media.forEach((singlemedia, index) => {
           let imageUrl;
-          if (singlemedia.formats.medium) {
-            imageUrl = singlemedia.formats.medium.url;
-          } else if (singlemedia.formats.large) {
-            imageUrl = singlemedia.formats.large.url;
+          console.log(singlemedia);
+
+          if (singlemedia.formats) {
+            if (singlemedia.formats.medium) {
+              imageUrl = singlemedia.formats.medium.url;
+            } else if (singlemedia.formats.large) {
+              imageUrl = singlemedia.formats.large.url;
+            } else {
+              imageUrl = singlemedia.url;
+            }
           } else {
             imageUrl = singlemedia.url;
           }
@@ -858,6 +864,8 @@ const requestinscripciones = async () => {
         .filter((insc) => insc !== null)
         .forEach((insc, index) => {
           let { name, lastname, status, percentaje, id, child } = insc;
+          console.log(percentaje);
+
           let template = ``;
           if (child) {
             console.log(percentaje);
@@ -868,7 +876,7 @@ const requestinscripciones = async () => {
                 <ul>
                  ${
                    percentaje >= 100
-                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar ninx</a> </li>`
+                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.inscripcion}">Editar ninx</a> </li>`
                      : ``
                  }
                   <li>
@@ -1420,7 +1428,39 @@ const getChildren = async () => {
           // Ejemplo de código para mostrar la ventana:
           document.querySelector("#code-lightbox").style.display = "block";
         };
+        const manualHandle = async (parentId, parentName, parentEmail) => {
+          fadeIn(preloader);
 
+          let data = {
+            children: [kid.id],
+            datetime: today,
+            acudiente: [parentId],
+          };
+
+          const raw = JSON.stringify(data);
+          const requestOptions = {
+            method: "POST",
+            body: raw,
+          };
+
+          fetch(`s/setAsistencia/?type=${typeCheck}`, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+              const infoLightbox = document.getElementById("info-lightbox");
+              infoLightbox.style.display = "none";
+              // Para enviar un email de check-in
+              sendEmailRegisterCheck(
+                kid.name,
+                parentName,
+                daycareName,
+                parentName,
+                parentEmail,
+                typeCheck
+              );
+              getChildren();
+            })
+            .catch((error) => console.error(error));
+        };
         // Configura los botones de registro para cada padre/acudiente
         let handleButtonParent = (parentId, parentName, parentEmail) => {
           listItem.classList.toggle("active");
@@ -1562,6 +1602,13 @@ if (emergencycontact_lightbox) {
     } else {
       showLightboxEmergency();
     }
+// Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
+const emergencycontact_lightbox = document.getElementById(
+  "lightbox-emergencycontact"
+);
+if (emergencycontact_lightbox) {
+  emergencycontact_lightbox.addEventListener("click", function (event) {
+    showLightboxEmergency();
   });
 }
 
@@ -1593,10 +1640,7 @@ function showLightboxEmergency() {
   contentContainer.appendChild(linkEmergencia);
   contentContainer.appendChild(linkPariente);
 
-  showInfoLightbox(
-    "Contacto de emergencia",
-    contentContainer
-  );
+  showInfoLightbox("Contacto de emergencia", contentContainer);
 }
 
 // Lightbox LLAMAR A EMERGENCIAS 

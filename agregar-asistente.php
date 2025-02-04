@@ -5,6 +5,7 @@
             $mainHeaderTitle = 'Agregar Asistente' ;
             $action = '<button type="submit" class="btn btn-action-primary enfasis btn-big">Guardar cambios</button>';
             include "templates/sectionHeader.php";
+            
         ?>
         <div class="content">
             <fieldset>
