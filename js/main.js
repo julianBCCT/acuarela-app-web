@@ -119,6 +119,8 @@ const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
 };
 const baseUrl = "https://acuarelacore.com/api";
 
+
+//==>Enviar datos al collection HEALTHINFO en strapi
 const handleHealthInfo = async () => {
   fadeIn(preloader);
   const form = document.getElementById("healthInfoForm");
@@ -221,8 +223,8 @@ const handleReportInfo = async () => {
     gravedad: formValues["levelgrave"],
     actions_taken: formValues.acciones_tomadas,
     actions_expected: formValues.acciones_esperadas,
-    // reported_enf: reportedenf,
-    // reported_enh: reportedenh
+    // reported_enf: reportedenf, 
+    // reported_enh: reportedenh  
   };
 
   let dataToSend = {
@@ -246,7 +248,7 @@ const handleReportInfo = async () => {
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${result.message}`);
     }
-    // window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+    // window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
     if (window.innerWidth > 425) {
       showLightboxParient();
     } else {
@@ -1595,6 +1597,18 @@ function validarSuscripcion() {
   return accesoPermitido;
 }
 
+
+
+//==> EMERGENCIA
+//==> AL HACER CLICK EN EL BOTON CONTACTO DE EMERGENCIAS
+const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
+if (emergencycontact_lightbox) {
+  emergencycontact_lightbox.addEventListener("click", function (event) {
+    if (window.innerWidth > 425) {
+      showLightboxParient();
+    } else {
+      showLightboxEmergency();
+    }
 // Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
 const emergencycontact_lightbox = document.getElementById(
   "lightbox-emergencycontact"
@@ -1657,16 +1671,8 @@ function showLightboxCallEmergency() {
     <span>Policía </span>
   `;
 
-  const Otro = document.createElement("a");
-  Otro.classList.add("emergency");
-  Otro.innerHTML = `
-    <img src="img/icons/telefono.svg"" alt="file">
-    <span>otro </span>
-  `;
-
   contentContainer.appendChild(Urgencias);
   contentContainer.appendChild(Policia);
-  contentContainer.appendChild(Otro);
 
   showInfoLightbox(
     "Contactar con pariente según nivel de gravedad",
@@ -1693,7 +1699,7 @@ function showMessage(container, text, isError = false) {
     if (message.parentElement) {
       message.remove();
     }
-  }, 3000); // 5000 ms = 5 segundos
+  }, 5000); // 5000 ms = 5 segundos
 }
 
 // Función para ENVIAR CORREO  de emergencias
@@ -2010,6 +2016,131 @@ function showLightboxParient() {
     "Contactar con pariente según nivel de gravedad",
     contentContainer
   );
+}
+
+
+function showLightboxAddHealthCkeck() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-daylihealth");
+  
+  // Acceder correctamente a las propiedades de kidData
+  const photoUrl = kidData.photo ? 'https://acuarelacore.com/api/' + kidData.photo.formats.small.url : null;
+  const gender = kidData.gender;
+
+  const infoNino = document.createElement("div");
+  infoNino.classList.add("infonino");
+  infoNino.innerHTML = `
+    <div class="photo">
+      ${photoUrl ? `
+        <img loading="lazy" class="lazyload" src="img/placeholder.png" data-src="${photoUrl}" alt="${kidData.name}">
+      ` : `
+        ${gender === "Masculino" ? '<img class="img-infonino" src="img/mal.png" alt="">' : ''}
+        ${gender === "Femenino" ? '<img class="img-infonino" src="img/fem.png" alt="">' : ''}
+        ${gender === "X" ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">' : ''}
+      `}
+    </div>
+    <div>
+      <p class="infonino-name">${kidData.name}</p>
+      <p class="infonino-hora">Agosto 27/2021</p>
+    </div>
+  `;
+
+  const novedad = document.createElement("div");
+  novedad.classList.add("novedadnino");
+  novedad.innerHTML = `
+    <div class="novedadnino-part">
+      <span> Tienes alguna novedad con el Daily Health Check de ${kidData.name}? </span>
+      <label class="novedadnino-label">
+        <span> Sí </span>
+        <input type="radio" name="novedad" value="si">
+      </label>
+      <label class="novedadnino-label">
+        <span> No </span>
+        <input type="radio" name="novedad" value="no">
+      </label>
+    </div>
+  `;
+
+  const dataNino = document.createElement("div");
+  dataNino.classList.add("datanino");
+  dataNino.innerHTML = `
+    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Temperatura </span></span>  <span class="inc-text"> ${kidData.name}°F </span> </p>
+    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> ${kidData.name} </span> </p>
+    <button id="btnAgregar-reporte" class="btn btn-action-secondary enfasis btn-big btn-disable"> Agregar reporte </button>           
+  `;
+
+  contentContainer.appendChild(infoNino);
+  contentContainer.appendChild(novedad);
+  contentContainer.appendChild(dataNino);
+
+  // Asegurarse de que esta función existe
+  if (typeof showInfoLightbox === "function") {
+    showInfoLightbox("Daily Health Check", contentContainer);
+  } else {
+    console.error("Error: La función showInfoLightbox no está definida.");
+  }
+}
+
+function showLightboxViewHealthCkeck() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-daylihealth");
+  
+  // Acceder correctamente a las propiedades de kidData
+  const photoUrl = kidData.photo ? 'https://acuarelacore.com/api/' + kidData.photo.formats.small.url : null;
+  const gender = kidData.gender;
+
+  const infoNino = document.createElement("div");
+  infoNino.classList.add("infonino");
+  infoNino.innerHTML = `
+    <div class="photo">
+      ${photoUrl ? `
+        <img loading="lazy" class="lazyload" src="img/placeholder.png" data-src="${photoUrl}" alt="${kidData.name}">
+      ` : `
+        ${gender === "Masculino" ? '<img class="img-infonino" src="img/mal.png" alt="">' : ''}
+        ${gender === "Femenino" ? '<img class="img-infonino" src="img/fem.png" alt="">' : ''}
+        ${gender === "X" ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">' : ''}
+      `}
+    </div>
+    <div>
+      <p class="infonino-name">${kidData.name}</p>
+      <p class="infonino-hora">Agosto 27/2021</p>
+    </div>
+  `;
+
+  const novedad = document.createElement("div");
+  novedad.classList.add("novedadnino");
+  novedad.innerHTML = `
+    <div class="novedadnino-part">
+      <span> Tienes alguna novedad con el Daily Health Check de ${kidData.name}? </span>
+      <label class="novedadnino-label">
+        <span> Sí </span>
+        <input type="radio" name="novedad" value="si">
+      </label>
+      <label class="novedadnino-label">
+        <span> No </span>
+        <input type="radio" name="novedad" value="no">
+      </label>
+    </div>
+  `;
+
+  const dataNino = document.createElement("div");
+  dataNino.classList.add("datanino");
+  dataNino.innerHTML = `
+    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Temperatura </span></span>  <span class="inc-text"> ${kidData.name}°F </span> </p>
+    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> ${kidData.name} </span> </p>
+    <button id="btnAgregar-reporte" class="btn btn-action-secondary enfasis btn-big btn-disable"> Agregar reporte </button>           
+  `;
+
+  contentContainer.appendChild(infoNino);
+  contentContainer.appendChild(novedad);
+  contentContainer.appendChild(dataNino);
+
+  // Asegurarse de que esta función existe
+  if (typeof showInfoLightbox === "function") {
+    showInfoLightbox("Health Check", contentContainer);
+  } else {
+    console.error("Error: La función showInfoLightbox no está definida.");
+  }
 }
 
 // // Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)

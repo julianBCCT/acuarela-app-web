@@ -17,6 +17,9 @@
 
         .contentcent {
           width: 800px;
+          @media (max-width: 425px) {
+            width: 100%;
+          }
 
           p {
             margin-bottom: 16px;
@@ -269,6 +272,10 @@
                     cursor: pointer;
                   }
 
+                  .h4 {
+                    font-size: 12px;
+                  }
+
                   .iconincid {
                     display: flex;
                     justify-content: center;
@@ -357,15 +364,19 @@
                 align-items: center;
                 gap: 15px;
                 color: var(--gris1);
+                @media (max-width: 425px) {
+                  width: 100% !important;
+                }
               }
 
               .inc-text {
                 @media (max-width: 425px) {
-                  margin-left: 23px;
+                  margin-left: 27px;
                 }
               }
             }
           }
+
 
           #health_check {
             .health-calendar {
@@ -373,7 +384,7 @@
               width: 100%;
               background-color: white;
               border-radius: 8px;
-              padding: 12px 20px;
+              padding: 12px 20px 18px 20px;
               box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.20);
             }
             #calendar {
@@ -429,26 +440,39 @@
             }
             
             #calendar th, #calendar td {
-                padding: 10px;
-                border: 1px solid #ddd;
+              border: 1px solid #ddd;
+            }
+
+            #calendar thead th {
+              border: none;
+              text-align: center;
+              color: var(--gris3);
+              font-size: 12px;
+              font-weight: 700;
+              padding: 10px;
             }
             
-            #calendar td:hover {
-                background-color: #f0f0f0;
-                cursor: pointer;
+            #calendar td:hover,
+            #calendar td.active {
+              background-color: var(--cielo);
+              cursor: pointer;
+            }
+            #calendar td:hover .day-wrapper .day-text p,
+            #calendar td.active .day-wrapper .day-text p {
+              color: white;
             }
             
             .header {
-                display: flex;
-                justify-content: space-between;
-                gap: 10px;
-                margin-bottom: 20px;
+              display: flex;
+              justify-content: space-between;
+              gap: 10px;
+              margin-bottom: 20px;
             }
             
             #month-select, #year-select {
-                padding: 5px;
-                border: 1px solid #ddd;
-                border-radius: 5px;
+              padding: 5px;
+              border: 1px solid #ddd;
+              border-radius: 5px;
             }
 
             .health-buttoms {
@@ -462,8 +486,54 @@
                 color: var(--gris3);
               }
             }
+            // Dias en gris
+            .prev-month-cell, .next-month-cell {
+              background-color: #e0e0e0; 
+              color: var(--gris3);
+            }
           
+            .day-wrapper {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              padding: 5px 10px 20px 10px;
+            }
+            
+            .day-number {
+              width: 100%;
+              text-align: start;
+              font-size: 16px;
+              font-weight: bold;
+            }
+            
+            .day-text {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+              width: 100%;
+              height: 20px;
+              font-size: 12px;
+              color: gray;
+              margin-top: 5px;
+            }
+            
+            .day-text p {
+              font-size: 16px;
+              color: var(--gris3);
+              margin: 2px 0; 
+            }    
+            
+            /* Estilo del botón cuando hay un td activo */
+            #btnAgregar-reporte.active {
+              background-color: var(--cielo) !important;
+              color: white;
+            }
+            #btnView-reporte.active {
+              background-color: var(--cielo) !important;
+              color: white;
+            }
           }
+
         
 
           #actividades {
