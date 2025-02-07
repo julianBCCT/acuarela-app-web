@@ -87,6 +87,10 @@ class Acuarela {
         $resp = $this->queryStrapi("tasks?daycare=$daycare");
         return $resp;
     }
+    function createTask($data){
+        $resp = $this->queryStrapi("tasks", $data, "POST");
+        return $resp;
+    }
     function setReactionPost($data){
         $resp = $this->queryStrapi("reactions", $data, "POST");
         return $resp;
