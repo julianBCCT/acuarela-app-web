@@ -122,14 +122,14 @@ const baseUrl = "https://acuarelacore.com/api";
 
 //==>Enviar datos al collection HEALTHINFO en strapi
 const handleHealthInfo = async () => {
-  fadeIn(preloader);  
+  fadeIn(preloader);
   const form = document.getElementById("healthInfoForm");
   const inputs = form.querySelectorAll("input, select, textarea");
 
   const formValues = {};
   inputs.forEach((input) => {
     if (input.type === "checkbox") {
-      formValues[input.name] = input.checked ? input.value : "0"; 
+      formValues[input.name] = input.checked ? input.value : "0";
     } else {
       formValues[input.name] = input.value;
     }
@@ -139,17 +139,27 @@ const handleHealthInfo = async () => {
     inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
     child: kidData._id,
     asthma: formValues.asma,
-    allergies: [...document.querySelectorAll("input[name='alergias']")].map(input => input.value),
-    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(input => input.value),
-    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(input => input.value),
-    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(input => input.value),
+    allergies: [...document.querySelectorAll("input[name='alergias']")].map(
+      (input) => input.value
+    ),
+    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(
+      (input) => input.value
+    ),
+    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(
+      (input) => input.value
+    ),
+    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(
+      (input) => input.value
+    ),
     physical_health: formValues.salud_fisica,
     emocional_health: formValues.salud_emocional,
     suspected_abuse: formValues.sospecha_abuso,
-    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(input => input.value),
+    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(
+      (input) => input.value
+    ),
     pediatrician: formValues.pedriatra,
     pediatrician_number: formValues.pedriatra_numero,
-    pediatrician_email: formValues.pedriatra_email
+    pediatrician_email: formValues.pedriatra_email,
   };
   console.log(dataToSend);
 
@@ -161,7 +171,7 @@ const handleHealthInfo = async () => {
         headers: { "Content-Type": "application/json" },
       });
       const body = await response.json();
-      
+
       if (body.id) {
         window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
       }
@@ -175,8 +185,7 @@ const handleHealthInfo = async () => {
 
       if (body.id) {
         window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-      }
-      else {
+      } else {
         console.error("Error al actualizar HealthInfo: ", body);
       }
     }
@@ -184,7 +193,7 @@ const handleHealthInfo = async () => {
     console.error("Error handling healthinfo:", error);
     return false;
   }
-}
+};
 
 const handleReportInfo = async () => {
   fadeIn(preloader);
@@ -204,7 +213,7 @@ const handleReportInfo = async () => {
 
   let newIncident = {
     reported_for: formValues.reportado_por,
-    incident_type: formValues["tipo-incidente"], 
+    incident_type: formValues["tipo-incidente"],
     description: formValues.descripcion,
     temperature: formValues.temperatura,
     gravedad: formValues["levelgrave"],
@@ -217,9 +226,9 @@ const handleReportInfo = async () => {
   let dataToSend = {
     inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
     child: kidData._id,
-    incidents: kidData.healthinfo?.incidents 
+    incidents: kidData.healthinfo?.incidents
       ? [...kidData.healthinfo.incidents, newIncident] // Agrega el nuevo incidente
-      : [newIncident] // Si no existen incidentes, crea el array con el primero
+      : [newIncident], // Si no existen incidentes, crea el array con el primero
   };
   console.log("Enviando datos:", dataToSend);
 
@@ -230,7 +239,7 @@ const handleReportInfo = async () => {
       headers: { "Content-Type": "application/json" },
     });
     const result = await response.json();
-    console.log("Respuesta del servidor:", result);  // Verifica qué devuelve exactamente  
+    console.log("Respuesta del servidor:", result); // Verifica qué devuelve exactamente
 
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${result.message}`);
@@ -1604,7 +1613,7 @@ if (emergencycontact_lightbox) {
   });
 }
 
-// Lightbox CONTACTO DE EMERGENCIA 
+// Lightbox CONTACTO DE EMERGENCIA
 function showLightboxEmergency() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-emergency");
@@ -1616,7 +1625,7 @@ function showLightboxEmergency() {
     <span>Llamar a emergencias </span>
   `;
   linkEmergencia.addEventListener("click", (event) => {
-    showLightboxCallEmergency(); 
+    showLightboxCallEmergency();
   });
   const linkPariente = document.createElement("a");
   linkPariente.classList.add("emergency");
@@ -1625,7 +1634,7 @@ function showLightboxEmergency() {
     <span>Contactar al pariente</span>
   `;
   linkPariente.addEventListener("click", (event) => {
-    showLightboxParient(); 
+    showLightboxParient();
     const email = kids;
   });
 
@@ -1638,7 +1647,7 @@ function showLightboxEmergency() {
   );
 }
 
-// Lightbox LLAMAR A EMERGENCIAS 
+// Lightbox LLAMAR A EMERGENCIAS
 function showLightboxCallEmergency() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-callemergency");
@@ -1650,7 +1659,7 @@ function showLightboxCallEmergency() {
     <img src="img/icons/RH.svg"" alt="file">
     <span>Urgenicas 911 </span>
   `;
-  
+
   const Policia = document.createElement("a");
   Policia.setAttribute("href", "tel:+12126391991");
   Policia.classList.add("emergency");
@@ -1691,7 +1700,21 @@ function showMessage(container, text, isError = false) {
 }
 
 // Función para ENVIAR CORREO  de emergencias
-function sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2, reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions) {
+function sendEmergencyEmail(
+  gravedad,
+  email,
+  email2,
+  name,
+  name2,
+  lastname,
+  lastname2,
+  reportedFor,
+  incidentType,
+  temperature,
+  actionsTaken,
+  severityLevel,
+  suggestedActions
+) {
   let messagegrav = "";
   let messagegrav2 = "";
   if (gravedad === "grave") {
@@ -1729,17 +1752,24 @@ function sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, last
     },
     body: JSON.stringify(data),
   })
-  .then((response) => {
-    if (response.ok) {
-      showMessage(container, "Se ha enviado un mensaje de aviso al pariente.");
-    } else {
-      showMessage(container, "Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.", true);
-    }
-  })
-  .catch((error) => {
-    console.error("Error:", error);
-    showMessage(container, "Hubo un error al enviar el correo.", true);
-  });
+    .then((response) => {
+      if (response.ok) {
+        showMessage(
+          container,
+          "Se ha enviado un mensaje de aviso al pariente."
+        );
+      } else {
+        showMessage(
+          container,
+          "Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.",
+          true
+        );
+      }
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+      showMessage(container, "Hubo un error al enviar el correo.", true);
+    });
 }
 
 // Botones flotantes del lightbox de EMERGENCIAS
@@ -1752,13 +1782,13 @@ function buttonsFlot(linkElement, buttonData, top, left, width) {
   buttonsContainer.style.left = left;
   buttonsContainer.style.width = width;
 
-  buttonData.forEach(data => {
+  buttonData.forEach((data) => {
     let newButton;
     if (data.href) {
       // Crear un enlace si hay un href
       newButton = document.createElement("a");
       newButton.href = data.href;
-      newButton.target = "_self"; 
+      newButton.target = "_self";
     } else {
       // Crear un botón si no hay un href
       newButton = document.createElement("p");
@@ -1800,7 +1830,7 @@ function dataParient(kidData) {
         `<strong>Email: </strong> ${guardian.guardian_email}`,
       ];
 
-      datosPariente.forEach(dato => {
+      datosPariente.forEach((dato) => {
         const parienteData = document.createElement("p");
         parienteData.classList.add("parentslight-contact");
         parienteData.innerHTML = dato;
@@ -1821,7 +1851,7 @@ function dataParient(kidData) {
   return contentContainer;
 }
 
-// Lightbox CONTACTO DE EMERGENCIA 
+// Lightbox CONTACTO DE EMERGENCIA
 function showLightboxParient() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-emergency");
@@ -1832,38 +1862,6 @@ function showLightboxParient() {
     <img class="emergencyimg" src="img/icons/Padre.svg"" alt="file">
     <span>Caso Urgente</span>
   `;
-  linkGrave.addEventListener("click", () => {
-    if (window.innerWidth <= 425) {
-      linkModerado.style.opacity = "0.5";
-      const buttonDataGrave = [
-        { text: "Llamar", iconClass: "acuarela acuarela-Telefono" },
-        { text: "Texto", iconClass: "acuarela acuarela-Habla" },
-        { text: "Email", 
-          iconClass: "acuarela acuarela-Mensajes", 
-          action: () => {
-            const gravedad = "grave";
-            const email = kidData.guardians[0]?.guardian_email || "";
-            const lastname = kidData.guardians[0]?.guardian_lastname || "";
-            const name = kidData.guardians[0]?.guardian_name || "";
-            const email2 = kidData.guardians[1]?.guardian_email || "";
-            const name2 = kidData.guardians[1]?.guardian_name || "";
-            const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
-            sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2);
-          }
-        }
-      ];
-      buttonsFlot(linkGrave, buttonDataGrave, "145px", "70px", "86px");
-    } else {
-      const gravedad = "grave";
-      const email = kidData.guardians[0]?.guardian_email || "";
-      const lastname = kidData.guardians[0]?.guardian_lastname || "";
-      const name = kidData.guardians[0]?.guardian_name || "";
-      const email2 = kidData.guardians[1]?.guardian_email || "";
-      const name2 = kidData.guardians[1]?.guardian_name || "";
-      const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
-      sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2);
-    }
-});
 
   const linkModerado = document.createElement("a");
   linkModerado.classList.add("emergency");
@@ -1873,37 +1871,53 @@ function showLightboxParient() {
   `;
   linkModerado.addEventListener("click", () => {
     const container = document.querySelector(".methods-emergency");
-    if (!kidData.incidents || kidData.incidents.length === 0) {  // Verificar si hay datos en kidData.incidents
+    if (!kidData.incidents || kidData.incidents.length === 0) {
+      // Verificar si hay datos en kidData.incidents
       // Si está vacío, mostrar un mensaje indicando que se debe llenar la incidencia
-      showMessage(container, "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
+      showMessage(
+        container,
+        "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy."
+      );
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
-      if (window.innerWidth <= 768) { 
+      if (window.innerWidth <= 768) {
         topPosition = "100px";
         leftPosition = "470px";
       }
-      if (window.innerWidth <= 425) { 
+      if (window.innerWidth <= 425) {
         topPosition = "370px";
         leftPosition = "250px";
       }
-      if (window.innerWidth <= 320) { 
+      if (window.innerWidth <= 320) {
         topPosition = "390px";
         leftPosition = "200px";
       }
       const buttonDataModerado = [
-        { text: "Llenar reporte", 
+        {
+          text: "Llenar reporte",
           iconClass: "acuarela acuarela-Telefono",
-          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`
+          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
         },
       ];
-      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
-      return; 
+      buttonsFlot(
+        linkModerado,
+        buttonDataModerado,
+        topPosition,
+        leftPosition,
+        "120px"
+      );
+      return;
     }
 
     // Obtener la fecha actual ajustada a Nueva York (sin la hora)
     const now = new Date();
-    const options = { timeZone: "America/New_York", year: "numeric", day: "2-digit", month: "2-digit"  };
+    const options = {
+      timeZone: "America/New_York",
+      year: "numeric",
+      day: "2-digit",
+      month: "2-digit",
+    };
     const formatter = new Intl.DateTimeFormat("en-US", options);
     const parts = formatter.formatToParts(now);
     const todayNY = `${parts[4].value}-${parts[0].value}-${parts[2].value}`; // Año-Mes-Día
@@ -1913,8 +1927,8 @@ function showLightboxParient() {
 
     for (let i = 0; i < kidData.incidents.length; i++) {
       const incident = kidData.incidents[i];
-      const reportedDate = incident.reported_enf; 
-      const reportedFor = incident.reported_for; 
+      const reportedDate = incident.reported_enf;
+      const reportedFor = incident.reported_for;
 
       if (reportedDate === todayNY) {
         const gravedad = "moderado";
@@ -1928,8 +1942,23 @@ function showLightboxParient() {
         const temperature = incident.temperature || "[Temperatura]";
         const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
         const severityLevel = incident.gravedad || "[Nivel de gravedad]";
-        const suggestedActions = incident.actions_expected || "[Acciones esperadas]";
-        sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2, reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions);
+        const suggestedActions =
+          incident.actions_expected || "[Acciones esperadas]";
+        sendEmergencyEmail(
+          gravedad,
+          email,
+          email2,
+          name,
+          name2,
+          lastname,
+          lastname2,
+          reportedFor,
+          incidentType,
+          temperature,
+          actionsTaken,
+          severityLevel,
+          suggestedActions
+        );
 
         matchFound = true; // Indicar que se encontro una coincidencia
         break;
@@ -1938,29 +1967,39 @@ function showLightboxParient() {
 
     if (!matchFound) {
       const container = document.querySelector(".methods-emergency");
-      showMessage(container, "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
+      showMessage(
+        container,
+        "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy."
+      );
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
-      if (window.innerWidth <= 768) { 
+      if (window.innerWidth <= 768) {
         topPosition = "100px";
         leftPosition = "470px";
       }
-      if (window.innerWidth <= 425) { 
+      if (window.innerWidth <= 425) {
         topPosition = "370px";
         leftPosition = "250px";
       }
-      if (window.innerWidth <= 320) { 
+      if (window.innerWidth <= 320) {
         topPosition = "390px";
         leftPosition = "200px";
       }
       const buttonDataModerado = [
-        { text: "Llenar reporte", 
+        {
+          text: "Llenar reporte",
           iconClass: "acuarela acuarela-Telefono",
-          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`
+          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
         },
       ];
-      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
+      buttonsFlot(
+        linkModerado,
+        buttonDataModerado,
+        topPosition,
+        leftPosition,
+        "120px"
+      );
     }
   });
 
@@ -2345,7 +2384,7 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
 //     <img src="img/icons/ambossandia.svg"" alt="file">
 //     <span>Caso grave </span>
 //   `;
-  
+
 //   const linkModerado = document.createElement("a");
 //   linkModerado.classList.add("emergency");
 //   linkModerado.innerHTML = `
@@ -2361,10 +2400,6 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
 //     contentContainer
 //   );
 // }
-
-
-
-
 
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
