@@ -4286,3 +4286,12 @@ function handleAddCategories(event, type) {
       );
     });
 }
+
+
+async function getTasks(){
+  const response = await fetch(`g/getTasks/`);
+    const tsks = await response.json();
+    console.log(tasks);
+    
+}
+getTasks()
