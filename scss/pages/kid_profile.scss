@@ -17,7 +17,7 @@
 
         .contentcent {
           width: 800px;
-          @media (max-width: 425px) {
+          @media (max-width: 768px) {
             width: 100%;
           }
 
@@ -379,6 +379,9 @@
 
 
           #health_check {
+            @media (max-width: 425px) {
+              padding: 20px 0;
+            }
             .health-calendar {
               height: auto;
               width: 100%;
@@ -497,6 +500,10 @@
               flex-direction: column;
               align-items: center;
               padding: 5px 10px 20px 10px;
+              @media (max-width: 425px) {
+                align-items: start;
+                padding: 5px 5px 15px 5px;
+              }
             }
             
             .day-number {
@@ -504,6 +511,9 @@
               text-align: start;
               font-size: 16px;
               font-weight: bold;
+              @media (max-width: 425px) {
+                font-size: 14px;
+              }
             }
             
             .day-text {
@@ -515,12 +525,21 @@
               font-size: 12px;
               color: gray;
               margin-top: 5px;
+              @media (max-width: 425px) {
+                flex-direction: column;
+                align-items: start;
+                height: auto;
+              }
             }
             
             .day-text p {
               font-size: 16px;
               color: var(--gris3);
               margin: 2px 0; 
+              @media (max-width: 425px) {
+                font-size: 10px;
+                margin: 0;
+              }
             }    
             
             /* Estilo del botón cuando hay un td activo */
