@@ -196,15 +196,11 @@ const handleReportInfo = async () => {
     formValues[input.name] = input.value;
   });
 
-  // // Objtener fechas de hoy en hora New York 
-  // const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
-  // // Formatear la fecha (31/01/2025)
-  // const dateObj = new Date(currentDate);
-  // const reportedenf = `${dateObj.getDate().toString().padStart(2, '0')}/${(dateObj.getMonth() + 1).toString().padStart(2, '0')}/${dateObj.getFullYear()}`;
-  // // Formatear la hora (03:29)
-  // const hours = dateObj.getHours().toString().padStart(2, '0');
-  // const minutes = dateObj.getMinutes().toString().padStart(2, '0');
-  // const reportedenh = `${hours}:${minutes}`;
+  // Objtener fechas de hoy en hora New York 
+  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  // Formatear la fecha (31/01/2025)
+  const dateObj = new Date(currentDate);
+  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
 
   let newIncident = {
     reported_for: formValues.reportado_por,
@@ -214,8 +210,8 @@ const handleReportInfo = async () => {
     gravedad: formValues["levelgrave"],
     actions_taken: formValues.acciones_tomadas,
     actions_expected: formValues.acciones_esperadas,
-    // reported_enf: reportedenf, 
-    // reported_enh: reportedenh  
+    reported_enf: reportedenf 
+    // reported_enh: "15:00"  
   };
 
   let dataToSend = {
@@ -239,16 +235,59 @@ const handleReportInfo = async () => {
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${result.message}`);
     }
-    // window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
-    if (window.innerWidth > 425) {
-      showLightboxParient();
-    } else {
-      showLightboxEmergency();
+    localStorage.setItem("showEmergencyButton", "true");
+    window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
+  } catch (error) {
+    console.error("Error al agregar incidente:", error);
+  }
+};
+
+const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
+  fadeIn(preloader);
+
+  // Objtener fecha actual en hora New York
+  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  const dateObj = new Date(currentDate);
+  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+
+  const fechaFinal = (fecha === "null" || !fecha) ? reportedenf : fecha;
+
+  let newHealthCheck = {
+    temperature: temperatura,
+    report: reporte,
+    bodychild: kidData.healthinfo.healthcheck.bodychild,
+    daily_fecha: fechaFinal
+  };
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    healthcheck: kidData.healthinfo.healthcheck 
+      ? [...kidData.healthinfo.healthcheck, newHealthCheck] 
+      : [newHealthCheck]
+  };
+
+  console.log("Enviando datos:", dataToSend);
+
+  try {
+    const response = await fetch("s/updateHealthInfo/", {
+      method: "POST",
+      body: JSON.stringify(dataToSend),
+      headers: { "Content-Type": "application/json" },
+    });
+    const body = await response.json();
+
+    if (body.id) {
+      window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+    }
+    else {
+      console.error("Error al actualizar HealthInfo: ", body);
     }
   } catch (error) {
     console.error("Error al agregar incidente:", error);
-}
+  }
 };
+
 
 
 
@@ -676,16 +715,10 @@ const requestposts = async () => {
         let templateMedia = ""; // Inicializa templateMedia para cada publicación
         post.media.forEach((singlemedia, index) => {
           let imageUrl;
-          console.log(singlemedia);
-
-          if (singlemedia.formats) {
-            if (singlemedia.formats.medium) {
-              imageUrl = singlemedia.formats.medium.url;
-            } else if (singlemedia.formats.large) {
-              imageUrl = singlemedia.formats.large.url;
-            } else {
-              imageUrl = singlemedia.url;
-            }
+          if (singlemedia.formats.medium) {
+            imageUrl = singlemedia.formats.medium.url;
+          } else if (singlemedia.formats.large) {
+            imageUrl = singlemedia.formats.large.url;
           } else {
             imageUrl = singlemedia.url;
           }
@@ -864,8 +897,6 @@ const requestinscripciones = async () => {
         .filter((insc) => insc !== null)
         .forEach((insc, index) => {
           let { name, lastname, status, percentaje, id, child } = insc;
-          console.log(percentaje);
-
           let template = ``;
           if (child) {
             console.log(percentaje);
@@ -876,7 +907,7 @@ const requestinscripciones = async () => {
                 <ul>
                  ${
                    percentaje >= 100
-                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.inscripcion}">Editar ninx</a> </li>`
+                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${id}">Editar ninx</a> </li>`
                      : ``
                  }
                   <li>
@@ -1428,39 +1459,7 @@ const getChildren = async () => {
           // Ejemplo de código para mostrar la ventana:
           document.querySelector("#code-lightbox").style.display = "block";
         };
-        const manualHandle = async (parentId, parentName, parentEmail) => {
-          fadeIn(preloader);
 
-          let data = {
-            children: [kid.id],
-            datetime: today,
-            acudiente: [parentId],
-          };
-
-          const raw = JSON.stringify(data);
-          const requestOptions = {
-            method: "POST",
-            body: raw,
-          };
-
-          fetch(`s/setAsistencia/?type=${typeCheck}`, requestOptions)
-            .then((response) => response.json())
-            .then((result) => {
-              const infoLightbox = document.getElementById("info-lightbox");
-              infoLightbox.style.display = "none";
-              // Para enviar un email de check-in
-              sendEmailRegisterCheck(
-                kid.name,
-                parentName,
-                daycareName,
-                parentName,
-                parentEmail,
-                typeCheck
-              );
-              getChildren();
-            })
-            .catch((error) => console.error(error));
-        };
         // Configura los botones de registro para cada padre/acudiente
         let handleButtonParent = (parentId, parentName, parentEmail) => {
           listItem.classList.toggle("active");
@@ -1602,13 +1601,6 @@ if (emergencycontact_lightbox) {
     } else {
       showLightboxEmergency();
     }
-// Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
-const emergencycontact_lightbox = document.getElementById(
-  "lightbox-emergencycontact"
-);
-if (emergencycontact_lightbox) {
-  emergencycontact_lightbox.addEventListener("click", function (event) {
-    showLightboxEmergency();
   });
 }
 
@@ -1640,7 +1632,10 @@ function showLightboxEmergency() {
   contentContainer.appendChild(linkEmergencia);
   contentContainer.appendChild(linkPariente);
 
-  showInfoLightbox("Contacto de emergencia", contentContainer);
+  showInfoLightbox(
+    "Contacto de emergencia",
+    contentContainer
+  );
 }
 
 // Lightbox LLAMAR A EMERGENCIAS 
@@ -1982,9 +1977,14 @@ function showLightboxParient() {
 }
 
 
-function showLightboxAddHealthCkeck() {
+function showLightboxAddHealthCkeck(fechaSeleccionada) {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-daylihealth");
+  const titleElement = document.getElementById("info-lightbox-title");
+  const originalTextAlign = titleElement.style.textAlign;
+  const originalmarginBottom = titleElement.style.marginBottom;
+  titleElement.style.textAlign = "start";
+  titleElement.style.marginBottom = "35px";
   
   // Acceder correctamente a las propiedades de kidData
   const photoUrl = kidData.photo ? 'https://acuarelacore.com/api/' + kidData.photo.formats.small.url : null;
@@ -2024,87 +2024,315 @@ function showLightboxAddHealthCkeck() {
     </div>
   `;
 
+  const reportTranslations = {
+    "S-Scratch": "Rasguño",
+    "B-Bite": "Mordida",
+    "F-Fall": "Caída",
+    "R-Rash": "Erupción",
+    "T-Temp": "Fiebre",
+    "D-Diaper": "Cambio de pañal",
+    "BM-Bowel": "Evacuación intestinal",
+    "H-Hit": "Golpe",
+    "C-Crying": "Lloró más de lo normal"
+  };
+
   const dataNino = document.createElement("div");
   dataNino.classList.add("datanino");
   dataNino.innerHTML = `
-    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Temperatura </span></span>  <span class="inc-text"> ${kidData.name}°F </span> </p>
-    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> ${kidData.name} </span> </p>
-    <button id="btnAgregar-reporte" class="btn btn-action-secondary enfasis btn-big btn-disable"> Agregar reporte </button>           
+    <div class="data">
+      <span class="input-group">
+          <i class="saludicon acuarela acuarela-Salud"></i>
+          <label class="labelpediatra" for="temperatura">Temperatura: </label>
+          <input type="text" placeholder="Agrega la temperatura" name="temperatura" id="temperatura" 
+                value="${kidData.healthinfo?.healthcheck?.temperature || ''}" required>
+          <span class="tempspan">°F</span>
+          <span class="error-message"></span>
+      </span>
+      <span class="input-group">
+          <i class="saludicon acuarela acuarela-Salud"></i>
+          <label class="labelpediatra" for="report">Estado de Salud: </label>
+          <select name="report" id="report" required>
+            <option value="" disabled selected>Seleccione </option>
+              ${Object.keys(reportTranslations).map(key => `
+                <option value="${key}" ${kidData.healthinfo?.healthcheck?.report === key ? "selected" : ""}>${key}</option>
+              `).join('')}
+          </select>
+          <p class="selected-report-container">
+            <span class="circle-indicator"></span>
+            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || 'Sin seleccionar'}</span>
+          </p>
+          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ''}</p>
+          <span class="error-message"></span>
+      </span>
+    </div>      
   `;
+
+  const selectReport = dataNino.querySelector("#report");
+  const selectedReport = dataNino.querySelector("#selected-report");
+  const selectedReportEs = dataNino.querySelector("#selected-report-es");
+
+  selectReport.addEventListener("change", function() {
+      selectedReport.textContent = this.value;
+      selectedReportEs.textContent = reportTranslations[this.value] || "";
+  });
+
+  const databutton = document.createElement("div");
+  databutton.classList.add("divbutton");
+  databutton.innerHTML = `
+    <div class="progress-indicator">
+      <span class="circle active"></span>
+      <span class="circle"></span>
+    </div>
+    <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
+  `;
+  // Esperar a que el botón se agregue al DOM antes de asignarle el evento
+  setTimeout(() => {
+    const button = databutton.querySelector("#btnAgregar-reporte");
+    
+    button.addEventListener("click", () => {
+      const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
+      let temperature;
+      let report;
+      const inputTemp = document.querySelector("#temperatura");
+      const inputEstadoSalud = document.querySelector("#report");
+
+      if (selectedNovedad === "no") {
+        temperature = 98;
+        report = "Ninguno";
+      } else {
+        temperature = inputTemp.value; 
+        report = inputEstadoSalud.value; 
+      }
+
+      showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada);
+    });
+  }, 0);
+
+  // Seleccionar elementos para manejar cambios en los radios
+  const dataDiv = dataNino.querySelector(".data");
+  const inputTemp = dataNino.querySelector("#temperatura");
+  const inputEstadoSalud = dataNino.querySelector("#report");
+  const radioButtons = novedad.querySelectorAll('input[name="novedad"]');
+
+  radioButtons.forEach((radio) => {
+    radio.addEventListener("change", (event) => {
+      if (event.target.value === "no") {
+        dataDiv.style.opacity = "0.5";
+        inputTemp.value = 98;
+        inputEstadoSalud.value = "Ninguno";
+        inputTemp.setAttribute("readonly", true);
+        inputEstadoSalud.setAttribute("readonly", true);
+      } else {
+        dataDiv.style.opacity = "1";
+        inputTemp.value = "";
+        inputEstadoSalud.value = "";
+        inputTemp.removeAttribute("readonly");
+        inputEstadoSalud.removeAttribute("readonly");
+      }
+    });
+  });
 
   contentContainer.appendChild(infoNino);
   contentContainer.appendChild(novedad);
   contentContainer.appendChild(dataNino);
+  contentContainer.appendChild(databutton);
 
-  // Asegurarse de que esta función existe
-  if (typeof showInfoLightbox === "function") {
-    showInfoLightbox("Daily Health Check", contentContainer);
-  } else {
-    console.error("Error: La función showInfoLightbox no está definida.");
-  }
+  showInfoLightbox("Daily Health Check", contentContainer);
+
+  const closeButton = document.getElementById("info-close-button");
+  const closeHandler = () => {
+    titleElement.style.textAlign = originalTextAlign;
+    titleElement.style.marginBottom = originalmarginBottom;
+    closeButton.removeEventListener("click", closeHandler);
+  };
+  closeButton.addEventListener("click", closeHandler);
 }
 
-function showLightboxViewHealthCkeck() {
-  const contentContainer = document.createElement("div");
-  contentContainer.classList.add("methods-daylihealth");
-  
-  // Acceder correctamente a las propiedades de kidData
-  const photoUrl = kidData.photo ? 'https://acuarelacore.com/api/' + kidData.photo.formats.small.url : null;
-  const gender = kidData.gender;
 
-  const infoNino = document.createElement("div");
-  infoNino.classList.add("infonino");
-  infoNino.innerHTML = `
-    <div class="photo">
-      ${photoUrl ? `
-        <img loading="lazy" class="lazyload" src="img/placeholder.png" data-src="${photoUrl}" alt="${kidData.name}">
-      ` : `
-        ${gender === "Masculino" ? '<img class="img-infonino" src="img/mal.png" alt="">' : ''}
-        ${gender === "Femenino" ? '<img class="img-infonino" src="img/fem.png" alt="">' : ''}
-        ${gender === "X" ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">' : ''}
-      `}
-    </div>
-    <div>
-      <p class="infonino-name">${kidData.name}</p>
-      <p class="infonino-hora">Agosto 27/2021</p>
-    </div>
-  `;
+function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) {
+  console.log("Temperatura:", temperature);
+  console.log("Reporte:", report);
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-addbodydaylihealth");
+  const titleElement = document.getElementById("info-lightbox-title");
+  const originalTextAlign = titleElement.style.textAlign;
+  const originalmarginBottom = titleElement.style.marginBottom;
+  titleElement.style.textAlign = "start";
+  titleElement.style.marginBottom = "35px";
 
   const novedad = document.createElement("div");
-  novedad.classList.add("novedadnino");
+  novedad.classList.add("nino");
   novedad.innerHTML = `
-    <div class="novedadnino-part">
-      <span> Tienes alguna novedad con el Daily Health Check de ${kidData.name}? </span>
-      <label class="novedadnino-label">
-        <span> Sí </span>
-        <input type="radio" name="novedad" value="si">
-      </label>
-      <label class="novedadnino-label">
-        <span> No </span>
-        <input type="radio" name="novedad" value="no">
-      </label>
+    <div class="nino-part">
+      <p>¿En qué lugar ocurrió?</p>
+      <div class="nino-cont">
+        <div class="nino-container">
+          <img src="img/info/Ninos_Health_Check_front.png" alt="Nino vista frontal">
+          <img src="img/info/Ninos_Health_Check_tras.png" alt="Nino vista posterior">
+          
+          <!-- Círculos sobre las imágenes -->
+          <div class="circle" data-area="head" style="top: 0%; left: 19%;"></div>
+          <div class="circle" data-area="eye" style="top: 21%; left: 15%;"></div>
+          <div class="circle" data-area="mouth" style="top: 32%; left: 19%;"></div>
+          <div class="circle" data-area="shoulder" style="top: 40%; left: 13%;"></div>
+          <div class="circle" data-area="chest" style="top: 45%; left: 19%;"></div>
+          <div class="circle" data-area="stomach" style="top: 59%; left: 19%;"></div>
+          <div class="circle" data-area="elbows" style="top: 49%; left: 28%;"></div>
+          <div class="circle" data-area="hands" style="top: 52%; left: 35%;"></div>
+          <div class="circle" data-area="knee" style="top: 80%; left: 23%;"></div>
+          <div class="circle" data-area="foot" style="top: 93%; left: 23%;"></div>
+          <div class="circle" data-area="back_head" style="top: 0%; left: 82%;"></div>
+          <div class="circle" data-area="nape" style="top: 35%; left: 82%;"></div>
+          <div class="circle" data-area="back" style="top: 50%; left: 82%;"></div>
+        </div>
+      </div>
     </div>
   `;
 
+  const databutton = document.createElement("div");
+  databutton.classList.add("divbutton");
+  databutton.innerHTML = `
+    <div class="progress-indicator">
+      <span class="circle"></span>
+      <span class="circle active"></span>
+    </div>
+    <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable" type="button" onclick="handleHelthCheckInfo('${temperature}', '${report}', '${fechaSeleccionada}')"> Ingresar </button>   
+  `;
+  // Esperar a que el botón se agregue al DOM antes de asignarle el evento
+  setTimeout(() => {
+    const circles = document.querySelectorAll(".circle");
+  
+    circles.forEach(circle => {
+      circle.addEventListener("click", (event) => {
+        const selectedArea = event.target.getAttribute("data-area");
+  
+        // Guardar el área seleccionada en kidData
+        if (!kidData.healthinfo) kidData.healthinfo = {};
+        if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
+  
+        kidData.healthinfo.healthcheck.bodychild = selectedArea;
+  
+        console.log("Área seleccionada:", kidData.healthinfo.healthcheck.bodychild);
+        console.log("id nino", kidData._id);
+        circles.forEach(c => c.classList.remove("selected"));
+          event.target.classList.add("selected");
+      });
+    });
+  }, 0);
+  
+
+  contentContainer.appendChild(novedad);
+  contentContainer.appendChild(databutton);
+
+  showInfoLightbox("Daily Health Check", contentContainer);
+
+  const closeButton = document.getElementById("info-close-button");
+  const closeHandler = () => {
+    titleElement.style.textAlign = originalTextAlign;
+    titleElement.style.marginBottom = originalmarginBottom;
+    closeButton.removeEventListener("click", closeHandler);
+  };
+  closeButton.addEventListener("click", closeHandler);
+}
+
+
+function showLightboxViewHealthCkeck(fechaSeleccionada) {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-viewdaylihealth");
+  const contentViewdaily = document.createElement("div");
+  contentViewdaily.classList.add("viewdayli");
+  const titleElement = document.getElementById("info-lightbox-title");
+  const originalTextAlign = titleElement.style.textAlign;
+  const originalmarginBottom = titleElement.style.marginBottom;
+  titleElement.style.textAlign = "start";
+  titleElement.style.marginBottom = "35px";
+
+  const resultado = kidData.healthinfo.healthcheck.find(item => item.daily_fecha === fechaSeleccionada);
+
+  // Datos del niño
   const dataNino = document.createElement("div");
   dataNino.classList.add("datanino");
-  dataNino.innerHTML = `
-    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Temperatura </span></span>  <span class="inc-text"> ${kidData.name}°F </span> </p>
-    <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> ${kidData.name} </span> </p>
-    <button id="btnAgregar-reporte" class="btn btn-action-secondary enfasis btn-big btn-disable"> Agregar reporte </button>           
+  if (resultado) {
+    const [year, month, day] = resultado.daily_fecha.split("-").map(Number);
+    const fecha = new Date(year, month - 1, day);
+    const nombreMes = fecha.toLocaleDateString("es-ES", { month: "long" });
+    const mesCapitalizado = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
+    const fechaFormateada = `${String(day).padStart(2, "0")} de ${mesCapitalizado}, ${year}`;
+    dataNino.innerHTML = `
+      <p class="datanino-date"> ${fechaFormateada} </p>
+      <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Temperatura: </span> <span class="ex"><span class="inc"> ${resultado.temperature} </span>°F</span>  </p>
+      <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Reporte: </span> <span class="inc"> ${resultado.report} </span> </p>
+    `;
+  }
+
+  // Contenedor de imágenes y círculos
+  const novedad = document.createElement("div");
+  novedad.classList.add("nino");
+  novedad.innerHTML = `
+    <div class="nino-part">
+      <div class="nino-container">
+        <img src="img/info/Ninos_Health_Check_front.png" alt="Nino vista frontal">
+        <img src="img/info/Ninos_Health_Check_tras.png" alt="Nino vista posterior">
+        
+        <!-- Círculos sobre las imágenes -->
+        <div class="circle" data-area="head" style="top: 0%; left: 24%;"></div>
+        <div class="circle" data-area="eye" style="top: 21%; left: 19%;"></div>
+        <div class="circle" data-area="mouth" style="top: 32%; left: 24%;"></div>
+        <div class="circle" data-area="shoulder" style="top: 40%; left: 16%;"></div>
+        <div class="circle" data-area="chest" style="top: 45%; left: 24%;"></div>
+        <div class="circle" data-area="stomach" style="top: 59%; left: 24%;"></div>
+        <div class="circle" data-area="elbows" style="top: 48%; left: 35%;"></div>
+        <div class="circle" data-area="hands" style="top: 52%; left: 45%;"></div>
+        <div class="circle" data-area="knee" style="top: 80%; left: 29%;"></div>
+        <div class="circle" data-area="foot" style="top: 93%; left: 29%;"></div>
+        <div class="circle" data-area="back_head" style="top: 0%; left: 76%;"></div>
+        <div class="circle" data-area="nape" style="top: 35%; left: 76%;"></div>
+        <div class="circle" data-area="back" style="top: 50%; left: 76%;"></div>
+      </div>
+    </div>
   `;
 
-  contentContainer.appendChild(infoNino);
-  contentContainer.appendChild(novedad);
-  contentContainer.appendChild(dataNino);
+  // Botones de descarga
+  const downloadReport = document.createElement("div");
+  downloadReport.classList.add("downloadreport");
+  downloadReport.innerHTML = `
+    <p> <i class="acuarela acuarela-Excel"></i> </p>
+    <p> <i class="acuarela acuarela-Pdf"></i> </p>
+  `;
 
-  // Asegurarse de que esta función existe
-  if (typeof showInfoLightbox === "function") {
-    showInfoLightbox("Health Check", contentContainer);
-  } else {
-    console.error("Error: La función showInfoLightbox no está definida.");
-  }
+  contentViewdaily.appendChild(dataNino);
+  contentViewdaily.appendChild(novedad);
+  contentContainer.appendChild(contentViewdaily);
+  contentContainer.appendChild(downloadReport);
+
+  // Mostrar el lightbox con la información
+  showInfoLightbox("Health Check", contentContainer);
+
+  //Modificar estilos del div (circle) recibido
+  const areasAfectadas = resultado.bodychild.split(/[, ]+/).map(area => area.trim().toLowerCase());
+  novedad.querySelectorAll(".circle").forEach(circle => {
+    const area = circle.getAttribute("data-area").toLowerCase(); // Obtener el área asociada al círculo, asegurar que sea minúscula
+    if (areasAfectadas.includes(area)) {
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.8)"; 
+      circle.style.boxShadow = "0 0 15px rgba(235, 93, 94, 0.5)"; 
+      circle.classList.add("animate");
+    } else {
+      // Asegurarnos de quitar la animación en caso de que el círculo no coincida
+      circle.classList.remove("animate");
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.3)"; 
+      circle.style.boxShadow = "none"; 
+    }
+  });
+
+  const closeButton = document.getElementById("info-close-button");
+  const closeHandler = () => {
+    titleElement.style.textAlign = originalTextAlign;
+    titleElement.style.marginBottom = originalmarginBottom;
+    closeButton.removeEventListener("click", closeHandler);
+  };
+  closeButton.addEventListener("click", closeHandler);
 }
+
 
 // // Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
 // function showLightboxParient() {

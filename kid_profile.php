@@ -457,7 +457,12 @@
                         // Días del mes actual
                         const dayCell = createDayCell(date);
                         if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
-                            dayCell.style.backgroundColor = '#f0f0f0'; // Resalta el día actual
+                            dayCell.style.backgroundColor = '#0cb5c3'; // Resalta el día actual
+                            dayCell.style.color = 'white'; 
+                            const dayTextParagraphs = dayCell.querySelectorAll('.day-text p');
+                            dayTextParagraphs.forEach(p => {
+                                p.style.color = 'white';
+                            });
                         }
                         cell.appendChild(dayCell);
                         date++;
@@ -483,8 +488,12 @@
             if (extraClass) {
                 wrapper.classList.add(extraClass);
             }
+            // Formatear la fecha correctamente (YYYY-MM-DD)
+            const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${dayNumber.toString().padStart(2, '0')}`;
+            wrapper.setAttribute('data-fecha', formattedDate);
+
             const dayDiv = document.createElement('div');
-            dayDiv.textContent = dayNumber < 10 ? `0${dayNumber}` : dayNumber;  // Formato con 2 dígitos
+            dayDiv.textContent = dayNumber.toString().padStart(2, '0');  // Formato con 2 dígitos
             dayDiv.classList.add('day-number');
             wrapper.appendChild(dayDiv);
 
@@ -503,7 +512,7 @@
                 pVamos.textContent = 'OK';
 
                 textDiv.appendChild(pHola);
-                textDiv.appendChild(pGuion);
+                // textDiv.appendChild(pGuion);
                 textDiv.appendChild(pVamos);
 
                 wrapper.appendChild(textDiv);
@@ -532,13 +541,13 @@
         // Generar el calendario inicial
         generateCalendar(currentYear, currentMonth);
 
-
         const tds = document.querySelectorAll("#calendar td");
         const btnAddreport = document.getElementById("btnAgregar-reporte");
         const btnViewreport = document.getElementById("btnView-reporte");
 
-        // Deshabilitar el botón al inicio
-        btnAddreport.disabled = true;
+        // Deshabilitar los botones al inicio
+        btnAddreport.disabled = false;
+        btnAddreport.classList.add("active"); 
         btnViewreport.disabled = true;
 
         tds.forEach(td => {
@@ -549,26 +558,58 @@
                 // Agregar la clase 'active' al td clickeado
                 this.classList.add("active");
 
-                // Habilitar el botón
+                // Obtener la fecha del `day-wrapper` dentro del `td`
+                const dayWrapper = this.querySelector(".day-wrapper");
+                let fechaSeleccionada = null;
+                if (dayWrapper) {
+                    fechaSeleccionada = dayWrapper.getAttribute("data-fecha");
+                }
+                
+                // Buscar la fecha en `kidData.healthinfo.healthcheck`
+                const existeFecha = kidData.healthinfo.healthcheck.some(entry => entry.daily_fecha === fechaSeleccionada);
+
+                // Habilitar o deshabilitar los botones según si la fecha existe
                 btnAddreport.disabled = false;
                 btnAddreport.classList.add("active"); 
-                btnViewreport.disabled = false;
-                btnViewreport.classList.add("active"); 
+                                
+                if (existeFecha) {
+                    btnViewreport.disabled = false;
+                    btnViewreport.classList.add("active"); 
+                    btnViewreport.setAttribute("data-fecha", fechaSeleccionada); // Guardar la fecha en el botón
+                    btnAddreport.disabled = true;
+                    btnAddreport.classList.remove("active"); 
+                } else {
+                    btnViewreport.disabled = true;
+                    btnViewreport.classList.remove("active"); 
+                    btnViewreport.removeAttribute("data-fecha");
+                    btnAddreport.disabled = false;
+                    btnAddreport.classList.add("active"); 
+                    btnAddreport.setAttribute("data-fecha", fechaSeleccionada); // Guardar la fecha en el botón
+                }
             });
         });
 
-        // Agregar evento para mostrar el Lightbox
+        // Evento para mostrar el Lightbox de agregar reporte
         btnAddreport.addEventListener("click", function () {
             if (!btnAddreport.disabled) {
-                showLightboxAddHealthCkeck();
+                const fechaSeleccionada2 = btnAddreport.getAttribute("data-fecha");
+                if (fechaSeleccionada2) {
+                    showLightboxAddHealthCkeck(fechaSeleccionada2);
+                }
+                showLightboxAddHealthCkeck(fechaSeleccionada2);
             }
         });
-        // Agregar evento para mostrar el Lightbox
+
+        // Evento para mostrar el Lightbox de ver reporte
         btnViewreport.addEventListener("click", function () {
             if (!btnViewreport.disabled) {
-                showLightboxViewHealthCkeck();
+                const fechaSeleccionada = btnViewreport.getAttribute("data-fecha");
+                if (fechaSeleccionada) {
+                    showLightboxViewHealthCkeck(fechaSeleccionada);
+                }
             }
         });
+
     });
 
 </script>

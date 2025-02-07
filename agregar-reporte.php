@@ -158,51 +158,38 @@
 <?php include "includes/footer.php" ?>
 
 <script>
-    const typeIncident = document.getElementById('type_incident');
-    const selectElement = document.getElementById('statehealth_select');
-    const severityLabel = document.getElementById('severity_label');
+    document.addEventListener("DOMContentLoaded", () => {
+        // Verificar si se debe mostrar el botón
+        if (localStorage.getItem("showEmergencyButton") === "true") {
+            const sendSaludDiv = document.querySelector(".send-salud");
 
-    // Diccionario para describir el tipo de incidente
-    const typeDescriptions = {
-        "S": "Scratch",
-        "C": "Cut",
-        "B": "Bruise",
-        "L": "Laceration",
-        "B/I": "Bite Injury",
-        "N": "Nosebleed",
-        "A": "Allergic Reaction"
-    };
+            if (sendSaludDiv) {
+                const emergencyButton = document.createElement("button");
+                emergencyButton.className = "emergency_contact";
+                emergencyButton.id = "lightbox-emergencycontact";
+                emergencyButton.textContent = "Contacto de Emergencia";
+                emergencyButton.type = "button"; 
+                emergencyButton.href = "javascript:;";
 
-    // Diccionario para describir el nivel de gravedad
-    const severityDescriptions = {
-        "L": "Leve",
-        "R": "Moderado",
-        "B": "Severo",
-        "UE": "Extremidad superior",
-        "LE": "Extremidad inferior",
-        "H": "Cabeza",
-        "T": "Tronco"
-    };
+                sendSaludDiv.appendChild(emergencyButton);
 
-    // Actualizar la descripción combinada
-    const updateSeverityLabel = () => {
-        const typeValue = typeIncident.value; // Valor seleccionado del tipo de incidente
-        const severityValue = selectElement.value; // Valor seleccionado del nivel de gravedad
+                setTimeout(() => {
+                    const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
+                    if (emergencycontact_lightbox) {
+                    emergencycontact_lightbox.addEventListener("click", function (event) {
+                        if (window.innerWidth > 425) {
+                        showLightboxParient();
+                        } else {
+                        showLightboxEmergency();
+                        }
+                    });
+                    }
+                }, 100);
+            }
 
-        if (typeValue && severityValue) {
-            // Obtener las descripciones traducidas
-            const typeDescription = typeDescriptions[typeValue];
-            const severityDescription = severityDescriptions[severityValue];
-
-            // Actualizar el texto del indicador dinámico
-            severityLabel.textContent = `${typeDescription} ${severityDescription}`;
-        } else {
-            // Mostrar un mensaje predeterminado si falta alguna selección
-            severityLabel.textContent = "Seleccione un tipo de incidente y un nivel de gravedad";
+            // Limpiar localStorage para que no aparezca en futuras recargas
+            localStorage.removeItem("showEmergencyButton");
         }
-    };
+    });
 
-    // Eventos para actualizar el indicador dinámico
-    typeIncident.addEventListener('change', updateSeverityLabel);
-    selectElement.addEventListener('change', updateSeverityLabel);
 </script>
