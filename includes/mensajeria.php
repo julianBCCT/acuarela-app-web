@@ -14,6 +14,9 @@
             <li class="chat-icon">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
             </li>
+            <li id="agregar-grupo-mensajeria">
+                <i class="acuarela acuarela-Ambos"></i>
+            </li>
             <!--
             <li class="chat-icon">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
@@ -106,7 +109,7 @@
             <!-- <i class="acuarela acuarela-Adjuntar"></i> -->
         </div>
     </div>
-    
+
 
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
