@@ -4621,6 +4621,21 @@ async function getTasks() {
       .join("");
   };
 
+  fetchAllUrls(["g/getAsistentes/"])
+    .then(([asistentes]) => {
+      asistentes.forEach((asistente) => {
+        let { name, id } = asistente;
+        document.querySelector("#acuarelauser").innerHTML += `<option ${
+          acuarelauser == id ? `selected` : ``
+        } value="${id}">${name}</option>`;
+      });
+      fadeOut(preloader);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error("Error in fetchAllUrls:", error);
+    });
+
   renderTasks(tasksDueToday, "hoy");
   renderTasks(overdueTasks, "atrasadas");
   renderTasks(allTasks, "todas");
@@ -4632,18 +4647,38 @@ function showDialogForm() {
   Fancybox.show([{ src: "#createTask", type: "inline" }]);
 }
 
-const addTask = async () => {
-  let formValues = {
-    acuarelauser: document.querySelector("#acuarelauser").value,
-    date: document.querySelector("#date").value,
-    name: document.querySelector("#name").value,
-    commentarios: document.querySelector("#commentarios").value,
-    completed: false,
-  };
-  const reactionResponse = await fetch("s/createTask/", {
-    method: "POST",
-    body: JSON.stringify(formValues),
-    headers: { "Content-Type": "application/json" },
+const taskForm = document.querySelector("#taskForm");
+if (taskForm) {
+  taskForm.addEventListener("submit", async (event) => {
+    event.preventDefault(); // Evita que se recargue la página
+
+    let formValues = {
+      acuarelauser: document.querySelector("#acuarelauser").value,
+      date: document.querySelector("#date").value,
+      name: document.querySelector("#name").value,
+      commentarios: document.querySelector("#commentarios").value,
+      daycare: document.querySelector("#daycare").value,
+      completed: false,
+    };
+
+    try {
+      const response = await fetch("s/createTask/", {
+        method: "POST",
+        body: JSON.stringify(formValues),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        taskForm.reset(); // Limpia el formulario después de enviar
+        Fancybox.close();
+        location.reload();
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error al enviar la tarea:", error);
+    }
   });
-  const reactionData = await reactionResponse.json();
-};
+}

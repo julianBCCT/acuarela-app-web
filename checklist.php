@@ -34,36 +34,39 @@
     </div>
     </div>
 </main>
-<div id="createTask"  style="display:none;max-width:500px;">
+<div id="createTask" style="    max-width: 500px;
+    width: 100%;
+    padding: 20px;
+    height: 100%;">
   <div class="lightbox-content">
     <h2 id="info-lightbox-title">Nueva Tarea</h2>
-    <form action="">
-        <span>
-            <label for="">Nombre de la tarea</label>
-            <input type="text" name="name" id="name">
+    <form id="taskForm">
+      <span>
+        <label for="name">Nombre de la tarea</label>
+        <input type="text" name="name" id="name" required />
+      </span>
+      <span>
+        <span class="calendar">
+          <label for="date">Fecha de la tarea</label>
+          <input type="date" name="date" id="date" required />
+          <span class="error-message"></span>
         </span>
-        <span>
-                    <i class="acuarela acuarela-Evento"></i>
-                    <span class="calendar">
-                        <label for="name">Fecha de la tarea</label>
-                        <input type="date" name="date" id="date" />
-                         <span class="error-message"></span>
-                    </span>
-                     <span class="error-message"></span>
-                </span>
-        <span>
-            <label for="">Asignado a</label>
-            <select name="acuarelauser" id="acuarelauser">
-                <option value="">Seleccionar asistente</option>
-            </select>
-        </span>
-        <span>
-            <label for="">Comentarios</label>
-            <textarea name="commentarios" id="commentarios"></textarea>
-        </span>
-        
-
+      </span>
+      <span>
+        <label for="acuarelauser">Asignado a</label>
+        <select name="acuarelauser" id="acuarelauser" required>
+          <option value="">Seleccionar asistente</option>
+          <option value="67a51a64fe53cc27d3c5f54e">Asistente</option>
+        </select>
+      </span>
+      <span>
+        <label for="commentarios">Comentarios</label>
+        <textarea name="commentarios" id="commentarios"></textarea>
+      </span>
+      <input type="hidden" id="daycare" name="daycare" value="<?= $a->daycareID ?>">
+      <button type="submit" class="btn btn-action-primary enfasis btn-big">Crear Tarea</button>
     </form>
   </div>
 </div>
+
 <?php include "includes/footer.php" ?>
