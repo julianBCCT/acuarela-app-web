@@ -120,29 +120,164 @@ const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
 const baseUrl = "https://acuarelacore.com/api";
 
 
-const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
+//==>Enviar datos al collection HEALTHINFO en strapi
+const handleHealthInfo = async () => {
   fadeIn(preloader);
+  const form = document.getElementById("healthInfoForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
 
-  // Objtener fecha actual en hora New York
+  const formValues = {};
+  inputs.forEach((input) => {
+    if (input.type === "checkbox") {
+      formValues[input.name] = input.checked ? input.value : "0";
+    } else {
+      formValues[input.name] = input.value;
+    }
+  });
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    asthma: formValues.asma,
+    allergies: [...document.querySelectorAll("input[name='alergias']")].map(
+      (input) => input.value
+    ),
+    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(
+      (input) => input.value
+    ),
+    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(
+      (input) => input.value
+    ),
+    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(
+      (input) => input.value
+    ),
+    physical_health: formValues.salud_fisica,
+    emocional_health: formValues.salud_emocional,
+    suspected_abuse: formValues.sospecha_abuso,
+    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(
+      (input) => input.value
+    ),
+    pediatrician: formValues.pedriatra,
+    pediatrician_number: formValues.pedriatra_numero,
+    pediatrician_email: formValues.pedriatra_email,
+  };
+  console.log(dataToSend);
+
+  try {
+    if (!kidData.healthinfo || kidData.healthinfo.child !== kidData._id) {
+      const response = await fetch("s/createHealthInfo/", {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+      }
+    } else {
+      const response = await fetch("s/updateHealthInfo/", {
+        method: "PUT",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+      } else {
+        console.error("Error al actualizar HealthInfo: ", body);
+      }
+    }
+  } catch (error) {
+    console.error("Error handling healthinfo:", error);
+    return false;
+  }
+};
+
+const handleReportInfo = async () => {
+  fadeIn(preloader);
+  const form = document.getElementById("healthInfoForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+
+  const formValues = {};
+  inputs.forEach((input) => {
+    formValues[input.name] = input.value;
+  });
+
+  // Objtener fechas de hoy en hora New York 
   const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  // Formatear la fecha (31/01/2025)
   const dateObj = new Date(currentDate);
   const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
 
-  const fechaFinal = (fecha === "null" || !fecha) ? reportedenf : fecha;
-
-  let newHealthCheck = {
-    temperature: temperatura,
-    report: reporte,
-    bodychild: kidData.healthinfo.healthcheck.bodychild,
-    daily_fecha: fechaFinal
+  let newIncident = {
+    reported_for: formValues.reportado_por,
+    incident_type: formValues["tipo-incidente"],
+    description: formValues.descripcion,
+    temperature: formValues.temperatura,
+    gravedad: formValues["levelgrave"],
+    actions_taken: formValues.acciones_tomadas,
+    actions_expected: formValues.acciones_esperadas,
+    reported_enf: reportedenf 
+    // reported_enh: "15:00"  
   };
 
   let dataToSend = {
     inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
     child: kidData._id,
-    healthcheck: kidData.healthinfo.healthcheck 
-      ? [...kidData.healthinfo.healthcheck, newHealthCheck] 
-      : [newHealthCheck]
+    incidents: kidData.healthinfo?.incidents
+      ? [...kidData.healthinfo.incidents, newIncident] // Agrega el nuevo incidente
+      : [newIncident], // Si no existen incidentes, crea el array con el primero
+  };
+  console.log("Enviando datos:", dataToSend);
+
+  try {
+    const response = await fetch("s/updateHealthInfo/", {
+      method: "PUT",
+      body: JSON.stringify(dataToSend),
+      headers: { "Content-Type": "application/json" },
+    });
+    const result = await response.json();
+    console.log("Respuesta del servidor:", result); // Verifica qué devuelve exactamente
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${result.message}`);
+    }
+    localStorage.setItem("showEmergencyButton", "true");
+    window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
+  } catch (error) {
+    console.error("Error al agregar incidente:", error);
+  }
+};
+
+const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
+  fadeIn(preloader);
+
+  // Objtener fecha actual en hora New York
+  const currentDate = new Date().toLocaleString("en-US", {
+    timeZone: "America/New_York",
+  });
+  const dateObj = new Date(currentDate);
+  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${dateObj.getDate().toString().padStart(2, "0")}`;
+
+  const fechaFinal = fecha === "null" || !fecha ? reportedenf : fecha;
+
+  let newHealthCheck = {
+    temperature: temperatura,
+    report: reporte,
+    bodychild: kidData.healthinfo.healthcheck.bodychild,
+    daily_fecha: fechaFinal,
+  };
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    healthcheck: kidData.healthinfo.healthcheck
+      ? [...kidData.healthinfo.healthcheck, newHealthCheck]
+      : [newHealthCheck],
   };
 
   console.log("Enviando datos:", dataToSend);
@@ -157,17 +292,13 @@ const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
 
     if (body.id) {
       window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-    }
-    else {
+    } else {
       console.error("Error al actualizar HealthInfo: ", body);
     }
   } catch (error) {
     console.error("Error al agregar incidente:", error);
   }
 };
-
-
-
 
 const handleInscripcion = async () => {
   fadeIn(preloader);
@@ -1469,10 +1600,11 @@ function validarSuscripcion() {
 
 
 
-
 //==> EMERGENCIA
 //==> AL HACER CLICK EN EL BOTON CONTACTO DE EMERGENCIAS
-const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
+const emergencycontact_lightbox = document.getElementById(
+  "lightbox-emergencycontact"
+);
 if (emergencycontact_lightbox) {
   emergencycontact_lightbox.addEventListener("click", function (event) {
     if (window.innerWidth > 425) {
@@ -1510,10 +1642,7 @@ function showLightboxEmergency() {
   contentContainer.appendChild(linkEmergencia);
   contentContainer.appendChild(linkPariente);
 
-  showInfoLightbox(
-    "Contacto de emergencia",
-    contentContainer
-  );
+  showInfoLightbox("Contacto de emergencia", contentContainer);
 }
 
 
@@ -1855,7 +1984,6 @@ function showLightboxParient() {
   );
 }
 
-
 //===> SALUD apartado de cada niño
 //==> Enviar datos al collection HEALTHINFO en strapi para la info de SALUD
 document.addEventListener("DOMContentLoaded", function () {
@@ -2177,22 +2305,40 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   const originalmarginBottom = titleElement.style.marginBottom;
   titleElement.style.textAlign = "start";
   titleElement.style.marginBottom = "35px";
-  
+
   // Acceder correctamente a las propiedades de kidData
-  const photoUrl = kidData.photo ? 'https://acuarelacore.com/api/' + kidData.photo.formats.small.url : null;
+  const photoUrl = kidData.photo
+    ? "https://acuarelacore.com/api/" + kidData.photo.formats.small.url
+    : null;
   const gender = kidData.gender;
 
   const infoNino = document.createElement("div");
   infoNino.classList.add("infonino");
   infoNino.innerHTML = `
     <div class="photo">
-      ${photoUrl ? `
+      ${
+        photoUrl
+          ? `
         <img loading="lazy" class="lazyload" src="img/placeholder.png" data-src="${photoUrl}" alt="${kidData.name}">
-      ` : `
-        ${gender === "Masculino" ? '<img class="img-infonino" src="img/mal.png" alt="">' : ''}
-        ${gender === "Femenino" ? '<img class="img-infonino" src="img/fem.png" alt="">' : ''}
-        ${gender === "X" ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">' : ''}
-      `}
+      `
+          : `
+        ${
+          gender === "Masculino"
+            ? '<img class="img-infonino" src="img/mal.png" alt="">'
+            : ""
+        }
+        ${
+          gender === "Femenino"
+            ? '<img class="img-infonino" src="img/fem.png" alt="">'
+            : ""
+        }
+        ${
+          gender === "X"
+            ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">'
+            : ""
+        }
+      `
+      }
     </div>
     <div>
       <p class="infonino-name">${kidData.name}</p>
@@ -2225,7 +2371,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
     "D-Diaper": "Cambio de pañal",
     "BM-Bowel": "Evacuación intestinal",
     "H-Hit": "Golpe",
-    "C-Crying": "Lloró más de lo normal"
+    "C-Crying": "Lloró más de lo normal",
   };
 
   const dataNino = document.createElement("div");
@@ -2236,7 +2382,9 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
           <i class="saludicon acuarela acuarela-Salud"></i>
           <label class="labelpediatra" for="temperatura">Temperatura: </label>
           <input type="text" placeholder="Agrega la temperatura" name="temperatura" id="temperatura" 
-                value="${kidData.healthinfo?.healthcheck?.temperature || ''}" required>
+                value="${
+                  kidData.healthinfo?.healthcheck?.temperature || ""
+                }" required>
           <span class="tempspan">°F</span>
           <span class="error-message"></span>
       </span>
@@ -2245,15 +2393,27 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
           <label class="labelpediatra" for="report">Estado de Salud: </label>
           <select name="report" id="report" required>
             <option value="" disabled selected>Seleccione </option>
-              ${Object.keys(reportTranslations).map(key => `
-                <option value="${key}" ${kidData.healthinfo?.healthcheck?.report === key ? "selected" : ""}>${key}</option>
-              `).join('')}
+              ${Object.keys(reportTranslations)
+                .map(
+                  (key) => `
+                <option value="${key}" ${
+                    kidData.healthinfo?.healthcheck?.report === key
+                      ? "selected"
+                      : ""
+                  }>${key}</option>
+              `
+                )
+                .join("")}
           </select>
           <p class="selected-report-container">
             <span class="circle-indicator"></span>
-            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || 'Sin seleccionar'}</span>
+            <span id="selected-report">${
+              kidData.healthinfo?.healthcheck?.report || "Sin seleccionar"
+            }</span>
           </p>
-          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ''}</p>
+          <p id="selected-report-es">${
+            reportTranslations[kidData.healthinfo?.healthcheck?.report] || ""
+          }</p>
           <span class="error-message"></span>
       </span>
     </div>      
@@ -2263,9 +2423,9 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   const selectedReport = dataNino.querySelector("#selected-report");
   const selectedReportEs = dataNino.querySelector("#selected-report-es");
 
-  selectReport.addEventListener("change", function() {
-      selectedReport.textContent = this.value;
-      selectedReportEs.textContent = reportTranslations[this.value] || "";
+  selectReport.addEventListener("change", function () {
+    selectedReport.textContent = this.value;
+    selectedReportEs.textContent = reportTranslations[this.value] || "";
   });
 
   const databutton = document.createElement("div");
@@ -2280,9 +2440,11 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   // Esperar a que el botón se agregue al DOM antes de asignarle el evento
   setTimeout(() => {
     const button = databutton.querySelector("#btnAgregar-reporte");
-    
+
     button.addEventListener("click", () => {
-      const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
+      const selectedNovedad = document.querySelector(
+        'input[name="novedad"]:checked'
+      )?.value;
       let temperature;
       let report;
       const inputTemp = document.querySelector("#temperatura");
@@ -2292,8 +2454,8 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
         temperature = 98;
         report = "Ninguno";
       } else {
-        temperature = inputTemp.value; 
-        report = inputEstadoSalud.value; 
+        temperature = inputTemp.value;
+        report = inputEstadoSalud.value;
       }
 
       showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada);
@@ -2340,7 +2502,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   closeButton.addEventListener("click", closeHandler);
 }
 
-//==> Lightbox para AÑADIR el HealthCheck del niño parte 2
+
 function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) {
   console.log("Temperatura:", temperature);
   console.log("Reporte:", report);
@@ -2393,25 +2555,30 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
   // Esperar a que el botón se agregue al DOM antes de asignarle el evento
   setTimeout(() => {
     const circles = document.querySelectorAll(".circle");
-  
-    circles.forEach(circle => {
+
+    circles.forEach((circle) => {
       circle.addEventListener("click", (event) => {
         const selectedArea = event.target.getAttribute("data-area");
-  
+
         // Guardar el área seleccionada en kidData
         if (!kidData.healthinfo) kidData.healthinfo = {};
-        if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
-  
+        if (!kidData.healthinfo.healthcheck)
+          kidData.healthinfo.healthcheck = {};
+
         kidData.healthinfo.healthcheck.bodychild = selectedArea;
-  
-        console.log("Área seleccionada:", kidData.healthinfo.healthcheck.bodychild);
+
+        console.log(
+          "Área seleccionada:",
+          kidData.healthinfo.healthcheck.bodychild
+        );
         console.log("id nino", kidData._id);
-        circles.forEach(c => c.classList.remove("selected"));
-          event.target.classList.add("selected");
+        circles.forEach((c) => c.classList.remove("selected"));
+        event.target.classList.add("selected");
       });
     });
   }, 0);
   
+
   contentContainer.appendChild(novedad);
   contentContainer.appendChild(databutton);
 
@@ -2426,7 +2593,6 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
   closeButton.addEventListener("click", closeHandler);
 }
 
-
 function showLightboxAddHealthCkeck(fechaSeleccionada) {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-daylihealth");
@@ -2435,29 +2601,26 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   const originalmarginBottom = titleElement.style.marginBottom;
   titleElement.style.textAlign = "start";
   titleElement.style.marginBottom = "35px";
-  
-  // Acceder correctamente a las propiedades de kidData
-  const photoUrl = kidData.photo ? 'https://acuarelacore.com/api/' + kidData.photo.formats.small.url : null;
-  const gender = kidData.gender;
 
-  const infoNino = document.createElement("div");
-  infoNino.classList.add("infonino");
-  infoNino.innerHTML = `
-    <div class="photo">
-      ${photoUrl ? `
-        <img loading="lazy" class="lazyload" src="img/placeholder.png" data-src="${photoUrl}" alt="${kidData.name}">
-      ` : `
-        ${gender === "Masculino" ? '<img class="img-infonino" src="img/mal.png" alt="">' : ''}
-        ${gender === "Femenino" ? '<img class="img-infonino" src="img/fem.png" alt="">' : ''}
-        ${gender === "X" ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">' : ''}
-      `}
-    </div>
-    <div>
-      <p class="infonino-name">${kidData.name}</p>
-      <p class="infonino-hora">Agosto 27/2021</p>
-    </div>
-  `;
+  const resultado = kidData.healthinfo.healthcheck.find(item => item.daily_fecha === fechaSeleccionada);
 
+  // Datos del niño
+  const dataNino = document.createElement("div");
+  dataNino.classList.add("datanino");
+  if (resultado) {
+    const [year, month, day] = resultado.daily_fecha.split("-").map(Number);
+    const fecha = new Date(year, month - 1, day);
+    const nombreMes = fecha.toLocaleDateString("es-ES", { month: "long" });
+    const mesCapitalizado = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
+    const fechaFormateada = `${String(day).padStart(2, "0")} de ${mesCapitalizado}, ${year}`;
+    dataNino.innerHTML = `
+      <p class="datanino-date"> ${fechaFormateada} </p>
+      <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Temperatura: </span> <span class="ex"><span class="inc"> ${resultado.temperature} </span>°F</span>  </p>
+      <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Reporte: </span> <span class="inc"> ${resultado.report} </span> </p>
+    `;
+  }
+
+  // Contenedor de imágenes y círculos
   const novedad = document.createElement("div");
   novedad.classList.add("novedadnino");
   novedad.innerHTML = `
@@ -2558,36 +2721,21 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
     });
   }, 0);
 
-  // Seleccionar elementos para manejar cambios en los radios
-  const dataDiv = dataNino.querySelector(".data");
-  const inputTemp = dataNino.querySelector("#temperatura");
-  const inputEstadoSalud = dataNino.querySelector("#report");
-  const radioButtons = novedad.querySelectorAll('input[name="novedad"]');
-
-  radioButtons.forEach((radio) => {
-    radio.addEventListener("change", (event) => {
-      if (event.target.value === "no") {
-        dataDiv.style.opacity = "0.5";
-        inputTemp.value = 98;
-        inputEstadoSalud.value = "Ninguno";
-        inputTemp.setAttribute("readonly", true);
-        inputEstadoSalud.setAttribute("readonly", true);
-      } else {
-        dataDiv.style.opacity = "1";
-        inputTemp.value = "";
-        inputEstadoSalud.value = "";
-        inputTemp.removeAttribute("readonly");
-        inputEstadoSalud.removeAttribute("readonly");
-      }
-    });
+  //Modificar estilos del div (circle) recibido
+  const areasAfectadas = resultado.bodychild.split(/[, ]+/).map(area => area.trim().toLowerCase());
+  novedad.querySelectorAll(".circle").forEach(circle => {
+    const area = circle.getAttribute("data-area").toLowerCase(); // Obtener el área asociada al círculo, asegurar que sea minúscula
+    if (areasAfectadas.includes(area)) {
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.8)"; 
+      circle.style.boxShadow = "0 0 15px rgba(235, 93, 94, 0.5)"; 
+      circle.classList.add("animate");
+    } else {
+      // Asegurarnos de quitar la animación en caso de que el círculo no coincida
+      circle.classList.remove("animate");
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.3)"; 
+      circle.style.boxShadow = "none"; 
+    }
   });
-
-  contentContainer.appendChild(infoNino);
-  contentContainer.appendChild(novedad);
-  contentContainer.appendChild(dataNino);
-  contentContainer.appendChild(databutton);
-
-  showInfoLightbox("Daily Health Check", contentContainer);
 
   const closeButton = document.getElementById("info-close-button");
   const closeHandler = () => {
@@ -4862,4 +5010,125 @@ function handleAddCategories(event, type) {
         `Ocurrió un error al procesar algunas categorías: ${error.message}`
       );
     });
+}
+const organizeTasks = (tasks) => {
+  const today = new Date().toISOString().split("T")[0]; // Obtiene la fecha actual en formato YYYY-MM-DD
+
+  const tasksDueToday = [];
+  const overdueTasks = [];
+  const allTasks = [...tasks];
+
+  tasks.forEach((task) => {
+    const taskDate = task.date;
+    if (taskDate === today) {
+      tasksDueToday.push(task);
+    } else if (taskDate < today && !task.completed) {
+      overdueTasks.push(task);
+    }
+  });
+
+  return { tasksDueToday, overdueTasks, allTasks };
+};
+
+async function getTasks() {
+  const response = await fetch(`g/getTasks/`);
+  const tasks = await response.json();
+  const { tasksDueToday, overdueTasks, allTasks } = organizeTasks(tasks);
+
+  const renderTasks = (tasks, containerId) => {
+    const container = document.querySelector(`#${containerId} .taskList`);
+    container.innerHTML = tasks
+      .map(
+        (task) => `
+        <div class="taskItem">
+          <div class="checkCont">
+           <div class="cntr-check">
+                <input type="checkbox" class="hidden-xs-up" id="${task.id}" ${
+          task.completed && `checked`
+        }>
+                <label for="${task.id}" class="cbx"></label>
+            </div>
+            <span
+            style="color: ${task.completed ? "var(--gris3)" : "var(--gris1)"};
+              text-decoration:${task.completed ? "line-through" : "none"};"
+            >${task.name}</span>
+          </div>
+          <div class="infoDesc">
+          <span class="taskInfo">Asignado a ${task.acuarelauser.name}</span>
+          <span class="taskDate">${task.date}</span>
+          ${
+            task.comentarios
+              ? `
+            <div class="commentsContainer">
+              <i class="acuarela acuarela-Habla"></i>
+              <span class="commentText">${task.comentarios}</span>
+            </div>`
+              : ""
+          }
+          </div>
+        </div>`
+      )
+      .join("");
+  };
+
+  fetchAllUrls(["g/getAsistentes/"])
+    .then(([asistentes]) => {
+      asistentes.forEach((asistente) => {
+        let { name, id } = asistente;
+        document.querySelector("#acuarelauser").innerHTML += `<option ${
+          acuarelauser == id ? `selected` : ``
+        } value="${id}">${name}</option>`;
+      });
+      fadeOut(preloader);
+    })
+    .catch((error) => {
+      // Handle errors
+      console.error("Error in fetchAllUrls:", error);
+    });
+
+  renderTasks(tasksDueToday, "hoy");
+  renderTasks(overdueTasks, "atrasadas");
+  renderTasks(allTasks, "todas");
+}
+
+getTasks();
+
+function showDialogForm() {
+  Fancybox.show([{ src: "#createTask", type: "inline" }]);
+}
+
+const taskForm = document.querySelector("#taskForm");
+if (taskForm) {
+  taskForm.addEventListener("submit", async (event) => {
+    event.preventDefault(); // Evita que se recargue la página
+
+    let formValues = {
+      acuarelauser: document.querySelector("#acuarelauser").value,
+      date: document.querySelector("#date").value,
+      name: document.querySelector("#name").value,
+      commentarios: document.querySelector("#commentarios").value,
+      daycare: document.querySelector("#daycare").value,
+      completed: false,
+    };
+
+    try {
+      const response = await fetch("s/createTask/", {
+        method: "POST",
+        body: JSON.stringify(formValues),
+        headers: { "Content-Type": "application/json" },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        taskForm.reset(); // Limpia el formulario después de enviar
+        Fancybox.close();
+        location.reload();
+      } else {
+        alert(`Error: ${data.message}`);
+      }
+    } catch (error) {
+      console.error("Error al enviar la tarea:", error);
+    }
+  });
 }
