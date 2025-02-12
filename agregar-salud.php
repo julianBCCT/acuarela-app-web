@@ -124,22 +124,3 @@ $kid = $a->getChildren($_GET['id']);
     </form>
 </main>
 <?php include "includes/footer.php" ?>
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        document.querySelectorAll(".agregar-inputs").forEach(addButton => {
-            addButton.addEventListener("click", () => {
-                const container = addButton.closest(".input-group");
-                const originalInput = container.querySelector("input");
-                const newInput = document.createElement("input");
-                newInput.type = "text";
-                newInput.name = originalInput.name; 
-                newInput.placeholder = `Agregar otra ${originalInput.placeholder.toLowerCase()}`;
-                newInput.classList.add("extra-input");
-
-                // Insertar el nuevo input antes del botón "agregar"
-                container.insertBefore(newInput, addButton);
-            });
-        });
-    });
-</script>

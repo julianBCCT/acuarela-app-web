@@ -361,41 +361,8 @@
 <?php include "includes/footer.php" ?>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        //==> Desplegar los Incidentes
-        const incidents = document.querySelectorAll('.incidentnino');
-        incidents.forEach(incident => {
-            const toggleContainer = incident.querySelector('.incidentnino-desp');
-            const incidentInfo = incident.querySelector('.incidentinfo');
-            const iconContainer = incident.querySelector('.iconincid');
-
-            toggleContainer.addEventListener('click', function () {
-                incidentInfo.classList.toggle('incidentdesp');
-                iconContainer.classList.toggle('rotate');
-            });
-        });
-
-
-        //==> Desplegar en vista para CELL el apartado UNGUENTOS
-        document.querySelectorAll(".ung-btn").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                const content = this.parentElement.nextElementSibling; 
-                const icon = this.querySelector("i"); 
-                content.classList.toggle("show"); 
-
-                // Alterna las clases del ícono
-                if (icon.classList.contains("acuarela-Flecha_arriba")) {
-                    icon.classList.remove("acuarela-Flecha_arriba");
-                    icon.classList.add("acuarela-Flecha_abajo");
-                } else {
-                    icon.classList.remove("acuarela-Flecha_abajo");
-                    icon.classList.add("acuarela-Flecha_arriba");
-                }
-            });
-        });
-
-
-        //==> Calendario del HEALTH CHECK
+    //==> Calendario del HEALTH CHECK
+    document.addEventListener("DOMContentLoaded", function () {
         const calendar = document.querySelector('#calendar tbody');
         const monthSelect = document.querySelector('#month-select');
         const yearSelect = document.querySelector('#year-select');
@@ -610,6 +577,6 @@
             }
         });
 
-    });
+    });    
 
 </script>
