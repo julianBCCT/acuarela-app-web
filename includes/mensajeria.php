@@ -57,9 +57,9 @@
     <div id="chat-grupal" class="chats-buscados" style="display: none;">
         <div class="buscador-mensajeria">
             <i id="btn-crear-grupo" class="acuarela acuarela-Agregar"></i>
-            <i id="btn-buscador-chat" class="acuarela acuarela-Buscar"></i>
-            <input id="buscador-chat" type="text">
-            <i id="closeBuscador" class="acuarela acuarela-Cancelar"></i>
+            <i id="btn-buscador-chat-grupal" class="acuarela acuarela-Buscar"></i>
+            <input id="buscador-chat-grupal" type="text">
+            <i id="closeBuscador-grupal" class="acuarela acuarela-Cancelar"></i>
         </div>
         <div id="div-lista-chats-grupales" class="chats-padres">
 
