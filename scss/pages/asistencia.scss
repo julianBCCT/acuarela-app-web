@@ -1237,10 +1237,16 @@
     }
 
     .datanino {
-      display: flex;
+      display: none; // Por defecto oculto, hasta que se seleccione "Sí"
+    }
+    
+    .datanino.active,
+    .dataninobod {
+      display: flex; // Se activa cuando se elige "Sí"
       flex-direction: column;
       align-items: start;
       width: 40%;
+      opacity: 1;
 
       p {
         display: flex;

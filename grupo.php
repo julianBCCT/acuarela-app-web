@@ -1,6 +1,24 @@
 <?php $classBody ="grupo"; include "includes/header.php"; $grupo = $a->getGrupos($_GET['id']); ?>
+<!-- <?php 
+  // $kids = [];
+
+  //Recorrer todos los niños en el grupo
+  // echo '<pre>';
+  //   var_dump($grupo);
+  // echo '</pre>';
+    // foreach ($grupo['children'] as $child) {
+    //     // Verificamos que el niño tenga un 'id' válido
+    //     if (isset($child['id']) && !empty($child['id'])) {
+    //         // Obtener información detallada del niño usando su ID
+    //         $kidInfo = $a->getChildren($child['id']);
+    //         // Agregar la información al arreglo $kids
+    //         $kids[] = $kidInfo;
+    //     }
+    // }
+?> -->
 <script>
     let groupData = <?= json_encode($grupo) ?>;
+    console.log("Grupos:", groupData );
 </script>
 <main>
   <?php
@@ -11,10 +29,10 @@
   <div class="content">
     <div class="contentHeader">
       <?php
-          echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
-          echo '<pre>';
-              var_dump($grupo);
-          echo '</pre>';
+          // echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
+          // echo '<pre>';
+          //     var_dump($grupo);
+          // echo '</pre>';
       ?>
       <h2>Reporte</h2>
       <button type="button" onclick="showActivityLightbox(false)" class="btn btn-action-primary enfasis btn-big">Agregar actividad</button>

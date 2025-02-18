@@ -361,8 +361,41 @@
 <?php include "includes/footer.php" ?>
 
 <script>
-    //==> Calendario del HEALTH CHECK
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('DOMContentLoaded', function () {
+        //==> Desplegar los Incidentes
+        const incidents = document.querySelectorAll('.incidentnino');
+        incidents.forEach(incident => {
+            const toggleContainer = incident.querySelector('.incidentnino-desp');
+            const incidentInfo = incident.querySelector('.incidentinfo');
+            const iconContainer = incident.querySelector('.iconincid');
+
+            toggleContainer.addEventListener('click', function () {
+                incidentInfo.classList.toggle('incidentdesp');
+                iconContainer.classList.toggle('rotate');
+            });
+        });
+
+
+        //==> Desplegar en vista para CELL el apartado UNGUENTOS
+        document.querySelectorAll(".ung-btn").forEach((btn) => {
+            btn.addEventListener("click", function () {
+                const content = this.parentElement.nextElementSibling; 
+                const icon = this.querySelector("i"); 
+                content.classList.toggle("show"); 
+
+                // Alterna las clases del ícono
+                if (icon.classList.contains("acuarela-Flecha_arriba")) {
+                    icon.classList.remove("acuarela-Flecha_arriba");
+                    icon.classList.add("acuarela-Flecha_abajo");
+                } else {
+                    icon.classList.remove("acuarela-Flecha_abajo");
+                    icon.classList.add("acuarela-Flecha_arriba");
+                }
+            });
+        });
+
+
+        //==> Calendario del HEALTH CHECK
         const calendar = document.querySelector('#calendar tbody');
         const monthSelect = document.querySelector('#month-select');
         const yearSelect = document.querySelector('#year-select');
@@ -469,19 +502,29 @@
                 const textDiv = document.createElement('div');
                 textDiv.classList.add('day-text');
 
-                const pHola = document.createElement('p');
-                pHola.textContent = '97°F';
+                const healthTempt = kidData.healthinfo.healthcheck.find(entry => entry.daily_fecha === formattedDate);
+                const pTemp = document.createElement('p');
+                pTemp.textContent = healthTempt ? `${healthTempt.temperature}°F` : 'Nt';
 
                 const pGuion = document.createElement('p');
                 pGuion.textContent = '-';
 
-                const pVamos = document.createElement('p');
-                pVamos.textContent = 'OK';
+                const healthReport = kidData.healthinfo.healthcheck.find(entry => entry.daily_fecha === formattedDate);
+                const pReport = document.createElement('p');
+                if (healthReport) {
+                    if (healthReport.report === "Ninguno") {
+                        pReport.textContent = "OK";
+                    } else {
+                        const reportCode = healthReport.report.split('-')[0]; // Extraer solo la parte antes del guion "-"
+                        pReport.textContent = reportCode;
+                    }
+                } else {
+                    pReport.textContent = "Nt"; // Si no hay datos, mostrar "Nt"
+                }
 
-                textDiv.appendChild(pHola);
+                textDiv.appendChild(pTemp);
                 // textDiv.appendChild(pGuion);
-                textDiv.appendChild(pVamos);
-
+                textDiv.appendChild(pReport);
                 wrapper.appendChild(textDiv);
             } else {
                 // Si el día es gris, solo agregamos el contenedor vacío
@@ -517,13 +560,53 @@
         btnAddreport.classList.add("active"); 
         btnViewreport.disabled = true;
 
+        // Pintar de celeste todo los <td> con fechas que existen en kidData
+        tds.forEach(td => {
+            const dayWrapper = td.querySelector(".day-wrapper");
+            if (!dayWrapper) return;
+            const fechaTd = dayWrapper.getAttribute("data-fecha");
+            if (!fechaTd) return;
+            // Verificar si la fecha está en kidData.healthinfo.healthcheck
+            const existeFecha = kidData.healthinfo.healthcheck.some(entry => entry.daily_fecha === fechaTd);
+
+            if (existeFecha) {
+                td.classList.add("has-data"); // Agregar una clase para identificar los td con fecha
+                td.style.backgroundColor = "var(--fondo2)";
+            }
+            // Aplicar hover manualmente
+            td.addEventListener("mouseenter", function () {
+                if (!this.classList.contains("active")) {
+                    this.style.backgroundColor = "var(--cielo_tenue)";
+                }
+            });
+            td.addEventListener("mouseleave", function () {
+                if (!this.classList.contains("active")) {
+                    this.style.backgroundColor = this.classList.contains("has-data") ? "#d7f6f9" : "";
+                }
+            });
+        });
+
+
         tds.forEach(td => {
             td.addEventListener("click", function () {
                 // Remover la clase 'active' de todos los td
-                tds.forEach(cell => cell.classList.remove("active"));
+                tds.forEach(cell => {
+                    cell.classList.remove("active");
+                    if (cell.classList.contains("has-data")) {
+                        cell.style.backgroundColor = "var(--fondo2)"; // Volver a celeste si tiene datos
+                    } else {
+                        cell.style.backgroundColor = ""; // Restaurar a vacío si no tiene datos
+                    }
+                });
 
-                // Agregar la clase 'active' al td clickeado
-                this.classList.add("active");
+                this.classList.add("active");  // Agregar la clase 'active' al td clickeado
+
+                // Cambiar color solo si tiene datos
+                if (this.classList.contains("has-data")) {
+                    this.style.backgroundColor = "var(--cielo_tenue)"; // Naranja cuando se selecciona
+                } else {
+                    this.style.backgroundColor = "var(--cielo_tenue)"; // Azul claro si no tiene datos
+                }
 
                 // Obtener la fecha del `day-wrapper` dentro del `td`
                 const dayWrapper = this.querySelector(".day-wrapper");
@@ -577,6 +660,6 @@
             }
         });
 
-    });    
+    });
 
 </script>

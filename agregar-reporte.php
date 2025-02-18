@@ -156,3 +156,41 @@
     </form>
 </main>
 <?php include "includes/footer.php" ?>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        // Verificar si se debe mostrar el botón
+        if (localStorage.getItem("showEmergencyButton") === "true") {
+            const sendSaludDiv = document.querySelector(".send-salud");
+
+            if (sendSaludDiv) {
+                const emergencyButton = document.createElement("button");
+                emergencyButton.className = "emergency_contact";
+                emergencyButton.id = "lightbox-emergencycontact";
+                emergencyButton.textContent = "Contacto de Emergencia";
+                emergencyButton.type = "button"; 
+                emergencyButton.href = "javascript:;";
+                emergencyButton.style.marginLeft = "50px";
+
+                sendSaludDiv.appendChild(emergencyButton);
+
+                setTimeout(() => {
+                    const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
+                    if (emergencycontact_lightbox) {
+                    emergencycontact_lightbox.addEventListener("click", function (event) {
+                        if (window.innerWidth > 425) {
+                        showLightboxParient();
+                        } else {
+                        showLightboxEmergency();
+                        }
+                    });
+                    }
+                }, 100);
+            }
+
+            // Limpiar localStorage para que no aparezca en futuras recargas
+            localStorage.removeItem("showEmergencyButton");
+        }
+    });
+
+</script>
