@@ -90,9 +90,10 @@
 <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
 <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-<script src="js/validator.js?v=<?= time() ?>"></script>
-<script src="js/utils.js?v=<?= time() ?>"></script>
-<script src="js/main.js?v=<?= time() ?>"></script>
+<script src="js/validator.js?v=<?=time()?>"></script>
+<script src="js/utils.js?v=<?=time()?>"></script>
+<script src="js/main.js?v=<?=time()?>"></script>
+<script src="js/translate.js?v=<?=time()?>"></script>
 </body>
 
 </html>
