@@ -1,4 +1,10 @@
 <?php $classBody ="grupo"; include "includes/header.php"; $grupo = $a->getGrupos($_GET['id']); ?>
+<script>
+    let groupData = <?= json_encode($grupo) ?>;
+    groupData.children.forEach(child => {
+        console.log("ID del niño:", child.id);
+    });
+</script>
 <main>
   <?php
     $mainHeaderTitle = "{$grupo->name}" ;
@@ -7,6 +13,12 @@
 ?>
   <div class="content">
     <div class="contentHeader">
+      <?php
+          // echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
+          // echo '<pre>';
+          //     var_dump($grupo);
+          // echo '</pre>';
+      ?>
       <h2>Reporte</h2>
       <button type="button" onclick="showActivityLightbox(false)" class="btn btn-action-primary enfasis btn-big">Agregar actividad</button>
     </div>
@@ -41,8 +53,9 @@
       // Mostrar la lista de actividades con iconos
       echo '<ul class="activities">';
       foreach ($grupo->rates as $activity) {
+          $onclickFunction = ($activity->name === 'Health Check') ? 'showLightboxNinoHealthCkeck()' : 'showActivityLightbox(true)';
         
-          echo '<li onclick="showActivityLightbox(true)"><label for="'.$activity->type.'">';
+          echo '<li onclick="' . $onclickFunction . '"><label for="'.$activity->type.'">';
           echo '<button type="button"  class="addActivity"><i class="acuarela acuarela-Agregar"></i></button>';
           echo '<h3>' . $activity->name . '</h3>';
           echo '<i class="acuarela ' . $activity->icon . '"></i>';

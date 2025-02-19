@@ -61,7 +61,7 @@ $kid = $a->getChildren($_GET['id']);
                         <span class="input-group">
                             <label for="salud_emocional">Salud emocional</label>
                             <input type="text" placeholder="Agregar su salud mental" name="salud_emocional" id="salud_emocional" 
-                                   value="<?= isset($kid->healthinfo->emocional_health) ? $kid->healthinfo->emocional_health : "" ?>">
+                                   value="<?= isset($kid->healthinfo->emotional_health) ? $kid->healthinfo->emotional_health : "" ?>">
                             <span class="error-message"></span>
                         </span>
                         <span class="input-group">
@@ -127,6 +127,7 @@ $kid = $a->getChildren($_GET['id']);
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
+        //Crear mas inputs 
         document.querySelectorAll(".agregar-inputs").forEach(addButton => {
             addButton.addEventListener("click", () => {
                 const container = addButton.closest(".input-group");
@@ -134,11 +135,10 @@ $kid = $a->getChildren($_GET['id']);
                 const newInput = document.createElement("input");
                 newInput.type = "text";
                 newInput.name = originalInput.name; 
-                newInput.placeholder = `Agregar otra ${originalInput.placeholder.toLowerCase()}`;
+                // newInput.placeholder = `Agregar otra ${originalInput.placeholder.toLowerCase()}`;
+                newInput.placeholder = `Agregar nueva entrada`;
                 newInput.classList.add("extra-input");
-
-                // Insertar el nuevo input antes del botón "agregar"
-                container.insertBefore(newInput, addButton);
+                container.insertBefore(newInput, addButton);  // Insertar el nuevo input antes del botón "agregar"
             });
         });
     });

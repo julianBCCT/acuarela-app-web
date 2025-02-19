@@ -21,7 +21,7 @@
         <div class="content">
             <div class="contentninx">
                 <fieldset class="fieldsalud">
-                    <h2>Reporte de incidentes o sospecha de abusos </h2>
+                    <h2>Reporte de incidentes</h2>
                     <div class="sectionsalud">
                         <h3 class="h3salud">Reportado por: </h3>
                         <div class="decorative-line"></div>
@@ -170,6 +170,7 @@
                 emergencyButton.textContent = "Contacto de Emergencia";
                 emergencyButton.type = "button"; 
                 emergencyButton.href = "javascript:;";
+                emergencyButton.style.marginLeft = "50px";
 
                 sendSaludDiv.appendChild(emergencyButton);
 

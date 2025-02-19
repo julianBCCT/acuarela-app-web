@@ -119,189 +119,6 @@ const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
 };
 const baseUrl = "https://acuarelacore.com/api";
 
-//==>Enviar datos al collection HEALTHINFO en strapi
-const handleHealthInfo = async () => {
-  fadeIn(preloader);
-  const form = document.getElementById("healthInfoForm");
-  const inputs = form.querySelectorAll("input, select, textarea");
-
-  const formValues = {};
-  inputs.forEach((input) => {
-    if (input.type === "checkbox") {
-      formValues[input.name] = input.checked ? input.value : "0";
-    } else {
-      formValues[input.name] = input.value;
-    }
-  });
-
-  let dataToSend = {
-    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
-    child: kidData._id,
-    asthma: formValues.asma,
-    allergies: [...document.querySelectorAll("input[name='alergias']")].map(
-      (input) => input.value
-    ),
-    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(
-      (input) => input.value
-    ),
-    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(
-      (input) => input.value
-    ),
-    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(
-      (input) => input.value
-    ),
-    physical_health: formValues.salud_fisica,
-    emocional_health: formValues.salud_emocional,
-    suspected_abuse: formValues.sospecha_abuso,
-    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(
-      (input) => input.value
-    ),
-    pediatrician: formValues.pedriatra,
-    pediatrician_number: formValues.pedriatra_numero,
-    pediatrician_email: formValues.pedriatra_email,
-  };
-  console.log(dataToSend);
-
-  try {
-    if (!kidData.healthinfo || kidData.healthinfo.child !== kidData._id) {
-      const response = await fetch("s/createHealthInfo/", {
-        method: "POST",
-        body: JSON.stringify(dataToSend),
-        headers: { "Content-Type": "application/json" },
-      });
-      const body = await response.json();
-
-      if (body.id) {
-        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-      }
-    } else {
-      const response = await fetch("s/updateHealthInfo/", {
-        method: "PUT",
-        body: JSON.stringify(dataToSend),
-        headers: { "Content-Type": "application/json" },
-      });
-      const body = await response.json();
-
-      if (body.id) {
-        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-      } else {
-        console.error("Error al actualizar HealthInfo: ", body);
-      }
-    }
-  } catch (error) {
-    console.error("Error handling healthinfo:", error);
-    return false;
-  }
-};
-
-const handleReportInfo = async () => {
-  fadeIn(preloader);
-  const form = document.getElementById("healthInfoForm");
-  const inputs = form.querySelectorAll("input, select, textarea");
-
-  const formValues = {};
-  inputs.forEach((input) => {
-    formValues[input.name] = input.value;
-  });
-
-  // Objtener fechas de hoy en hora New York
-  const currentDate = new Date().toLocaleString("en-US", {
-    timeZone: "America/New_York",
-  });
-  // Formatear la fecha (31/01/2025)
-  const dateObj = new Date(currentDate);
-  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${dateObj.getDate().toString().padStart(2, "0")}`;
-
-  let newIncident = {
-    reported_for: formValues.reportado_por,
-    incident_type: formValues["tipo-incidente"],
-    description: formValues.descripcion,
-    temperature: formValues.temperatura,
-    gravedad: formValues["levelgrave"],
-    actions_taken: formValues.acciones_tomadas,
-    actions_expected: formValues.acciones_esperadas,
-    reported_enf: reportedenf,
-    // reported_enh: "15:00"
-  };
-
-  let dataToSend = {
-    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
-    child: kidData._id,
-    incidents: kidData.healthinfo?.incidents
-      ? [...kidData.healthinfo.incidents, newIncident] // Agrega el nuevo incidente
-      : [newIncident], // Si no existen incidentes, crea el array con el primero
-  };
-  console.log("Enviando datos:", dataToSend);
-
-  try {
-    const response = await fetch("s/updateHealthInfo/", {
-      method: "PUT",
-      body: JSON.stringify(dataToSend),
-      headers: { "Content-Type": "application/json" },
-    });
-    const result = await response.json();
-    console.log("Respuesta del servidor:", result); // Verifica qué devuelve exactamente
-
-    if (!response.ok) {
-      throw new Error(`Error ${response.status}: ${result.message}`);
-    }
-    localStorage.setItem("showEmergencyButton", "true");
-    window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
-  } catch (error) {
-    console.error("Error al agregar incidente:", error);
-  }
-};
-
-const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
-  fadeIn(preloader);
-
-  // Objtener fecha actual en hora New York
-  const currentDate = new Date().toLocaleString("en-US", {
-    timeZone: "America/New_York",
-  });
-  const dateObj = new Date(currentDate);
-  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${dateObj.getDate().toString().padStart(2, "0")}`;
-
-  const fechaFinal = fecha === "null" || !fecha ? reportedenf : fecha;
-
-  let newHealthCheck = {
-    temperature: temperatura,
-    report: reporte,
-    bodychild: kidData.healthinfo.healthcheck.bodychild,
-    daily_fecha: fechaFinal,
-  };
-
-  let dataToSend = {
-    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
-    child: kidData._id,
-    healthcheck: kidData.healthinfo.healthcheck
-      ? [...kidData.healthinfo.healthcheck, newHealthCheck]
-      : [newHealthCheck],
-  };
-
-  console.log("Enviando datos:", dataToSend);
-
-  try {
-    const response = await fetch("s/updateHealthInfo/", {
-      method: "POST",
-      body: JSON.stringify(dataToSend),
-      headers: { "Content-Type": "application/json" },
-    });
-    const body = await response.json();
-
-    if (body.id) {
-      window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-    } else {
-      console.error("Error al actualizar HealthInfo: ", body);
-    }
-  } catch (error) {
-    console.error("Error al agregar incidente:", error);
-  }
-};
 
 const handleInscripcion = async () => {
   fadeIn(preloader);
@@ -1566,11 +1383,40 @@ function validarSuscripcion() {
   return accesoPermitido;
 }
 
-//==> EMERGENCIA
+// Al hacer clic en el botón de finanzas
+const finanzas_lightbox = document.getElementById("lightbox-finanzas");
+if (finanzas_lightbox) {
+  finanzas_lightbox.addEventListener("click", function (event) {
+    if (validarSuscripcion()) {
+      // Si el ID es correcto, redirigir a la página de finanzas
+      window.location.href = "/miembros/acuarela-app-web/finanzas";
+    } else {
+      // Si no, mostrar el lightbox
+      showLightboxFinanzas();
+    }
+  });
+}
+
+// Validar acceso al cargar la página directamente
+document.addEventListener("DOMContentLoaded", function () {
+  const mainFinanzas = document.getElementById("Finanzas");
+
+  if (window.location.href.includes("/miembros/acuarela-app-web/finanzas")) {
+    if (!validarSuscripcion()) {
+      if (mainFinanzas) {
+        mainFinanzas.innerHTML = ""; // Limpiar el contenido de <main id="Finanzas">
+      }
+      showLightboxFinanzas();
+    }
+  }
+});
+
+
+
+
+//================> APARTADO EMERGENCIA <===================
 //==> AL HACER CLICK EN EL BOTON CONTACTO DE EMERGENCIAS
-const emergencycontact_lightbox = document.getElementById(
-  "lightbox-emergencycontact"
-);
+const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
 if (emergencycontact_lightbox) {
   emergencycontact_lightbox.addEventListener("click", function (event) {
     if (window.innerWidth > 425) {
@@ -1581,11 +1427,13 @@ if (emergencycontact_lightbox) {
   });
 }
 
-// Lightbox CONTACTO DE EMERGENCIA
+
+// =====> Lightbox CONTACTO DE EMERGENCIA <===
 function showLightboxEmergency() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-emergency");
 
+  //Boton para redirigir a llamar a emergencias 
   const linkEmergencia = document.createElement("a");
   linkEmergencia.classList.add("emergency");
   linkEmergencia.innerHTML = `
@@ -1595,6 +1443,8 @@ function showLightboxEmergency() {
   linkEmergencia.addEventListener("click", (event) => {
     showLightboxCallEmergency();
   });
+
+  //Boton para redirigir a opciones de contacto con el pariente
   const linkPariente = document.createElement("a");
   linkPariente.classList.add("emergency");
   linkPariente.innerHTML = `
@@ -1603,20 +1453,20 @@ function showLightboxEmergency() {
   `;
   linkPariente.addEventListener("click", (event) => {
     showLightboxParient();
-    const email = kids;
   });
 
   contentContainer.appendChild(linkEmergencia);
   contentContainer.appendChild(linkPariente);
-
-  showInfoLightbox("Contacto de emergencia", contentContainer);
+  showInfoLightbox("Contacto de emergencia",contentContainer);
 }
 
-// Lightbox LLAMAR A EMERGENCIAS
+
+// =====> Lightbox de LLAMAR A EMERGENCIAS <===
 function showLightboxCallEmergency() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-callemergency");
 
+  //Boton para llamar directamente a Urgencias en USA 
   const Urgencias = document.createElement("a");
   Urgencias.setAttribute("href", "tel:911");
   Urgencias.classList.add("emergency");
@@ -1625,6 +1475,7 @@ function showLightboxCallEmergency() {
     <span>Urgenicas 911 </span>
   `;
 
+  //Boton para llamar directamente a la Policia en USA 
   const Policia = document.createElement("a");
   Policia.setAttribute("href", "tel:+12126391991");
   Policia.classList.add("emergency");
@@ -1635,14 +1486,10 @@ function showLightboxCallEmergency() {
 
   contentContainer.appendChild(Urgencias);
   contentContainer.appendChild(Policia);
-
-  showInfoLightbox(
-    "Contactar con pariente según nivel de gravedad",
-    contentContainer
-  );
+  showInfoLightbox("LLamar a emergencias",contentContainer);
 }
 
-// Función para mostrar el mensaje dinámico
+// Función para mostrar el mensaje dinámico ============================
 function showMessage(container, text, isError = false) {
   const existingMessage = container.querySelector(".response-message"); // Elimina mensajes previos
   if (existingMessage) {
@@ -1651,35 +1498,20 @@ function showMessage(container, text, isError = false) {
   // Crea el mensaje
   const message = document.createElement("p");
   message.classList.add("response-message");
-
   message.innerHTML = `
-  <i class="acuarela acuarela-Informacion"></i>
-  ${text}
+    <i class="acuarela acuarela-Informacion"></i>
+    ${text}
   `;
   container.appendChild(message); // Agrega el mensaje al contenedor
   setTimeout(() => {
     if (message.parentElement) {
       message.remove();
     }
-  }, 5000); // 5000 ms = 5 segundos
+  }, 7000); // 7000 ms = 7 segundos
 }
 
-// Función para ENVIAR CORREO  de emergencias
-function sendEmergencyEmail(
-  gravedad,
-  email,
-  email2,
-  name,
-  name2,
-  lastname,
-  lastname2,
-  reportedFor,
-  incidentType,
-  temperature,
-  actionsTaken,
-  severityLevel,
-  suggestedActions
-) {
+// Función para ENVIAR CORREO  de emergencias ===========================
+function sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2, reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions) {
   let messagegrav = "";
   let messagegrav2 = "";
   if (gravedad === "grave") {
@@ -1737,7 +1569,7 @@ function sendEmergencyEmail(
     });
 }
 
-// Botones flotantes del lightbox de EMERGENCIAS
+// Botones flotantes del lightbox de EMERGENCIAS ========================
 function buttonsFlot(linkElement, buttonData, top, left, width) {
   if (document.querySelector(".new-buttons-container")) return; // Evitar duplicados
 
@@ -1749,14 +1581,16 @@ function buttonsFlot(linkElement, buttonData, top, left, width) {
 
   buttonData.forEach((data) => {
     let newButton;
-    if (data.href) {
-      // Crear un enlace si hay un href
-      newButton = document.createElement("a");
+    if (data.text === "Llamar") {
+      newButton = document.createElement("a"); // Si el texto es "Llamar", crear un enlace con href "tel:911"
+      newButton.href = `tel:${kidData.guardians[0].guardian_phone}`;
+      newButton.target = "_self";
+    } else if (data.href) {
+      newButton = document.createElement("a"); // Crear un enlace si hay un href definido
       newButton.href = data.href;
       newButton.target = "_self";
     } else {
-      // Crear un botón si no hay un href
-      newButton = document.createElement("p");
+      newButton = document.createElement("p"); // Crear un botón si no hay un href
       if (data.action) {
         newButton.addEventListener("click", data.action);
       }
@@ -1768,7 +1602,7 @@ function buttonsFlot(linkElement, buttonData, top, left, width) {
   linkElement.parentNode.appendChild(buttonsContainer);
 }
 
-// Mostrar los guardians e informacion escencial de contacto
+// Mostrar los guardians e informacion escencial de contacto ============
 function dataParient(kidData) {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("parentslight");
@@ -1783,7 +1617,7 @@ function dataParient(kidData) {
       const parientecontact = document.createElement("p");
 
       // Cambiar el mensaje según el índice
-      parientecontact.textContent = `Contacto de emergencia: ${index + 1}`;
+      parientecontact.textContent = `${index + 1}. Contacto de emergencia`;
       parienteContactContainer.appendChild(parientecontact);
 
       // Crear el contenedor para los datos del pariente (derecha)
@@ -1816,18 +1650,45 @@ function dataParient(kidData) {
   return contentContainer;
 }
 
-// Lightbox CONTACTO DE EMERGENCIA
+
+// =====> Lightbox CONTACTAR CON PARIENTE SEGUN GRAVEDAD <===
 function showLightboxParient() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-emergency");
 
+  //Boton para enviar email a parientes de manera urgente
   const linkGrave = document.createElement("a");
   linkGrave.classList.add("emergency");
   linkGrave.innerHTML = `
     <img class="emergencyimg" src="img/icons/Padre.svg"" alt="file">
     <span>Caso Urgente</span>
   `;
+  linkGrave.addEventListener("click", () => {
+    if (window.innerWidth <= 425) {
+      linkModerado.style.opacity = "0.5";
+      const buttonDataGrave = [
+        { text: "Llamar", iconClass: "acuarela acuarela-Telefono" },
+        { text: "Texto", iconClass: "acuarela acuarela-Habla" },
+        { text: "Email", 
+          iconClass: "acuarela acuarela-Mensajes", 
+          action: () => {
+            const gravedad = "grave";
+            const email = kidData.guardians[0].guardian_email;
+            const name = kidData.guardians[0].guardian_name;
+            sendEmergencyEmail(gravedad, email, name);
+          }
+        }
+      ];
+      buttonsFlot(linkGrave, buttonDataGrave, "145px", "55px", "86px");
+    } else {
+      const gravedad = "grave";
+      const email = kidData.guardians[0].guardian_email;
+      const name = kidData.guardians[0].guardian_name; 
+      sendEmergencyEmail(gravedad, email, name);
+    }
+  });
 
+  //Boton para enviar email con un reporte mas detallado despues de haber llenado la incidencia
   const linkModerado = document.createElement("a");
   linkModerado.classList.add("emergency");
   linkModerado.innerHTML = `
@@ -1837,57 +1698,37 @@ function showLightboxParient() {
   linkModerado.addEventListener("click", () => {
     const container = document.querySelector(".methods-emergency");
     if (!kidData.incidents || kidData.incidents.length === 0) {
-      // Verificar si hay datos en kidData.incidents
-      // Si está vacío, mostrar un mensaje indicando que se debe llenar la incidencia
-      showMessage(
-        container,
-        "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy."
-      );
+      showMessage(container,"El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
       if (window.innerWidth <= 768) {
         topPosition = "100px";
-        leftPosition = "470px";
+        leftPosition = "450px";
       }
       if (window.innerWidth <= 425) {
         topPosition = "370px";
-        leftPosition = "250px";
+        leftPosition = "230px";
       }
       if (window.innerWidth <= 320) {
         topPosition = "390px";
-        leftPosition = "200px";
+        leftPosition = "180px";
       }
-      const buttonDataModerado = [
-        {
+      const buttonDataModerado = [{
           text: "Llenar reporte",
           iconClass: "acuarela acuarela-Telefono",
           href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
-        },
-      ];
-      buttonsFlot(
-        linkModerado,
-        buttonDataModerado,
-        topPosition,
-        leftPosition,
-        "120px"
-      );
+        },];
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
       return;
     }
 
     // Obtener la fecha actual ajustada a Nueva York (sin la hora)
     const now = new Date();
-    const options = {
-      timeZone: "America/New_York",
-      year: "numeric",
-      day: "2-digit",
-      month: "2-digit",
-    };
+    const options = {timeZone: "America/New_York",year: "numeric",day: "2-digit",month: "2-digit",};
     const formatter = new Intl.DateTimeFormat("en-US", options);
     const parts = formatter.formatToParts(now);
     const todayNY = `${parts[4].value}-${parts[0].value}-${parts[2].value}`; // Año-Mes-Día
-    // console.log("Fecha de hoy (NY):", todayNY);
-    // console.log(kidData.incidents[2].reported_enf);
     let matchFound = false; // Variable para saber si existe un match
 
     for (let i = 0; i < kidData.incidents.length; i++) {
@@ -1905,26 +1746,11 @@ function showLightboxParient() {
         const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
         const incidentType = incident.description || "[Tipo de incidencia]";
         const temperature = incident.temperature || "[Temperatura]";
-        const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
+        const actionsTaken = incident.actions_taken || "[Acciones tomadas]"; 
         const severityLevel = incident.gravedad || "[Nivel de gravedad]";
         const suggestedActions =
-          incident.actions_expected || "[Acciones esperadas]";
-        sendEmergencyEmail(
-          gravedad,
-          email,
-          email2,
-          name,
-          name2,
-          lastname,
-          lastname2,
-          reportedFor,
-          incidentType,
-          temperature,
-          actionsTaken,
-          severityLevel,
-          suggestedActions
-        );
-
+        incident.actions_expected || "[Acciones esperadas]";
+        sendEmergencyEmail(gravedad,email,email2,name,name2,lastname,lastname2,reportedFor,incidentType,temperature,actionsTaken,severityLevel,suggestedActions);
         matchFound = true; // Indicar que se encontro una coincidencia
         break;
       }
@@ -1932,55 +1758,302 @@ function showLightboxParient() {
 
     if (!matchFound) {
       const container = document.querySelector(".methods-emergency");
-      showMessage(
-        container,
-        "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy."
-      );
+      showMessage(container,"El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
       if (window.innerWidth <= 768) {
         topPosition = "100px";
-        leftPosition = "470px";
+        leftPosition = "450px";
       }
       if (window.innerWidth <= 425) {
         topPosition = "370px";
-        leftPosition = "250px";
+        leftPosition = "230px";
       }
       if (window.innerWidth <= 320) {
         topPosition = "390px";
-        leftPosition = "200px";
+        leftPosition = "180px";
       }
-      const buttonDataModerado = [
-        {
+      const buttonDataModerado = [{
           text: "Llenar reporte",
           iconClass: "acuarela acuarela-Telefono",
           href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
-        },
-      ];
-      buttonsFlot(
-        linkModerado,
-        buttonDataModerado,
-        topPosition,
-        leftPosition,
-        "120px"
-      );
+      },];
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
     }
   });
-
   contentContainer.appendChild(linkGrave);
   contentContainer.appendChild(linkModerado);
 
   const parientsLight = dataParient(kidData);
   contentContainer.appendChild(parientsLight);
-
-  showInfoLightbox(
-    "Contactar con pariente según nivel de gravedad",
-    contentContainer
-  );
+  showInfoLightbox("Contactar con pariente según nivel de gravedad",contentContainer);
 }
 
-function showLightboxAddHealthCkeck(fechaSeleccionada) {
+
+
+//================> APARTADO SALUD <===================
+// =====> Enviar datos al collection HEALTHINFO en strapi para SALUD<===
+const handleHealthInfo = async () => {
+  fadeIn(preloader);
+  const form = document.getElementById("healthInfoForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+
+  const formValues = {};
+  inputs.forEach((input) => {
+    if (input.type === "checkbox") {
+      formValues[input.name] = input.checked ? input.value : "0";
+    } else {
+      formValues[input.name] = input.value;
+    }
+  });
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    asthma: formValues.asma,
+    allergies: [...document.querySelectorAll("input[name='alergias']")].map(
+      (input) => input.value
+    ),
+    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(
+      (input) => input.value
+    ),
+    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(
+      (input) => input.value
+    ),
+    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(
+      (input) => input.value
+    ),
+    physical_health: formValues.salud_fisica,
+    emotional_health: formValues.salud_emocional,
+    suspected_abuse: formValues.sospecha_abuso,
+    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(
+      (input) => input.value
+    ),
+    pediatrician: formValues.pedriatra,
+    pediatrician_number: formValues.pedriatra_numero,
+    pediatrician_email: formValues.pedriatra_email,
+  };
+  console.log(dataToSend);
+
+  try {
+    if (!kidData.healthinfo || kidData.healthinfo.child !== kidData._id) {
+      const response = await fetch("s/createHealthInfo/", {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+      }
+    } else {
+      const response = await fetch("s/updateHealthInfo/", {
+        method: "PUT",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+      } else {
+        console.error("Error al actualizar HealthInfo: ", body);
+      }
+    }
+  } catch (error) {
+    console.error("Error handling healthinfo:", error);
+    return false;
+  }
+};
+
+// =====> Desplegar en vista para CELL el apartado UNGUENTOS
+document.querySelectorAll(".ung-btn").forEach((btn) => {
+  btn.addEventListener("click", function () {
+      const content = this.parentElement.nextElementSibling; 
+      const icon = this.querySelector("i"); 
+      content.classList.toggle("show"); 
+      // Alterna las clases del ícono
+      if (icon.classList.contains("acuarela-Flecha_arriba")) {
+          icon.classList.remove("acuarela-Flecha_arriba");
+          icon.classList.add("acuarela-Flecha_abajo");
+      } else {
+          icon.classList.remove("acuarela-Flecha_abajo");
+          icon.classList.add("acuarela-Flecha_arriba");
+      }
+  });
+});
+
+
+// =====> Enviar datos al collection HEALTHINFO en strapi para INCIDENTES<===
+const handleReportInfo = async () => {
+  fadeIn(preloader);
+  const form = document.getElementById("healthInfoForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+
+  const formValues = {};
+  inputs.forEach((input) => {
+    formValues[input.name] = input.value;
+  });
+
+  // Objtener fechas de hoy en hora New York 
+  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  // Formatear la fecha (31/01/2025)
+  const dateObj = new Date(currentDate);
+  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+
+  let newIncident = {
+    reported_for: formValues.reportado_por,
+    incident_type: formValues["tipo-incidente"],
+    description: formValues.descripcion,
+    temperature: formValues.temperatura,
+    gravedad: formValues["levelgrave"],
+    actions_taken: formValues.acciones_tomadas,
+    actions_expected: formValues.acciones_esperadas,
+    reported_enf: reportedenf 
+    // reported_enh: "15:00"  
+  };
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    incidents: kidData.healthinfo?.incidents
+      ? [...kidData.healthinfo.incidents, newIncident] // Agrega el nuevo incidente
+      : [newIncident], // Si no existen incidentes, crea el array con el primero
+  };
+  console.log("Enviando datos:", dataToSend);
+
+  try {
+    const response = await fetch("s/updateHealthInfo/", {
+      method: "PUT",
+      body: JSON.stringify(dataToSend),
+      headers: { "Content-Type": "application/json" },
+    });
+    const result = await response.json();
+    console.log("Respuesta del servidor:", result); // Verifica qué devuelve exactamente
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${result.message}`);
+    }
+    localStorage.setItem("showEmergencyButton", "true");
+    window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
+  } catch (error) {
+    console.error("Error al agregar incidente:", error);
+  }
+};
+
+
+// =====> Desplegar los Incidentes
+const incidents = document.querySelectorAll('.incidentnino');
+incidents.forEach(incident => {
+    const toggleContainer = incident.querySelector('.incidentnino-desp');
+    const incidentInfo = incident.querySelector('.incidentinfo');
+    const iconContainer = incident.querySelector('.iconincid');
+
+    toggleContainer.addEventListener('click', function () {
+        incidentInfo.classList.toggle('incidentdesp');
+        iconContainer.classList.toggle('rotate');
+    });
+});
+
+
+
+//================> APARTADO HEALTH CHECK <===================
+// =====> Enviar datos al collection HEALTHINFO en strapi para HEALTH CHECK <===
+const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
+  const closeButton = document.getElementById("info-close-button"); // Ocultar el lightbox antes de enviar la información
+  if (closeButton) closeButton.click(); 
+  fadeIn(preloader);
+
+  // Objtener fecha actual en hora New York
+  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  const dateObj = new Date(currentDate);
+  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+
+  const fechaFinal = (fecha === "null" || !fecha) ? reportedenf : fecha;
+
+  let newHealthCheck = {
+    temperature: temperatura,
+    report: reporte,
+    bodychild: kidData.healthinfo.healthcheck.bodychild,
+    daily_fecha: fechaFinal
+  };
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    healthcheck: kidData.healthinfo.healthcheck 
+      ? [...kidData.healthinfo.healthcheck, newHealthCheck] 
+      : [newHealthCheck]
+  };
+
+  console.log("Enviando datos:", dataToSend);
+
+  try {
+    const response = await fetch("s/updateHealthInfo/", {
+      method: "POST",
+      body: JSON.stringify(dataToSend),
+      headers: { "Content-Type": "application/json" },
+    });
+    const body = await response.json();
+
+    if (body.id) {
+      window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+    }
+    else {
+      console.error("Error al actualizar HealthInfo: ", body);
+    }
+  } catch (error) {
+    console.error("Error al agregar incidente:", error);
+  }
+};
+
+
+// ...
+function formatFechaHealth(fecha) {
+  const opciones = { year: "numeric", month: "long", day: "2-digit", timeZone: "America/New_York" };
+
+  let fechaObj;
+  if (!fecha || fecha === "null") {
+    // Obtener la fecha actual en Nueva York
+    const ahora = new Date();
+    const ahoraNY = new Intl.DateTimeFormat("en-US", { timeZone: "America/New_York" })
+      .formatToParts(ahora)
+      .reduce((acc, part) => {
+        if (part.type === "year") acc.year = part.value;
+        if (part.type === "month") acc.month = part.value;
+        if (part.type === "day") acc.day = part.value;
+        return acc;
+      }, {});
+
+    // Crear la fecha y sumar un día
+    fechaObj = new Date(`${ahoraNY.year}-${ahoraNY.month.padStart(2, "0")}-${ahoraNY.day.padStart(2, "0")}T00:00:00`);
+    fechaObj.setDate(fechaObj.getDate());
+  } else {
+    // Mantener la fecha exacta sin modificarla
+    const [year, month, day] = fecha.split("-");
+    fechaObj = new Date(`${year}-${month}-${day}T00:00:00`);
+  }
+
+  // Extraer partes de la fecha formateada
+  const formatter = new Intl.DateTimeFormat("es-ES", { month: "long", day: "2-digit", year: "numeric" });
+  const partes = formatter.formatToParts(fechaObj);
+
+  let dia, mes, año;
+  partes.forEach(part => {
+    if (part.type === "day") dia = part.value.padStart(2, "0"); // Asegurar dos dígitos
+    if (part.type === "month") mes = part.value;
+    if (part.type === "year") año = part.value;
+  });
+  // Retornar en formato "Febrero 02/2025"
+  return `${mes.charAt(0).toUpperCase() + mes.slice(1)} ${dia}/${año}`;
+}
+
+
+// =====> Primer lightbox para AGREGAR REPORTE <===
+function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
+  let kidGlobal = origen === 1 ? kid : kidData; 
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-daylihealth");
   const titleElement = document.getElementById("info-lightbox-title");
@@ -1988,40 +2061,28 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   const originalmarginBottom = titleElement.style.marginBottom;
   titleElement.style.textAlign = "start";
   titleElement.style.marginBottom = "35px";
+  console.log("Fecha:", fechaSeleccionada);
+  console.log("Datos:", kidGlobal);
 
   // Acceder correctamente a las propiedades de kidData
-  const photoUrl = kidData.photo
-    ? "https://acuarelacore.com/api/" + kidData.photo.formats.small.url
-    : null;
+  const photoUrl = kidData.photo ? 'https://acuarelacore.com/api/' + kidData.photo.formats.small.url : null;
   const gender = kidData.gender;
 
   const infoNino = document.createElement("div");
   infoNino.classList.add("infonino");
   infoNino.innerHTML = `
     <div class="photo">
-      ${photoUrl
-      ? `
+      ${photoUrl ? `
         <img loading="lazy" class="lazyload" src="img/placeholder.png" data-src="${photoUrl}" alt="${kidData.name}">
-      `
-      : `
-        ${gender === "Masculino"
-        ? '<img class="img-infonino" src="img/mal.png" alt="">'
-        : ""
-      }
-        ${gender === "Femenino"
-        ? '<img class="img-infonino" src="img/fem.png" alt="">'
-        : ""
-      }
-        ${gender === "X"
-        ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">'
-        : ""
-      }
-      `
-    }
+      ` : `
+        ${gender === "Masculino" ? '<img class="img-infonino" src="img/mal.png" alt="">' : ''}
+        ${gender === "Femenino" ? '<img class="img-infonino" src="img/fem.png" alt="">' : ''}
+        ${gender === "X" ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">' : ''}
+      `}
     </div>
     <div>
       <p class="infonino-name">${kidData.name}</p>
-      <p class="infonino-hora">Agosto 27/2021</p>
+      <p class="infonino-hora">${formatFechaHealth(fechaSeleccionada)}</p>
     </div>
   `;
 
@@ -2050,7 +2111,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
     "D-Diaper": "Cambio de pañal",
     "BM-Bowel": "Evacuación intestinal",
     "H-Hit": "Golpe",
-    "C-Crying": "Lloró más de lo normal",
+    "C-Crying": "Lloró más de lo normal"
   };
 
   const dataNino = document.createElement("div");
@@ -2061,8 +2122,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
           <i class="saludicon acuarela acuarela-Salud"></i>
           <label class="labelpediatra" for="temperatura">Temperatura: </label>
           <input type="text" placeholder="Agrega la temperatura" name="temperatura" id="temperatura" 
-                value="${kidData.healthinfo?.healthcheck?.temperature || ""
-    }" required>
+                value="${kidData.healthinfo?.healthcheck?.temperature || ''}" required>
           <span class="tempspan">°F</span>
           <span class="error-message"></span>
       </span>
@@ -2071,24 +2131,15 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
           <label class="labelpediatra" for="report">Estado de Salud: </label>
           <select name="report" id="report" required>
             <option value="" disabled selected>Seleccione </option>
-              ${Object.keys(reportTranslations)
-      .map(
-        (key) => `
-                <option value="${key}" ${kidData.healthinfo?.healthcheck?.report === key
-            ? "selected"
-            : ""
-          }>${key}</option>
-              `
-      )
-      .join("")}
+              ${Object.keys(reportTranslations).map(key => `
+                <option value="${key}" ${kidData.healthinfo?.healthcheck?.report === key ? "selected" : ""}>${key}</option>
+              `).join('')}
           </select>
           <p class="selected-report-container">
             <span class="circle-indicator"></span>
-            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || "Sin seleccionar"
-    }</span>
+            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || 'Sin seleccionar'}</span>
           </p>
-          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ""
-    }</p>
+          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ''}</p>
           <span class="error-message"></span>
       </span>
     </div>      
@@ -2098,9 +2149,9 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   const selectedReport = dataNino.querySelector("#selected-report");
   const selectedReportEs = dataNino.querySelector("#selected-report-es");
 
-  selectReport.addEventListener("change", function () {
-    selectedReport.textContent = this.value;
-    selectedReportEs.textContent = reportTranslations[this.value] || "";
+  selectReport.addEventListener("change", function() {
+      selectedReport.textContent = this.value;
+      selectedReportEs.textContent = reportTranslations[this.value] || "";
   });
 
   const databutton = document.createElement("div");
@@ -2112,19 +2163,51 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
     </div>
     <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
   `;
-  // Esperar a que el botón se agregue al DOM antes de asignarle el evento
+  // Agregar evento al botón
   setTimeout(() => {
     const button = databutton.querySelector("#btnAgregar-reporte");
+    const inputTemp = document.querySelector("#temperatura");
+    const inputEstadoSalud = document.querySelector("#report");
+    const radioButtons = document.querySelectorAll('input[name="novedad"]');
+    button.setAttribute("disabled", "true"); // Bloquea el botón inicialmente
+    button.style.cursor = "not-allowed"; // Cambia el cursor a no permitido
 
+    function validateButton() {
+      const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
+      const tempValue = inputTemp.value.trim();
+      const estadoValue = inputEstadoSalud.value.trim();
+      if (selectedNovedad === "no") {
+        button.style.backgroundColor = "var(--cielo)";
+        button.style.opacity = "1";
+        button.disabled = false; // Habilitar el botón directamente
+        button.style.cursor = "pointer";
+      } else if (selectedNovedad === "si") {      
+        if (tempValue !== "" && estadoValue !== "") {
+          button.style.backgroundColor = "var(--cielo)";
+          button.style.opacity = "1";
+          button.disabled = false;
+          button.style.cursor = "pointer";
+        } else {
+          button.style.backgroundColor = "";
+          button.disabled = true;
+          utton.style.cursor = "not-allowed";
+        }
+      }
+    }
+
+    // Verificar cada cambio en los radios
+    radioButtons.forEach((radio) => {
+      radio.addEventListener("change", validateButton);
+    });
+    // Verificar cada cambio en los inputs
+    inputTemp.addEventListener("input", validateButton);
+    inputEstadoSalud.addEventListener("change", validateButton);
+
+    // Evento click para enviar los datos
     button.addEventListener("click", () => {
-      const selectedNovedad = document.querySelector(
-        'input[name="novedad"]:checked'
-      )?.value;
+      const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
       let temperature;
       let report;
-      const inputTemp = document.querySelector("#temperatura");
-      const inputEstadoSalud = document.querySelector("#report");
-
       if (selectedNovedad === "no") {
         temperature = 98;
         report = "Ninguno";
@@ -2132,31 +2215,34 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
         temperature = inputTemp.value;
         report = inputEstadoSalud.value;
       }
-
       showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada);
     });
   }, 0);
 
-  // Seleccionar elementos para manejar cambios en los radios
+  // Seleccionar elementos para manejar cambios en los radios (Ocultar o mostrar los inputs)
   const dataDiv = dataNino.querySelector(".data");
   const inputTemp = dataNino.querySelector("#temperatura");
   const inputEstadoSalud = dataNino.querySelector("#report");
   const radioButtons = novedad.querySelectorAll('input[name="novedad"]');
+  dataDiv.style.opacity = "0.5";
+  inputTemp.disabled = true;
+  inputEstadoSalud.disabled = true;
 
   radioButtons.forEach((radio) => {
     radio.addEventListener("change", (event) => {
       if (event.target.value === "no") {
-        dataDiv.style.opacity = "0.5";
+        dataNino.style.display = "none"; // Oculta el div completamente
         inputTemp.value = 98;
         inputEstadoSalud.value = "Ninguno";
-        inputTemp.setAttribute("readonly", true);
-        inputEstadoSalud.setAttribute("readonly", true);
+        inputTemp.disabled = true;
+        inputEstadoSalud.disabled = true;
       } else {
-        dataDiv.style.opacity = "1";
+        dataNino.style.display = "flex"; // Muestra el div
+        dataDiv.style.opacity = "1"; // Hace visibles los campos
         inputTemp.value = "";
         inputEstadoSalud.value = "";
-        inputTemp.removeAttribute("readonly");
-        inputEstadoSalud.removeAttribute("readonly");
+        inputTemp.disabled = false;
+        inputEstadoSalud.disabled = false;
       }
     });
   });
@@ -2165,7 +2251,6 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   contentContainer.appendChild(novedad);
   contentContainer.appendChild(dataNino);
   contentContainer.appendChild(databutton);
-
   showInfoLightbox("Daily Health Check", contentContainer);
 
   const closeButton = document.getElementById("info-close-button");
@@ -2177,13 +2262,12 @@ function showLightboxAddHealthCkeck(fechaSeleccionada) {
   closeButton.addEventListener("click", closeHandler);
 }
 
-function showLightboxAddBodyHealthCkeck(
-  temperature,
-  report,
-  fechaSeleccionada
-) {
+
+// =====> Segundo lightbox para AGREGAR REPORTE (Donde se ve el nino) <===
+function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) {
   console.log("Temperatura:", temperature);
   console.log("Reporte:", report);
+  console.log("Fecha:", fechaSeleccionada);
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-addbodydaylihealth");
   const titleElement = document.getElementById("info-lightbox-title");
@@ -2233,32 +2317,73 @@ function showLightboxAddBodyHealthCkeck(
   // Esperar a que el botón se agregue al DOM antes de asignarle el evento
   setTimeout(() => {
     const circles = document.querySelectorAll(".circle");
-
-    circles.forEach((circle) => {
-      circle.addEventListener("click", (event) => {
-        const selectedArea = event.target.getAttribute("data-area");
-
-        // Guardar el área seleccionada en kidData
-        if (!kidData.healthinfo) kidData.healthinfo = {};
-        if (!kidData.healthinfo.healthcheck)
-          kidData.healthinfo.healthcheck = {};
-
-        kidData.healthinfo.healthcheck.bodychild = selectedArea;
-
-        console.log(
-          "Área seleccionada:",
-          kidData.healthinfo.healthcheck.bodychild
-        );
-        console.log("id nino", kidData._id);
-        circles.forEach((c) => c.classList.remove("selected"));
-        event.target.classList.add("selected");
+    if (report === "Ninguno") {
+      // Si el reporte es "Ninguno", marcar todos los círculos en verde
+      circles.forEach(circle => {
+        circle.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
+        circle.style.border = "2px solid var(--secundario1)";
       });
-    });
-  }, 0);
+      // Guardar directamente "0" en la info de salud
+      if (!kidData.healthinfo) kidData.healthinfo = {};
+      if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
+      kidData.healthinfo.healthcheck.bodychild = "0";
+      console.log("Área seleccionada automáticamente: 0");
+    } else {
+      // Si el reporte es diferente a "Ninguno", permitir selección normal
+      circles.forEach(circle => {
+        circle.addEventListener("click", (event) => {
+          const selectedArea = event.target.getAttribute("data-area");
+          // Guardar el área seleccionada en kidData
+          if (!kidData.healthinfo) kidData.healthinfo = {};
+          if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
 
+          kidData.healthinfo.healthcheck.bodychild = selectedArea;
+          console.log("Área seleccionada:", kidData.healthinfo.healthcheck.bodychild);
+
+          // Resaltar solo el círculo seleccionado
+          circles.forEach(c => c.classList.remove("selected"));
+          event.target.classList.add("selected");
+          enviarCorreo(); // **Actualizar y enviar los datos correctamente después de seleccionar**
+        });
+      });
+    }
+
+    // Para enviar correo a papas con el reporte diario del nino
+    function enviarCorreo() {
+      const data = {
+        nino_name: kidData.name || "null",
+        nino_lastname: kidData.lastname || "null",
+        mama_email: kidData.acuarelausers[0]?.mail || "null",
+        papa_email: kidData.acuarelausers[1]?.mail || "null",
+        mama_name: kidData.acuarelausers[0]?.name || "null",
+        papa_name: kidData.acuarelausers[1]?.name || "null",
+        mama_lastname: kidData.acuarelausers[0]?.lastname || "null",
+        papa_lastname: kidData.acuarelausers[1]?.lastname || "null",
+        temperature: temperature || "null",
+        report: report || "null",
+        fechaSeleccionada: fechaSeleccionada || "null",
+        selectedArea: kidData.healthinfo.healthcheck.bodychild || "null"
+      };
+
+      fetch("https://hook.us1.make.com/cbdmhuh35metbkz34tbv8byw7kxiyhk7", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json()) // Si se recibe una respuesta, convertirla a JSON
+      .then(data => {
+        console.log("Respuesta del webhook:", data);
+      })
+      .catch((error) => {
+        console.error("Error al enviar los datos:", error);
+      });
+    }
+  }, 0);
+  
   contentContainer.appendChild(novedad);
   contentContainer.appendChild(databutton);
-
   showInfoLightbox("Daily Health Check", contentContainer);
 
   const closeButton = document.getElementById("info-close-button");
@@ -2270,6 +2395,8 @@ function showLightboxAddBodyHealthCkeck(
   closeButton.addEventListener("click", closeHandler);
 }
 
+
+// =====> Lightbox para VER REPORTE <===
 function showLightboxViewHealthCkeck(fechaSeleccionada) {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-viewdaylihealth");
@@ -2281,25 +2408,19 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
   titleElement.style.textAlign = "start";
   titleElement.style.marginBottom = "35px";
 
-  const resultado = kidData.healthinfo.healthcheck.find(
-    (item) => item.daily_fecha === fechaSeleccionada
-  );
+  const resultado = kidData.healthinfo.healthcheck.find(item => item.daily_fecha === fechaSeleccionada);
 
   // Datos del niño
   const dataNino = document.createElement("div");
-  dataNino.classList.add("datanino");
+  dataNino.classList.add("dataninobod");
   if (resultado) {
     const [year, month, day] = resultado.daily_fecha.split("-").map(Number);
     const fecha = new Date(year, month - 1, day);
     const nombreMes = fecha.toLocaleDateString("es-ES", { month: "long" });
-    const mesCapitalizado =
-      nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
-    const fechaFormateada = `${String(day).padStart(
-      2,
-      "0"
-    )} de ${mesCapitalizado}, ${year}`;
+    const mesCapitalizado = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
+    const fechaFormateada = `${String(day).padStart(2, "0")} de ${mesCapitalizado}, ${year}`;
     dataNino.innerHTML = `
-      <p class="datanino-date"> ${fechaFormateada} </p>
+      <p class="dataninobod-date"> ${fechaFormateada} </p>
       <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Temperatura: </span> <span class="ex"><span class="inc"> ${resultado.temperature} </span>°F</span>  </p>
       <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Reporte: </span> <span class="inc"> ${resultado.report} </span> </p>
     `;
@@ -2335,34 +2456,34 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
   // Botones de descarga
   const downloadReport = document.createElement("div");
   downloadReport.classList.add("downloadreport");
-  downloadReport.innerHTML = `
-    <p> <i class="acuarela acuarela-Excel"></i> </p>
-    <p> <i class="acuarela acuarela-Pdf"></i> </p>
-  `;
+  // downloadReport.innerHTML = `
+  //   <p> <i class="acuarela acuarela-Excel"></i> </p>
+  //   <p> <i class="acuarela acuarela-Pdf"></i> </p>
+  // `;
 
   contentViewdaily.appendChild(dataNino);
   contentViewdaily.appendChild(novedad);
   contentContainer.appendChild(contentViewdaily);
   contentContainer.appendChild(downloadReport);
-
-  // Mostrar el lightbox con la información
   showInfoLightbox("Health Check", contentContainer);
 
   //Modificar estilos del div (circle) recibido
-  const areasAfectadas = resultado.bodychild
-    .split(/[, ]+/)
-    .map((area) => area.trim().toLowerCase());
-  novedad.querySelectorAll(".circle").forEach((circle) => {
+  const areasAfectadas = resultado.bodychild.split(/[, ]+/).map(area => area.trim().toLowerCase());
+  novedad.querySelectorAll(".circle").forEach(circle => {
     const area = circle.getAttribute("data-area").toLowerCase(); // Obtener el área asociada al círculo, asegurar que sea minúscula
-    if (areasAfectadas.includes(area)) {
-      circle.style.backgroundColor = "rgba(235, 93, 94, 0.8)";
-      circle.style.boxShadow = "0 0 15px rgba(235, 93, 94, 0.5)";
+    if (resultado.bodychild === "0") { // Si bodychild es "0", aplicar estos estilos
+      circle.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
+      circle.style.border = "2px solid var(--secundario1)";
+    } else if (areasAfectadas.includes(area)) {
+      // Si el área está afectada, aplicar los estilos de "rojo"
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.8)"; 
+      circle.style.boxShadow = "0 0 15px rgba(235, 93, 94, 0.5)"; 
       circle.classList.add("animate");
     } else {
-      // Asegurarnos de quitar la animación en caso de que el círculo no coincida
+      // Si el área no está afectada, quitar la animación y cambiar el color de fondo
       circle.classList.remove("animate");
-      circle.style.backgroundColor = "rgba(235, 93, 94, 0.3)";
-      circle.style.boxShadow = "none";
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.3)"; 
+      circle.style.boxShadow = "none"; 
     }
   });
 
@@ -2374,6 +2495,132 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
   };
   closeButton.addEventListener("click", closeHandler);
 }
+
+
+// =====> Lightbox para AGREGAR REPORTE en el HealthCheck (grupo.php) <===
+function showLightboxNinoHealthCkeck() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-daylihealth");
+
+  const titleElement = document.getElementById("info-lightbox-title");
+  const originalTextAlign = titleElement.style.textAlign;
+  const originalMarginBottom = titleElement.style.marginBottom;
+  titleElement.style.textAlign = "start";
+  titleElement.style.marginBottom = "35px";
+
+  const children = groupData.children;
+
+  // Parte deslizante de los niños
+  const ninosdailyhealth = document.createElement("div");
+  ninosdailyhealth.classList.add("ninosdaily");
+
+  const iconoFlechaIzq = document.createElement("i");
+  iconoFlechaIzq.classList.add("ninosflecha", "acuarela", "acuarela-Flecha_circ_izquierda");
+  ninosdailyhealth.appendChild(iconoFlechaIzq);
+
+  const container = document.createElement("div");
+  container.classList.add("ninosdaily-container");
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("ninosdaily-wrapper");
+
+  children.forEach(kid => {
+    console.log("kid: ", kid);
+    const li = document.createElement("div");
+    li.classList.add("ninos_slide");
+
+    let photoUrl = kid.photo ? `https://acuarelacore.com/api/${kid.photo.formats.small.url}` : null;
+    let gender = kid.gender;
+
+    li.innerHTML = `
+      <div class="photo">
+        ${photoUrl ? `<img class="img-infonino" src="${photoUrl}" alt="${kid.name}">`
+        : `${gender === "Masculino" ? '<img class="img-infonino" src="img/mal.png" alt="">' : ''}
+           ${gender === "Femenino" ? '<img class="img-infonino" src="img/fem.png" alt="">' : ''}
+           ${gender === "X" ? '<img class="img-infonino" src="img/Nonbinary.png" alt="">' : ''}`}
+      </div>
+      <span>${kid.name}</span>
+    `;
+    wrapper.appendChild(li);
+  });
+  container.appendChild(wrapper);
+  ninosdailyhealth.appendChild(container);
+  const iconoFlechaDer = document.createElement("i");
+  iconoFlechaDer.classList.add("ninosflecha", "acuarela", "acuarela-Flecha_circ_derecha");
+  ninosdailyhealth.appendChild(iconoFlechaDer);
+
+  // Boton para pasar al siguiente lightbox
+  const databutton = document.createElement("div");
+  databutton.classList.add("divbutton");
+  databutton.innerHTML = `
+    <div class="progress-indicator">
+    </div>
+    <button id="btnSiguiente" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
+  `;
+
+  contentContainer.appendChild(ninosdailyhealth);
+  contentContainer.appendChild(databutton);
+
+  showInfoLightbox("Daily Health Check", contentContainer);
+
+  const btnSiguiente = document.getElementById("btnSiguiente");
+  // Selección de un niño y activación del botón
+  wrapper.querySelectorAll(".ninos_slide").forEach((nino) => {
+    nino.addEventListener("click", () => {
+      wrapper.querySelectorAll(".ninos_slide").forEach((el) => {
+        el.classList.remove("selected");
+      });
+      nino.classList.add("selected");
+      btnSiguiente.classList.remove("btn-disable");
+      btnSiguiente.style.backgroundColor = "var(--cielo)";
+      btnSiguiente.disabled = false;
+    });
+  });
+  const fechaselec = "null";
+  console.log("Fecha:", fechaselec);
+  btnSiguiente.addEventListener("click", () => {
+    showLightboxAddHealthCkeck(fechaselec, 1, kid);
+  });
+
+  // Control deslizante
+  let index = 0;
+  const maxIndex = children.length - 4; // Máximo número de deslizamientos
+  const slideWidth = 99; // Ancho de cada slide + margen (ajustar si es necesario)
+
+  function moveSlides(direction) {
+    if (direction === "left" && index > 0) {
+      index--;
+    } else if (direction === "right" && index < maxIndex) {
+      index++;
+    }
+    wrapper.style.transform = `translateX(-${index * slideWidth}px)`;
+  }
+
+  iconoFlechaIzq.addEventListener("click", () => moveSlides("left"));
+  iconoFlechaDer.addEventListener("click", () => moveSlides("right"));
+
+  // Selección de un niño y activación del botón
+  wrapper.querySelectorAll(".ninos_slide").forEach((nino) => {
+    nino.addEventListener("click", () => {
+      wrapper.querySelectorAll(".ninos_slide").forEach((el) => {
+        el.classList.remove("selected");
+      });
+      nino.classList.add("selected");
+      btnSiguiente.classList.remove("btn-disable");
+      btnSiguiente.style.backgroundColor = "var(--cielo)";
+      btnSiguiente.disabled = false;
+    });
+  });
+
+  const closeButton = document.getElementById("info-close-button");
+  const closeHandler = () => {
+    titleElement.style.textAlign = originalTextAlign;
+    titleElement.style.marginBottom = originalMarginBottom;
+    closeButton.removeEventListener("click", closeHandler);
+  };
+  closeButton.addEventListener("click", closeHandler);
+}
+
+
 
 // // Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
 // function showLightboxParient() {
@@ -2403,33 +2650,7 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
 //   );
 // }
 
-// Al hacer clic en el botón de finanzas
-const finanzas_lightbox = document.getElementById("lightbox-finanzas");
-if (finanzas_lightbox) {
-  finanzas_lightbox.addEventListener("click", function (event) {
-    if (validarSuscripcion()) {
-      // Si el ID es correcto, redirigir a la página de finanzas
-      window.location.href = "/miembros/acuarela-app-web/finanzas";
-    } else {
-      // Si no, mostrar el lightbox
-      showLightboxFinanzas();
-    }
-  });
-}
 
-// Validar acceso al cargar la página directamente
-document.addEventListener("DOMContentLoaded", function () {
-  const mainFinanzas = document.getElementById("Finanzas");
-
-  if (window.location.href.includes("/miembros/acuarela-app-web/finanzas")) {
-    if (!validarSuscripcion()) {
-      if (mainFinanzas) {
-        mainFinanzas.innerHTML = ""; // Limpiar el contenido de <main id="Finanzas">
-      }
-      showLightboxFinanzas();
-    }
-  }
-});
 
 const getDataAsistentes = async () => {
   const response = await fetch(`g/getAsistentes/`);

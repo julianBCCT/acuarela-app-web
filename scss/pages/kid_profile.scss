@@ -457,7 +457,7 @@
             
             #calendar td:hover,
             #calendar td.active {
-              background-color: var(--cielo);
+              background-color: var(--cielo_tenue);
               cursor: pointer;
             }
             #calendar td:hover .day-wrapper .day-text p,
@@ -500,9 +500,14 @@
               flex-direction: column;
               align-items: center;
               padding: 5px 10px 20px 10px;
+              min-width: 100px;
+              @media (max-width: 768px) {
+                min-width: 80px;
+              }
               @media (max-width: 425px) {
                 align-items: start;
                 padding: 5px 5px 15px 5px;
+                min-width: 0;
               }
             }
             
@@ -528,7 +533,7 @@
               @media (max-width: 425px) {
                 flex-direction: column;
                 align-items: start;
-                height: auto;
+                height: 30px;
               }
             }
             
