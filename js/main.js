@@ -120,136 +120,7 @@ const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
 const baseUrl = "https://acuarelacore.com/api";
 
 
-//==>Enviar datos al collection HEALTHINFO en strapi
-const handleHealthInfo = async () => {
-  fadeIn(preloader);
-  const form = document.getElementById("healthInfoForm");
-  const inputs = form.querySelectorAll("input, select, textarea");
 
-  const formValues = {};
-  inputs.forEach((input) => {
-    if (input.type === "checkbox") {
-      formValues[input.name] = input.checked ? input.value : "0";
-    } else {
-      formValues[input.name] = input.value;
-    }
-  });
-
-  let dataToSend = {
-    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
-    child: kidData._id,
-    asthma: formValues.asma,
-    allergies: [...document.querySelectorAll("input[name='alergias']")].map(
-      (input) => input.value
-    ),
-    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(
-      (input) => input.value
-    ),
-    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(
-      (input) => input.value
-    ),
-    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(
-      (input) => input.value
-    ),
-    physical_health: formValues.salud_fisica,
-    emocional_health: formValues.salud_emocional,
-    suspected_abuse: formValues.sospecha_abuso,
-    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(
-      (input) => input.value
-    ),
-    pediatrician: formValues.pedriatra,
-    pediatrician_number: formValues.pedriatra_numero,
-    pediatrician_email: formValues.pedriatra_email,
-  };
-  console.log(dataToSend);
-
-  try {
-    if (!kidData.healthinfo || kidData.healthinfo.child !== kidData._id) {
-      const response = await fetch("s/createHealthInfo/", {
-        method: "POST",
-        body: JSON.stringify(dataToSend),
-        headers: { "Content-Type": "application/json" },
-      });
-      const body = await response.json();
-
-      if (body.id) {
-        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-      }
-    } else {
-      const response = await fetch("s/updateHealthInfo/", {
-        method: "PUT",
-        body: JSON.stringify(dataToSend),
-        headers: { "Content-Type": "application/json" },
-      });
-      const body = await response.json();
-
-      if (body.id) {
-        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-      } else {
-        console.error("Error al actualizar HealthInfo: ", body);
-      }
-    }
-  } catch (error) {
-    console.error("Error handling healthinfo:", error);
-    return false;
-  }
-};
-
-const handleReportInfo = async () => {
-  fadeIn(preloader);
-  const form = document.getElementById("healthInfoForm");
-  const inputs = form.querySelectorAll("input, select, textarea");
-
-  const formValues = {};
-  inputs.forEach((input) => {
-    formValues[input.name] = input.value;
-  });
-
-  // Objtener fechas de hoy en hora New York 
-  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
-  // Formatear la fecha (31/01/2025)
-  const dateObj = new Date(currentDate);
-  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
-
-  let newIncident = {
-    reported_for: formValues.reportado_por,
-    incident_type: formValues["tipo-incidente"],
-    description: formValues.descripcion,
-    temperature: formValues.temperatura,
-    gravedad: formValues["levelgrave"],
-    actions_taken: formValues.acciones_tomadas,
-    actions_expected: formValues.acciones_esperadas,
-    reported_enf: reportedenf 
-    // reported_enh: "15:00"  
-  };
-
-  let dataToSend = {
-    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
-    child: kidData._id,
-    incidents: kidData.healthinfo?.incidents
-      ? [...kidData.healthinfo.incidents, newIncident] // Agrega el nuevo incidente
-      : [newIncident], // Si no existen incidentes, crea el array con el primero
-  };
-  console.log("Enviando datos:", dataToSend);
-
-  try {
-    const response = await fetch("s/updateHealthInfo/", {
-      method: "PUT",
-      body: JSON.stringify(dataToSend),
-      headers: { "Content-Type": "application/json" },
-    });
-    const result = await response.json();
-    console.log("Respuesta del servidor:", result); // Verifica qué devuelve exactamente
-
-    if (!response.ok) {
-      throw new Error(`Error ${response.status}: ${result.message}`);
-    }
-    localStorage.setItem("showEmergencyButton", "true");
-    window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
-  } catch (error) {
-    console.error("Error al agregar incidente:", error);
-  }
-};
 
 const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
   fadeIn(preloader);
@@ -1969,6 +1840,173 @@ function showLightboxParient() {
   contentContainer.appendChild(parientsLight);
   showInfoLightbox("Contactar con pariente según nivel de gravedad",contentContainer);
 }
+
+
+
+//================> APARTADO SALUD <===================
+// =====> Enviar datos al collection HEALTHINFO en strapi para SALUD<===
+const handleHealthInfo = async () => {
+  fadeIn(preloader);
+  const form = document.getElementById("healthInfoForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+
+  const formValues = {};
+  inputs.forEach((input) => {
+    if (input.type === "checkbox") {
+      formValues[input.name] = input.checked ? input.value : "0";
+    } else {
+      formValues[input.name] = input.value;
+    }
+  });
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    asthma: formValues.asma,
+    allergies: [...document.querySelectorAll("input[name='alergias']")].map(
+      (input) => input.value
+    ),
+    medicines: [...document.querySelectorAll("input[name='medicamentos']")].map(
+      (input) => input.value
+    ),
+    vacination: [...document.querySelectorAll("input[name='vacunas']")].map(
+      (input) => input.value
+    ),
+    accidents: [...document.querySelectorAll("input[name='accidentes']")].map(
+      (input) => input.value
+    ),
+    physical_health: formValues.salud_fisica,
+    emotional_health: formValues.salud_emocional,
+    suspected_abuse: formValues.sospecha_abuso,
+    ointments: [...document.querySelectorAll("input[name='unguentos']")].map(
+      (input) => input.value
+    ),
+    pediatrician: formValues.pedriatra,
+    pediatrician_number: formValues.pedriatra_numero,
+    pediatrician_email: formValues.pedriatra_email,
+  };
+  console.log(dataToSend);
+
+  try {
+    if (!kidData.healthinfo || kidData.healthinfo.child !== kidData._id) {
+      const response = await fetch("s/createHealthInfo/", {
+        method: "POST",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+      }
+    } else {
+      const response = await fetch("s/updateHealthInfo/", {
+        method: "PUT",
+        body: JSON.stringify(dataToSend),
+        headers: { "Content-Type": "application/json" },
+      });
+      const body = await response.json();
+
+      if (body.id) {
+        window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+      } else {
+        console.error("Error al actualizar HealthInfo: ", body);
+      }
+    }
+  } catch (error) {
+    console.error("Error handling healthinfo:", error);
+    return false;
+  }
+};
+
+// =====> Desplegar en vista para CELL el apartado UNGUENTOS
+document.querySelectorAll(".ung-btn").forEach((btn) => {
+  btn.addEventListener("click", function () {
+      const content = this.parentElement.nextElementSibling; 
+      const icon = this.querySelector("i"); 
+      content.classList.toggle("show"); 
+      // Alterna las clases del ícono
+      if (icon.classList.contains("acuarela-Flecha_arriba")) {
+          icon.classList.remove("acuarela-Flecha_arriba");
+          icon.classList.add("acuarela-Flecha_abajo");
+      } else {
+          icon.classList.remove("acuarela-Flecha_abajo");
+          icon.classList.add("acuarela-Flecha_arriba");
+      }
+  });
+});
+
+
+// =====> Enviar datos al collection HEALTHINFO en strapi para INCIDENTES<===
+const handleReportInfo = async () => {
+  fadeIn(preloader);
+  const form = document.getElementById("healthInfoForm");
+  const inputs = form.querySelectorAll("input, select, textarea");
+
+  const formValues = {};
+  inputs.forEach((input) => {
+    formValues[input.name] = input.value;
+  });
+
+  // Objtener fechas de hoy en hora New York 
+  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  // Formatear la fecha (31/01/2025)
+  const dateObj = new Date(currentDate);
+  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+
+  let newIncident = {
+    reported_for: formValues.reportado_por,
+    incident_type: formValues["tipo-incidente"],
+    description: formValues.descripcion,
+    temperature: formValues.temperatura,
+    gravedad: formValues["levelgrave"],
+    actions_taken: formValues.acciones_tomadas,
+    actions_expected: formValues.acciones_esperadas,
+    reported_enf: reportedenf 
+    // reported_enh: "15:00"  
+  };
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    incidents: kidData.healthinfo?.incidents
+      ? [...kidData.healthinfo.incidents, newIncident] // Agrega el nuevo incidente
+      : [newIncident], // Si no existen incidentes, crea el array con el primero
+  };
+  console.log("Enviando datos:", dataToSend);
+
+  try {
+    const response = await fetch("s/updateHealthInfo/", {
+      method: "PUT",
+      body: JSON.stringify(dataToSend),
+      headers: { "Content-Type": "application/json" },
+    });
+    const result = await response.json();
+    console.log("Respuesta del servidor:", result); // Verifica qué devuelve exactamente
+
+    if (!response.ok) {
+      throw new Error(`Error ${response.status}: ${result.message}`);
+    }
+    localStorage.setItem("showEmergencyButton", "true");
+    window.location.href = `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`;
+  } catch (error) {
+    console.error("Error al agregar incidente:", error);
+  }
+};
+
+
+// =====> Desplegar los Incidentes
+const incidents = document.querySelectorAll('.incidentnino');
+incidents.forEach(incident => {
+    const toggleContainer = incident.querySelector('.incidentnino-desp');
+    const incidentInfo = incident.querySelector('.incidentinfo');
+    const iconContainer = incident.querySelector('.iconincid');
+
+    toggleContainer.addEventListener('click', function () {
+        incidentInfo.classList.toggle('incidentdesp');
+        iconContainer.classList.toggle('rotate');
+    });
+});
 
 
 function formatFechaHealth(fecha) {

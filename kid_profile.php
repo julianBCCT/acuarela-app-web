@@ -143,7 +143,7 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Asma: </span></p>
                                     <div class="saludcampos-JSON">
-                                        <p><?=$kid->healthinfo->asthma?> </p>
+                                        <p><?= $kid->healthinfo->asthma == 1 ? 'Sí' : 'No' ?></p>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
@@ -173,17 +173,13 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud física:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->physical_health ?? ['Ninguna'] as $salud_fisica): ?>
-                                        <p><?= htmlspecialchars($salud_fisica) ?></p>
-                                    <?php endforeach; ?>
+                                        <p><?= !empty($kid->healthinfo->physical_health) ? $kid->healthinfo->physical_health : 'Ninguna' ?></p>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Salud emocional:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->emotional_health ?? ['Ninguna'] as $salud_emocional): ?>
-                                        <p><?= htmlspecialchars($salud_emocional) ?></p>
-                                    <?php endforeach; ?>
+                                        <p><?= !empty($kid->healthinfo->emotional_health) ? $kid->healthinfo->emotional_health : 'Ninguna' ?></p>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
@@ -240,7 +236,7 @@
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>  <span class="inc-text"> <?= $incident->description ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span>  <span class="inc-text"> <?= $incident->gravedad ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span>  <span class="inc-text"> <?= $incident->temperature ?> °F </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> <?= $incident->statehealth ?> </span> </p>
+                                                <!-- <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> <?= $incident->statehealth ?> </span> </p> -->
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span>  <span class="inc-text"> <?= $incident->actions_taken ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span>  <span class="inc-text"> <?= $incident->actions_expected ?> </span> </p>
                                             </div>
@@ -362,39 +358,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        //==> Desplegar los Incidentes
-        const incidents = document.querySelectorAll('.incidentnino');
-        incidents.forEach(incident => {
-            const toggleContainer = incident.querySelector('.incidentnino-desp');
-            const incidentInfo = incident.querySelector('.incidentinfo');
-            const iconContainer = incident.querySelector('.iconincid');
-
-            toggleContainer.addEventListener('click', function () {
-                incidentInfo.classList.toggle('incidentdesp');
-                iconContainer.classList.toggle('rotate');
-            });
-        });
-
-
-        //==> Desplegar en vista para CELL el apartado UNGUENTOS
-        document.querySelectorAll(".ung-btn").forEach((btn) => {
-            btn.addEventListener("click", function () {
-                const content = this.parentElement.nextElementSibling; 
-                const icon = this.querySelector("i"); 
-                content.classList.toggle("show"); 
-
-                // Alterna las clases del ícono
-                if (icon.classList.contains("acuarela-Flecha_arriba")) {
-                    icon.classList.remove("acuarela-Flecha_arriba");
-                    icon.classList.add("acuarela-Flecha_abajo");
-                } else {
-                    icon.classList.remove("acuarela-Flecha_abajo");
-                    icon.classList.add("acuarela-Flecha_arriba");
-                }
-            });
-        });
-
-
         //==> Calendario del HEALTH CHECK
         const calendar = document.querySelector('#calendar tbody');
         const monthSelect = document.querySelector('#month-select');
