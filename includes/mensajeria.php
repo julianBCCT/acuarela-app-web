@@ -5,18 +5,19 @@
 
     <div class="icons">
         <ul id="opciones-mensajeria">
-            <li id="buscar-mensajeria">
+            <li id="buscar-mensajeria" title="Buscar chats activos">
                 <i class="acuarela acuarela-Buscar"></i>
             </li>
-            <li id="agregar-mensajeria">
+            <li id="agregar-mensajeria" title="Crear nuevo chat">
                 <i class="acuarela acuarela-Agregar"></i>
             </li>
-            <li class="chat-icon">
+            <!-- <li class="chat-icon" title="Ver chat">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
-            </li>
-            <li id="agregar-grupo-mensajeria">
+            </li> -->
+            <li id="agregar-grupo-mensajeria" title="Crear Grupo">
                 <i class="acuarela acuarela-Ambos"></i>
             </li>
+            <hr style="border: 1px solid #ccc; width: 100%;">
             <!--
             <li class="chat-icon">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
@@ -62,6 +63,7 @@
             <i id="closeBuscador-grupal" class="acuarela acuarela-Cancelar"></i>
         </div>
         <div id="div-lista-chats-grupales" class="chats-padres">
+
 
         </div>
 
