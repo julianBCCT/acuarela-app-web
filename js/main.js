@@ -1457,7 +1457,7 @@ function showLightboxEmergency() {
 
   contentContainer.appendChild(linkEmergencia);
   contentContainer.appendChild(linkPariente);
-  showInfoLightbox("Contacto de emergencia",contentContainer);
+  showInfoLightbox("Contacto de emergencia", contentContainer);
 }
 
 
@@ -1486,7 +1486,7 @@ function showLightboxCallEmergency() {
 
   contentContainer.appendChild(Urgencias);
   contentContainer.appendChild(Policia);
-  showInfoLightbox("LLamar a emergencias",contentContainer);
+  showInfoLightbox("LLamar a emergencias", contentContainer);
 }
 
 // Función para mostrar el mensaje dinámico ============================
@@ -1669,8 +1669,9 @@ function showLightboxParient() {
       const buttonDataGrave = [
         { text: "Llamar", iconClass: "acuarela acuarela-Telefono" },
         { text: "Texto", iconClass: "acuarela acuarela-Habla" },
-        { text: "Email", 
-          iconClass: "acuarela acuarela-Mensajes", 
+        {
+          text: "Email",
+          iconClass: "acuarela acuarela-Mensajes",
           action: () => {
             const gravedad = "grave";
             const email = kidData.guardians[0].guardian_email;
@@ -1683,7 +1684,7 @@ function showLightboxParient() {
     } else {
       const gravedad = "grave";
       const email = kidData.guardians[0].guardian_email;
-      const name = kidData.guardians[0].guardian_name; 
+      const name = kidData.guardians[0].guardian_name;
       sendEmergencyEmail(gravedad, email, name);
     }
   });
@@ -1698,7 +1699,7 @@ function showLightboxParient() {
   linkModerado.addEventListener("click", () => {
     const container = document.querySelector(".methods-emergency");
     if (!kidData.incidents || kidData.incidents.length === 0) {
-      showMessage(container,"El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
+      showMessage(container, "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
@@ -1715,17 +1716,17 @@ function showLightboxParient() {
         leftPosition = "180px";
       }
       const buttonDataModerado = [{
-          text: "Llenar reporte",
-          iconClass: "acuarela acuarela-Telefono",
-          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
-        },];
+        text: "Llenar reporte",
+        iconClass: "acuarela acuarela-Telefono",
+        href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
+      },];
       buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
       return;
     }
 
     // Obtener la fecha actual ajustada a Nueva York (sin la hora)
     const now = new Date();
-    const options = {timeZone: "America/New_York",year: "numeric",day: "2-digit",month: "2-digit",};
+    const options = { timeZone: "America/New_York", year: "numeric", day: "2-digit", month: "2-digit", };
     const formatter = new Intl.DateTimeFormat("en-US", options);
     const parts = formatter.formatToParts(now);
     const todayNY = `${parts[4].value}-${parts[0].value}-${parts[2].value}`; // Año-Mes-Día
@@ -1746,11 +1747,11 @@ function showLightboxParient() {
         const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
         const incidentType = incident.description || "[Tipo de incidencia]";
         const temperature = incident.temperature || "[Temperatura]";
-        const actionsTaken = incident.actions_taken || "[Acciones tomadas]"; 
+        const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
         const severityLevel = incident.gravedad || "[Nivel de gravedad]";
         const suggestedActions =
-        incident.actions_expected || "[Acciones esperadas]";
-        sendEmergencyEmail(gravedad,email,email2,name,name2,lastname,lastname2,reportedFor,incidentType,temperature,actionsTaken,severityLevel,suggestedActions);
+          incident.actions_expected || "[Acciones esperadas]";
+        sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2, reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions);
         matchFound = true; // Indicar que se encontro una coincidencia
         break;
       }
@@ -1758,7 +1759,7 @@ function showLightboxParient() {
 
     if (!matchFound) {
       const container = document.querySelector(".methods-emergency");
-      showMessage(container,"El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
+      showMessage(container, "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
@@ -1775,9 +1776,9 @@ function showLightboxParient() {
         leftPosition = "180px";
       }
       const buttonDataModerado = [{
-          text: "Llenar reporte",
-          iconClass: "acuarela acuarela-Telefono",
-          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
+        text: "Llenar reporte",
+        iconClass: "acuarela acuarela-Telefono",
+        href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
       },];
       buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
     }
@@ -1787,7 +1788,7 @@ function showLightboxParient() {
 
   const parientsLight = dataParient(kidData);
   contentContainer.appendChild(parientsLight);
-  showInfoLightbox("Contactar con pariente según nivel de gravedad",contentContainer);
+  showInfoLightbox("Contactar con pariente según nivel de gravedad", contentContainer);
 }
 
 
@@ -1871,17 +1872,17 @@ const handleHealthInfo = async () => {
 // =====> Desplegar en vista para CELL el apartado UNGUENTOS
 document.querySelectorAll(".ung-btn").forEach((btn) => {
   btn.addEventListener("click", function () {
-      const content = this.parentElement.nextElementSibling; 
-      const icon = this.querySelector("i"); 
-      content.classList.toggle("show"); 
-      // Alterna las clases del ícono
-      if (icon.classList.contains("acuarela-Flecha_arriba")) {
-          icon.classList.remove("acuarela-Flecha_arriba");
-          icon.classList.add("acuarela-Flecha_abajo");
-      } else {
-          icon.classList.remove("acuarela-Flecha_abajo");
-          icon.classList.add("acuarela-Flecha_arriba");
-      }
+    const content = this.parentElement.nextElementSibling;
+    const icon = this.querySelector("i");
+    content.classList.toggle("show");
+    // Alterna las clases del ícono
+    if (icon.classList.contains("acuarela-Flecha_arriba")) {
+      icon.classList.remove("acuarela-Flecha_arriba");
+      icon.classList.add("acuarela-Flecha_abajo");
+    } else {
+      icon.classList.remove("acuarela-Flecha_abajo");
+      icon.classList.add("acuarela-Flecha_arriba");
+    }
   });
 });
 
@@ -1911,7 +1912,7 @@ const handleReportInfo = async () => {
     gravedad: formValues["levelgrave"],
     actions_taken: formValues.acciones_tomadas,
     actions_expected: formValues.acciones_esperadas,
-    reported_enf: reportedenf 
+    reported_enf: reportedenf
     // reported_enh: "15:00"  
   };
 
@@ -1947,14 +1948,14 @@ const handleReportInfo = async () => {
 // =====> Desplegar los Incidentes
 const incidents = document.querySelectorAll('.incidentnino');
 incidents.forEach(incident => {
-    const toggleContainer = incident.querySelector('.incidentnino-desp');
-    const incidentInfo = incident.querySelector('.incidentinfo');
-    const iconContainer = incident.querySelector('.iconincid');
+  const toggleContainer = incident.querySelector('.incidentnino-desp');
+  const incidentInfo = incident.querySelector('.incidentinfo');
+  const iconContainer = incident.querySelector('.iconincid');
 
-    toggleContainer.addEventListener('click', function () {
-        incidentInfo.classList.toggle('incidentdesp');
-        iconContainer.classList.toggle('rotate');
-    });
+  toggleContainer.addEventListener('click', function () {
+    incidentInfo.classList.toggle('incidentdesp');
+    iconContainer.classList.toggle('rotate');
+  });
 });
 
 
@@ -1963,7 +1964,7 @@ incidents.forEach(incident => {
 // =====> Enviar datos al collection HEALTHINFO en strapi para HEALTH CHECK <===
 const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
   const closeButton = document.getElementById("info-close-button"); // Ocultar el lightbox antes de enviar la información
-  if (closeButton) closeButton.click(); 
+  if (closeButton) closeButton.click();
   fadeIn(preloader);
 
   // Objtener fecha actual en hora New York
@@ -1983,8 +1984,8 @@ const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
   let dataToSend = {
     inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
     child: kidData._id,
-    healthcheck: kidData.healthinfo.healthcheck 
-      ? [...kidData.healthinfo.healthcheck, newHealthCheck] 
+    healthcheck: kidData.healthinfo.healthcheck
+      ? [...kidData.healthinfo.healthcheck, newHealthCheck]
       : [newHealthCheck]
   };
 
@@ -2053,7 +2054,7 @@ function formatFechaHealth(fecha) {
 
 // =====> Primer lightbox para AGREGAR REPORTE <===
 function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
-  let kidGlobal = origen === 1 ? kid : kidData; 
+  let kidGlobal = origen === 1 ? kid : kidData;
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-daylihealth");
   const titleElement = document.getElementById("info-lightbox-title");
@@ -2149,9 +2150,9 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
   const selectedReport = dataNino.querySelector("#selected-report");
   const selectedReportEs = dataNino.querySelector("#selected-report-es");
 
-  selectReport.addEventListener("change", function() {
-      selectedReport.textContent = this.value;
-      selectedReportEs.textContent = reportTranslations[this.value] || "";
+  selectReport.addEventListener("change", function () {
+    selectedReport.textContent = this.value;
+    selectedReportEs.textContent = reportTranslations[this.value] || "";
   });
 
   const databutton = document.createElement("div");
@@ -2181,7 +2182,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
         button.style.opacity = "1";
         button.disabled = false; // Habilitar el botón directamente
         button.style.cursor = "pointer";
-      } else if (selectedNovedad === "si") {      
+      } else if (selectedNovedad === "si") {
         if (tempValue !== "" && estadoValue !== "") {
           button.style.backgroundColor = "var(--cielo)";
           button.style.opacity = "1";
@@ -2372,16 +2373,16 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
         },
         body: JSON.stringify(data),
       })
-      .then(response => response.json()) // Si se recibe una respuesta, convertirla a JSON
-      .then(data => {
-        console.log("Respuesta del webhook:", data);
-      })
-      .catch((error) => {
-        console.error("Error al enviar los datos:", error);
-      });
+        .then(response => response.json()) // Si se recibe una respuesta, convertirla a JSON
+        .then(data => {
+          console.log("Respuesta del webhook:", data);
+        })
+        .catch((error) => {
+          console.error("Error al enviar los datos:", error);
+        });
     }
   }, 0);
-  
+
   contentContainer.appendChild(novedad);
   contentContainer.appendChild(databutton);
   showInfoLightbox("Daily Health Check", contentContainer);
@@ -2476,14 +2477,14 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
       circle.style.border = "2px solid var(--secundario1)";
     } else if (areasAfectadas.includes(area)) {
       // Si el área está afectada, aplicar los estilos de "rojo"
-      circle.style.backgroundColor = "rgba(235, 93, 94, 0.8)"; 
-      circle.style.boxShadow = "0 0 15px rgba(235, 93, 94, 0.5)"; 
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.8)";
+      circle.style.boxShadow = "0 0 15px rgba(235, 93, 94, 0.5)";
       circle.classList.add("animate");
     } else {
       // Si el área no está afectada, quitar la animación y cambiar el color de fondo
       circle.classList.remove("animate");
-      circle.style.backgroundColor = "rgba(235, 93, 94, 0.3)"; 
-      circle.style.boxShadow = "none"; 
+      circle.style.backgroundColor = "rgba(235, 93, 94, 0.3)";
+      circle.style.boxShadow = "none";
     }
   });
 
@@ -3576,7 +3577,7 @@ async function buscarChatsActivos() {
       }
     );
     const chatsActivos = await response.json();
-    console.log(chatsActivos);
+    // console.log(chatsActivos);
     return chatsActivos;
   } catch (error) {
     console.log("No se pueden listar los chats activos");
@@ -3729,6 +3730,7 @@ async function divNuevoChat() {
     buscarMensajeria.classList.remove("inactive");
     grupoMensajeria.classList.remove("inactive");
     buscarMensajeria.addEventListener("click", divBuscarActivos);
+    // buscarMensajeria.addEventListener("click", divBuscarActivos);
     chatButton.forEach((boton) => {
       boton.classList.remove("inactive");
       boton.addEventListener("click", activosListener);
@@ -4114,18 +4116,10 @@ document.getElementById("closeBuscador").addEventListener("click", () => {
   buscarMensajeria.click();
 });
 
-// buscarMensajeria.addEventListener("click", divBuscarActivos);
-buscarMensajeria.addEventListener("click", () => {
-  modo = "individual";
-  divBuscarActivos();
-
-});
-
+buscarMensajeria.addEventListener("click", divBuscarActivos);
 
 
 async function divBuscarActivos() {
-  console.log("divBuscarActivos");
-  console.log("El modo es: ", modo);
   chatButton = document.querySelectorAll(".chat-icon");
 
   if (buscarMensajeria.classList.contains("active")) {
@@ -4189,23 +4183,26 @@ async function divBuscarActivos() {
 
 
     function mostrarPadres(padres) {
-      console.log("mostrarPadres -");
+      console.log("mostrarPadres - divBuscarActivos");
       console.log(padres);
       divPadresChats.innerHTML = "";
+      console.log(divPadresChats);
+
       if (padres.length > 0) {
         padres.forEach((padre) => {
-          console.log(padre);
+          // console.log(padre);
           const padreElement = document.createElement("div");
           padreElement.className = "chats-mensajeria";
           const padrePhoto = document.createElement("img");
-          // padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
-          padrePhoto.src = "./img/caras/veryHappy.svg";
+          padrePhoto.src = "https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png";
+          // padrePhoto.src = "./img/caras/veryHappy.svg";
           const padreName = document.createElement("p");
           padreName.id = "chat-padre";
           padreName.textContent = `${padre.name}`;
           padreElement.appendChild(padrePhoto);
           padreElement.appendChild(padreName);
           divPadresChats.appendChild(padreElement);
+          console.log(divPadresChats);
 
           padreElement.addEventListener("click", () => {
             console.log("Se hace click");
