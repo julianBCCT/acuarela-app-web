@@ -769,7 +769,8 @@
     .chats-buscados {
       position: fixed;
       bottom: 50px;
-      right: 100px;
+      // right: 100px;
+      right: 10%;
       width: 340px;
       height: 354px;
       background: rgba(251, 252, 254, 1);
@@ -885,6 +886,11 @@
             }
           }
         }
+      }
+    }
+    @media only screen and (max-width: 400px) {
+      .chats-buscados {
+        right: 5%;
       }
     }
 
@@ -1055,6 +1061,13 @@
           font-size: 16px;
           cursor: pointer;
         }
+      }
+    }
+    @media only screen and (max-width: 500px) {
+      .chat-individual {
+        right: 5%;
+
+        width: 90%;
       }
     }
   }

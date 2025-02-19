@@ -4211,11 +4211,8 @@ document.getElementById("closeBuscador").addEventListener("click", () => {
   buscarMensajeria.click();
 });
 
-// buscarMensajeria.addEventListener("click", divBuscarActivos);
-buscarMensajeria.addEventListener("click", () => {
-  modo = "individual";
-  divBuscarActivos();
-});
+buscarMensajeria.addEventListener("click", divBuscarActivos);
+
 
 async function divBuscarActivos() {
   chatButton = document.querySelectorAll(".chat-icon");
@@ -4654,105 +4651,221 @@ let participants = [];
 //   }
 // }
 
-function cargarMessages(mes) {
+// function cargarMessages(mes) {
+//   console.log("cargarMessages");
+
+//   if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
+//     const messagesMonths = chatMessages[0].messages;
+//     participants = chatMessages[0].participants;
+//     console.log(chatMessages);
+//     console.log(participants);
+
+//     // Verificar si es un grupo (si el room contiene "group_")
+//     const esGrupo = chatMessages[0].room.includes("group_");
+
+//     let mesesDisponibles = Object.keys(messagesMonths).sort().reverse();
+//     let mensajesCargados = [];
+
+//     // Si el mes actual no tiene mensajes, buscar el más reciente disponible
+//     if (!messagesMonths[mes]) {
+//       mes = mesesDisponibles.length > 0 ? mesesDisponibles[0] : null;
+//     }
+//     if (!mes) {
+//       console.log("No hay mensajes en ningún mes.");
+//       mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
+//       return;
+//     }
+
+//     console.log(`Cargando mensajes desde el mes: ${mes}`);
+//     let indiceMes = mesesDisponibles.indexOf(mes);
+
+//     // Cargar mensajes hasta completar 20
+//     while (
+//       indiceMes < mesesDisponibles.length &&
+//       mensajesCargados.length < 20
+//     ) {
+//       let mesActual = mesesDisponibles[indiceMes];
+//       let mensajesMesActual = messagesMonths[mesActual].slice().reverse();
+//       mensajesCargados = mensajesCargados.concat(mensajesMesActual);
+//       indiceMes++;
+//     }
+
+//     if (mensajesCargados.length === 0) {
+//       console.log("No hay mensajes disponibles en ningún mes.");
+//       mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
+//       return;
+//     }
+
+//     // Guardar la posición actual del scroll
+//     const currentScrollPosition =
+//       contendorMessages.scrollHeight - contendorMessages.scrollTop;
+
+//     mensajesCargados.forEach((msg) => {
+//       const messageElement = document.createElement("div");
+//       const mensajeElement = document.createElement("p");
+//       const nameElement = document.createElement("p");
+//       const horaElement = document.createElement("p");
+//       horaElement.className = "chat-hora";
+//       nameElement.className = "chat-name";
+
+//       // Obtener la hora del mensaje
+//       const horaMenssage = new Date(msg.timestamp);
+//       const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+//       horaElement.textContent = horaMenssage.toLocaleTimeString([], options);
+
+//       // Si es grupo, obtener el nombre del remitente
+//       if (esGrupo && msg.sender !== acuarelaId) {
+//         const nameElement = document.createElement("p");
+//         nameElement.className = "chat-name";
+
+//         const participante = participants.find((p) => p.id === msg.sender);
+//         if (participante) {
+//           nameElement.textContent = `${participante.name} ${participante.lastname}`;
+//           messageElement.appendChild(nameElement); // Agregar el nombre antes del mensaje
+//         }
+//       }
+
+//       mensajeElement.textContent = msg.content; // Agregar nombre si es grupo
+//       messageElement.appendChild(mensajeElement);
+//       messageElement.appendChild(horaElement);
+
+//       // Aplicar clase según el remitente
+//       messageElement.className =
+//         msg.sender === acuarelaId ? "mensaje-enviado" : "mensaje-recibido";
+
+//       contendorMessages.insertBefore(
+//         messageElement,
+//         contendorMessages.firstChild
+//       );
+//     });
+
+//     // Ajustar la posición del scroll para evitar saltos
+//     contendorMessages.scrollTop =
+//       contendorMessages.scrollHeight - currentScrollPosition;
+//     isLoadingOlderMessages = false;
+
+//     verificarScrollInicial();
+//   } else {
+//     console.log("Entra al else");
+//     mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
+//   }
+// }
+
+function cargarMessages(mes, mostrarPreloader = true) {
   console.log("cargarMessages");
 
-  if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
-    const messagesMonths = chatMessages[0].messages;
-    participants = chatMessages[0].participants;
-    console.log(chatMessages);
-    console.log(participants);
+  const messagesContainer = document.getElementById("messages");
+  let preloader;
 
-    // Verificar si es un grupo (si el room contiene "group_")
-    const esGrupo = chatMessages[0].room.includes("group_");
+  // Mostrar el preloader solo si mostrarPreloader es true (es la primera carga)
+  if (mostrarPreloader) {
+    preloader = document.createElement("div");
+    preloader.className = "preloader";
+    preloader.innerHTML = '<img src="img/preloader.gif" alt="preloader">';
+    messagesContainer.appendChild(preloader);
+  }
 
-    let mesesDisponibles = Object.keys(messagesMonths).sort().reverse();
-    let mensajesCargados = [];
+  setTimeout(() => {
+    if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
+      const messagesMonths = chatMessages[0].messages;
+      participants = chatMessages[0].participants;
+      console.log(chatMessages);
+      console.log(participants);
 
-    // Si el mes actual no tiene mensajes, buscar el más reciente disponible
-    if (!messagesMonths[mes]) {
-      mes = mesesDisponibles.length > 0 ? mesesDisponibles[0] : null;
-    }
-    if (!mes) {
-      console.log("No hay mensajes en ningún mes.");
-      mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
-      return;
-    }
+      // Verificar si es un grupo (si el room contiene "group_")
+      const esGrupo = chatMessages[0].room.includes("group_");
 
-    console.log(`Cargando mensajes desde el mes: ${mes}`);
-    let indiceMes = mesesDisponibles.indexOf(mes);
+      let mesesDisponibles = Object.keys(messagesMonths).sort().reverse();
+      let mensajesCargados = [];
 
-    // Cargar mensajes hasta completar 20
-    while (
-      indiceMes < mesesDisponibles.length &&
-      mensajesCargados.length < 20
-    ) {
-      let mesActual = mesesDisponibles[indiceMes];
-      let mensajesMesActual = messagesMonths[mesActual].slice().reverse();
-      mensajesCargados = mensajesCargados.concat(mensajesMesActual);
-      indiceMes++;
-    }
-
-    if (mensajesCargados.length === 0) {
-      console.log("No hay mensajes disponibles en ningún mes.");
-      mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
-      return;
-    }
-
-    // Guardar la posición actual del scroll
-    const currentScrollPosition =
-      contendorMessages.scrollHeight - contendorMessages.scrollTop;
-
-    mensajesCargados.forEach((msg) => {
-      const messageElement = document.createElement("div");
-      const mensajeElement = document.createElement("p");
-      const nameElement = document.createElement("p");
-      const horaElement = document.createElement("p");
-      horaElement.className = "chat-hora";
-      nameElement.className = "chat-name";
-
-      // Obtener la hora del mensaje
-      const horaMenssage = new Date(msg.timestamp);
-      const options = { hour: "2-digit", minute: "2-digit", hour12: true };
-      horaElement.textContent = horaMenssage.toLocaleTimeString([], options);
-
-      // Si es grupo, obtener el nombre del remitente
-      if (esGrupo && msg.sender !== acuarelaId) {
-        const nameElement = document.createElement("p");
-        nameElement.className = "chat-name";
-
-        const participante = participants.find((p) => p.id === msg.sender);
-        if (participante) {
-          nameElement.textContent = `${participante.name} ${participante.lastname}`;
-          messageElement.appendChild(nameElement); // Agregar el nombre antes del mensaje
-        }
+      // Si el mes actual no tiene mensajes, buscar el más reciente disponible
+      if (!messagesMonths[mes]) {
+        mes = mesesDisponibles.length > 0 ? mesesDisponibles[0] : null;
+      }
+      if (!mes) {
+        console.log("No hay mensajes en ningún mes.");
+        if (preloader) preloader.remove(); // Eliminar el preloader si existe
+        mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
+        return;
       }
 
-      mensajeElement.textContent = msg.content; // Agregar nombre si es grupo
-      messageElement.appendChild(mensajeElement);
-      messageElement.appendChild(horaElement);
+      console.log(`Cargando mensajes desde el mes: ${mes}`);
+      let indiceMes = mesesDisponibles.indexOf(mes);
 
-      // Aplicar clase según el remitente
-      messageElement.className =
-        msg.sender === acuarelaId ? "mensaje-enviado" : "mensaje-recibido";
+      // Cargar mensajes hasta completar 20
+      while (
+        indiceMes < mesesDisponibles.length &&
+        mensajesCargados.length < 20
+      ) {
+        let mesActual = mesesDisponibles[indiceMes];
+        let mensajesMesActual = messagesMonths[mesActual].slice().reverse();
+        mensajesCargados = mensajesCargados.concat(mensajesMesActual);
+        indiceMes++;
+      }
 
-      contendorMessages.insertBefore(
-        messageElement,
-        contendorMessages.firstChild
-      );
-    });
+      if (mensajesCargados.length === 0) {
+        console.log("No hay mensajes disponibles en ningún mes.");
+        if (preloader) preloader.remove(); // Eliminar el preloader si existe
+        mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
+        return;
+      }
 
-    // Ajustar la posición del scroll para evitar saltos
-    contendorMessages.scrollTop =
-      contendorMessages.scrollHeight - currentScrollPosition;
-    isLoadingOlderMessages = false;
+      // Guardar la posición actual del scroll
+      const currentScrollPosition =
+        contendorMessages.scrollHeight - contendorMessages.scrollTop;
 
-    verificarScrollInicial();
-  } else {
-    console.log("Entra al else");
-    mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
-  }
+      mensajesCargados.forEach((msg) => {
+        const messageElement = document.createElement("div");
+        const mensajeElement = document.createElement("p");
+        const nameElement = document.createElement("p");
+        const horaElement = document.createElement("p");
+        horaElement.className = "chat-hora";
+        nameElement.className = "chat-name";
+
+        // Obtener la hora del mensaje
+        const horaMenssage = new Date(msg.timestamp);
+        const options = { hour: "2-digit", minute: "2-digit", hour12: true };
+        horaElement.textContent = horaMenssage.toLocaleTimeString([], options);
+
+        // Si es grupo, obtener el nombre del remitente
+        if (esGrupo && msg.sender !== acuarelaId) {
+          const participante = participants.find((p) => p.id === msg.sender);
+          if (participante) {
+            nameElement.textContent = `${participante.name} ${participante.lastname}`;
+            messageElement.appendChild(nameElement); // Agregar el nombre antes del mensaje
+          }
+        }
+
+        mensajeElement.textContent = msg.content; // Agregar nombre si es grupo
+        messageElement.appendChild(mensajeElement);
+        messageElement.appendChild(horaElement);
+
+        // Aplicar clase según el remitente
+        messageElement.className =
+          msg.sender === acuarelaId ? "mensaje-enviado" : "mensaje-recibido";
+
+        contendorMessages.insertBefore(
+          messageElement,
+          contendorMessages.firstChild
+        );
+      });
+
+      // Ajustar la posición del scroll para evitar saltos
+      contendorMessages.scrollTop =
+        contendorMessages.scrollHeight - currentScrollPosition;
+      isLoadingOlderMessages = false;
+
+      verificarScrollInicial();
+    } else {
+      console.log("Entra al else");
+      mostrarMensajeNoHayMensajes(); // Mostrar mensaje en la interfaz
+    }
+
+    // Ocultar el preloader después de cargar los mensajes
+    if (preloader) preloader.remove();
+  }, mostrarPreloader ? 1000 : 0); // Si es la primera carga, aplica delay
 }
+
 
 // Función para mostrar el mensaje "No hay mensajes previos"
 function mostrarMensajeNoHayMensajes() {
@@ -4824,7 +4937,7 @@ function cargarMesAnterior() {
       contenedorMessages.firstChild
     );
 
-    cargarMessages(mesAnterior); // Mostrar los chats del mes anterior
+    cargarMessages(mesAnterior, false); // Mostrar los chats del mes anterior
     mesesMostrados.push(mesAnterior); // Agregar el nuevo mes a la lista de meses mostrados
   } else {
     const fechaElement = document.createElement("div");
