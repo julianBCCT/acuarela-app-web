@@ -467,7 +467,7 @@
 
                 const healthTempt = kidData.healthinfo.healthcheck.find(entry => entry.daily_fecha === formattedDate);
                 const pTemp = document.createElement('p');
-                pTemp.textContent = healthTempt ? `${healthTempt.temperature}°F` : 'Nt';
+                pTemp.textContent = healthTempt ? `${healthTempt.temperature}°F` : '--';
 
                 const pGuion = document.createElement('p');
                 pGuion.textContent = '-';
@@ -482,7 +482,7 @@
                         pReport.textContent = reportCode;
                     }
                 } else {
-                    pReport.textContent = "Nt"; // Si no hay datos, mostrar "Nt"
+                    pReport.textContent = "--"; // Si no hay datos, mostrar "--"
                 }
 
                 textDiv.appendChild(pTemp);

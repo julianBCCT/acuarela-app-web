@@ -120,57 +120,6 @@ const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
 const baseUrl = "https://acuarelacore.com/api";
 
 
-
-
-const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
-  fadeIn(preloader);
-
-  // Objtener fecha actual en hora New York
-  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
-  const dateObj = new Date(currentDate);
-  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
-
-  const fechaFinal = (fecha === "null" || !fecha) ? reportedenf : fecha;
-
-  let newHealthCheck = {
-    temperature: temperatura,
-    report: reporte,
-    bodychild: kidData.healthinfo.healthcheck.bodychild,
-    daily_fecha: fechaFinal
-  };
-
-  let dataToSend = {
-    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
-    child: kidData._id,
-    healthcheck: kidData.healthinfo.healthcheck 
-      ? [...kidData.healthinfo.healthcheck, newHealthCheck] 
-      : [newHealthCheck]
-  };
-
-  console.log("Enviando datos:", dataToSend);
-
-  try {
-    const response = await fetch("s/updateHealthInfo/", {
-      method: "POST",
-      body: JSON.stringify(dataToSend),
-      headers: { "Content-Type": "application/json" },
-    });
-    const body = await response.json();
-
-    if (body.id) {
-      window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
-    }
-    else {
-      console.error("Error al actualizar HealthInfo: ", body);
-    }
-  } catch (error) {
-    console.error("Error al agregar incidente:", error);
-  }
-};
-
-
-
-
 const handleInscripcion = async () => {
   fadeIn(preloader);
   let isComplete = updatePercentage() === 100;
@@ -2009,6 +1958,59 @@ incidents.forEach(incident => {
 });
 
 
+
+//================> APARTADO HEALTH CHECK <===================
+// =====> Enviar datos al collection HEALTHINFO en strapi para HEALTH CHECK <===
+const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
+  const closeButton = document.getElementById("info-close-button"); // Ocultar el lightbox antes de enviar la información
+  if (closeButton) closeButton.click(); 
+  fadeIn(preloader);
+
+  // Objtener fecha actual en hora New York
+  const currentDate = new Date().toLocaleString("en-US", { timeZone: "America/New_York" });
+  const dateObj = new Date(currentDate);
+  const reportedenf = `${dateObj.getFullYear()}-${(dateObj.getMonth() + 1).toString().padStart(2, '0')}-${dateObj.getDate().toString().padStart(2, '0')}`;
+
+  const fechaFinal = (fecha === "null" || !fecha) ? reportedenf : fecha;
+
+  let newHealthCheck = {
+    temperature: temperatura,
+    report: reporte,
+    bodychild: kidData.healthinfo.healthcheck.bodychild,
+    daily_fecha: fechaFinal
+  };
+
+  let dataToSend = {
+    inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+    child: kidData._id,
+    healthcheck: kidData.healthinfo.healthcheck 
+      ? [...kidData.healthinfo.healthcheck, newHealthCheck] 
+      : [newHealthCheck]
+  };
+
+  console.log("Enviando datos:", dataToSend);
+
+  try {
+    const response = await fetch("s/updateHealthInfo/", {
+      method: "POST",
+      body: JSON.stringify(dataToSend),
+      headers: { "Content-Type": "application/json" },
+    });
+    const body = await response.json();
+
+    if (body.id) {
+      window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
+    }
+    else {
+      console.error("Error al actualizar HealthInfo: ", body);
+    }
+  } catch (error) {
+    console.error("Error al agregar incidente:", error);
+  }
+};
+
+
+// ...
 function formatFechaHealth(fecha) {
   const opciones = { year: "numeric", month: "long", day: "2-digit", timeZone: "America/New_York" };
 
@@ -2044,12 +2046,12 @@ function formatFechaHealth(fecha) {
     if (part.type === "month") mes = part.value;
     if (part.type === "year") año = part.value;
   });
-
   // Retornar en formato "Febrero 02/2025"
   return `${mes.charAt(0).toUpperCase() + mes.slice(1)} ${dia}/${año}`;
 }
 
 
+// =====> Primer lightbox para AGREGAR REPORTE <===
 function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
   let kidGlobal = origen === 1 ? kid : kidData; 
   const contentContainer = document.createElement("div");
@@ -2162,59 +2164,62 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
     <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
   `;
   // Agregar evento al botón
-setTimeout(() => {
-  const button = databutton.querySelector("#btnAgregar-reporte");
-  const inputTemp = document.querySelector("#temperatura");
-  const inputEstadoSalud = document.querySelector("#report");
-  const radioButtons = document.querySelectorAll('input[name="novedad"]');
+  setTimeout(() => {
+    const button = databutton.querySelector("#btnAgregar-reporte");
+    const inputTemp = document.querySelector("#temperatura");
+    const inputEstadoSalud = document.querySelector("#report");
+    const radioButtons = document.querySelectorAll('input[name="novedad"]');
+    button.setAttribute("disabled", "true"); // Bloquea el botón inicialmente
+    button.style.cursor = "not-allowed"; // Cambia el cursor a no permitido
 
-  function validateButton() {
-    const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
-    if (selectedNovedad === "no") {
-      button.style.backgroundColor = "var(--cielo)";
-      button.style.opacity = "1";
-      button.disabled = false; // Habilitar el botón directamente
-    } else if (selectedNovedad === "si") {
+    function validateButton() {
+      const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
       const tempValue = inputTemp.value.trim();
       const estadoValue = inputEstadoSalud.value.trim();
-      
-      if (tempValue !== "" && estadoValue !== "") {
+      if (selectedNovedad === "no") {
         button.style.backgroundColor = "var(--cielo)";
         button.style.opacity = "1";
-        button.disabled = false;
-      } else {
-        button.style.backgroundColor = "";
-        button.disabled = true;
+        button.disabled = false; // Habilitar el botón directamente
+        button.style.cursor = "pointer";
+      } else if (selectedNovedad === "si") {      
+        if (tempValue !== "" && estadoValue !== "") {
+          button.style.backgroundColor = "var(--cielo)";
+          button.style.opacity = "1";
+          button.disabled = false;
+          button.style.cursor = "pointer";
+        } else {
+          button.style.backgroundColor = "";
+          button.disabled = true;
+          utton.style.cursor = "not-allowed";
+        }
       }
     }
-  }
 
-  // Verificar cada cambio en los radios
-  radioButtons.forEach((radio) => {
-    radio.addEventListener("change", validateButton);
-  });
-  // Verificar cada cambio en los inputs
-  inputTemp.addEventListener("input", validateButton);
-  inputEstadoSalud.addEventListener("change", validateButton);
+    // Verificar cada cambio en los radios
+    radioButtons.forEach((radio) => {
+      radio.addEventListener("change", validateButton);
+    });
+    // Verificar cada cambio en los inputs
+    inputTemp.addEventListener("input", validateButton);
+    inputEstadoSalud.addEventListener("change", validateButton);
 
-  // Evento click para enviar los datos
-  button.addEventListener("click", () => {
-    const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
-    let temperature;
-    let report;
+    // Evento click para enviar los datos
+    button.addEventListener("click", () => {
+      const selectedNovedad = document.querySelector('input[name="novedad"]:checked')?.value;
+      let temperature;
+      let report;
+      if (selectedNovedad === "no") {
+        temperature = 98;
+        report = "Ninguno";
+      } else {
+        temperature = inputTemp.value;
+        report = inputEstadoSalud.value;
+      }
+      showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada);
+    });
+  }, 0);
 
-    if (selectedNovedad === "no") {
-      temperature = 98;
-      report = "Ninguno";
-    } else {
-      temperature = inputTemp.value;
-      report = inputEstadoSalud.value;
-    }
-    showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada);
-  });
-}, 0);
-
-  // Seleccionar elementos para manejar cambios en los radios
+  // Seleccionar elementos para manejar cambios en los radios (Ocultar o mostrar los inputs)
   const dataDiv = dataNino.querySelector(".data");
   const inputTemp = dataNino.querySelector("#temperatura");
   const inputEstadoSalud = dataNino.querySelector("#report");
@@ -2246,7 +2251,6 @@ setTimeout(() => {
   contentContainer.appendChild(novedad);
   contentContainer.appendChild(dataNino);
   contentContainer.appendChild(databutton);
-
   showInfoLightbox("Daily Health Check", contentContainer);
 
   const closeButton = document.getElementById("info-close-button");
@@ -2259,6 +2263,7 @@ setTimeout(() => {
 }
 
 
+// =====> Segundo lightbox para AGREGAR REPORTE (Donde se ve el nino) <===
 function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) {
   console.log("Temperatura:", temperature);
   console.log("Reporte:", report);
@@ -2312,85 +2317,73 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
   // Esperar a que el botón se agregue al DOM antes de asignarle el evento
   setTimeout(() => {
     const circles = document.querySelectorAll(".circle");
-
     if (report === "Ninguno") {
       // Si el reporte es "Ninguno", marcar todos los círculos en verde
       circles.forEach(circle => {
         circle.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
         circle.style.border = "2px solid var(--secundario1)";
       });
-
       // Guardar directamente "0" en la info de salud
       if (!kidData.healthinfo) kidData.healthinfo = {};
       if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
       kidData.healthinfo.healthcheck.bodychild = "0";
       console.log("Área seleccionada automáticamente: 0");
-
     } else {
       // Si el reporte es diferente a "Ninguno", permitir selección normal
       circles.forEach(circle => {
         circle.addEventListener("click", (event) => {
           const selectedArea = event.target.getAttribute("data-area");
-
           // Guardar el área seleccionada en kidData
           if (!kidData.healthinfo) kidData.healthinfo = {};
           if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
 
           kidData.healthinfo.healthcheck.bodychild = selectedArea;
-
           console.log("Área seleccionada:", kidData.healthinfo.healthcheck.bodychild);
-          console.log("id nino", kidData._id);
 
           // Resaltar solo el círculo seleccionado
           circles.forEach(c => c.classList.remove("selected"));
           event.target.classList.add("selected");
+          enviarCorreo(); // **Actualizar y enviar los datos correctamente después de seleccionar**
         });
       });
     }
 
-    const selectedArea = kidData.healthinfo.healthcheck.bodychild;
-    const nino_name = kidData.name;
-    const nino_lastname = kidData.lastname;
-    const mama_email = kidData.acuarelausers[0].mail;
-    const papa_email = kidData.acuarelausers[1].mail;
-    const mama_name = kidData.acuarelausers[0].name;
-    const papa_name = kidData.acuarelausers[1].name;
-    const mama_lastname = kidData.acuarelausers[0].lastname;
-    const papa_lastname = kidData.acuarelausers[1].lastname;
-    const data = {
-      nino_name: nino_name || "null",
-      nino_lastname: nino_lastname || "null",
-      mama_email: mama_email || "null",
-      papa_email: papa_email || "null",
-      mama_name: mama_name || "null",
-      papa_name: papa_name || "null",
-      mama_lastname: mama_lastname || "null",
-      papa_lastname:papa_lastname || "null",
-      temperature: temperature || "null",
-      report: report || "null",
-      fechaSeleccionada: fechaSeleccionada || "null",
-      selectedArea: selectedArea || "null"
-    };
+    // Para enviar correo a papas con el reporte diario del nino
+    function enviarCorreo() {
+      const data = {
+        nino_name: kidData.name || "null",
+        nino_lastname: kidData.lastname || "null",
+        mama_email: kidData.acuarelausers[0]?.mail || "null",
+        papa_email: kidData.acuarelausers[1]?.mail || "null",
+        mama_name: kidData.acuarelausers[0]?.name || "null",
+        papa_name: kidData.acuarelausers[1]?.name || "null",
+        mama_lastname: kidData.acuarelausers[0]?.lastname || "null",
+        papa_lastname: kidData.acuarelausers[1]?.lastname || "null",
+        temperature: temperature || "null",
+        report: report || "null",
+        fechaSeleccionada: fechaSeleccionada || "null",
+        selectedArea: kidData.healthinfo.healthcheck.bodychild || "null"
+      };
 
-    fetch("https://hook.us1.make.com/cbdmhuh35metbkz34tbv8byw7kxiyhk7", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-    .then(response => response.json()) // Si se recibe una respuesta, convertirla a JSON
-    .then(data => {
-      console.log("Respuesta del webhook:", data);
-    })
-    .catch((error) => {
-      console.error("Error al enviar los datos:", error);
-    });
+      fetch("https://hook.us1.make.com/cbdmhuh35metbkz34tbv8byw7kxiyhk7", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      })
+      .then(response => response.json()) // Si se recibe una respuesta, convertirla a JSON
+      .then(data => {
+        console.log("Respuesta del webhook:", data);
+      })
+      .catch((error) => {
+        console.error("Error al enviar los datos:", error);
+      });
+    }
   }, 0);
   
   contentContainer.appendChild(novedad);
   contentContainer.appendChild(databutton);
-
   showInfoLightbox("Daily Health Check", contentContainer);
 
   const closeButton = document.getElementById("info-close-button");
@@ -2403,6 +2396,7 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
 }
 
 
+// =====> Lightbox para VER REPORTE <===
 function showLightboxViewHealthCkeck(fechaSeleccionada) {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-viewdaylihealth");
@@ -2426,7 +2420,7 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
     const mesCapitalizado = nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
     const fechaFormateada = `${String(day).padStart(2, "0")} de ${mesCapitalizado}, ${year}`;
     dataNino.innerHTML = `
-      <p class="datanino-date"> ${fechaFormateada} </p>
+      <p class="dataninobod-date"> ${fechaFormateada} </p>
       <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Temperatura: </span> <span class="ex"><span class="inc"> ${resultado.temperature} </span>°F</span>  </p>
       <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Reporte: </span> <span class="inc"> ${resultado.report} </span> </p>
     `;
@@ -2462,17 +2456,15 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
   // Botones de descarga
   const downloadReport = document.createElement("div");
   downloadReport.classList.add("downloadreport");
-  downloadReport.innerHTML = `
-    <p> <i class="acuarela acuarela-Excel"></i> </p>
-    <p> <i class="acuarela acuarela-Pdf"></i> </p>
-  `;
+  // downloadReport.innerHTML = `
+  //   <p> <i class="acuarela acuarela-Excel"></i> </p>
+  //   <p> <i class="acuarela acuarela-Pdf"></i> </p>
+  // `;
 
   contentViewdaily.appendChild(dataNino);
   contentViewdaily.appendChild(novedad);
   contentContainer.appendChild(contentViewdaily);
   contentContainer.appendChild(downloadReport);
-
-  // Mostrar el lightbox con la información
   showInfoLightbox("Health Check", contentContainer);
 
   //Modificar estilos del div (circle) recibido
@@ -2504,7 +2496,8 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
   closeButton.addEventListener("click", closeHandler);
 }
 
-//==> Lightbox para escoger el niño en el HealthCheck (grupo.php)
+
+// =====> Lightbox para AGREGAR REPORTE en el HealthCheck (grupo.php) <===
 function showLightboxNinoHealthCkeck() {
   const contentContainer = document.createElement("div");
   contentContainer.classList.add("methods-daylihealth");

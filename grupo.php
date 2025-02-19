@@ -1,24 +1,9 @@
 <?php $classBody ="grupo"; include "includes/header.php"; $grupo = $a->getGrupos($_GET['id']); ?>
-<!-- <?php 
-  // $kids = [];
-
-  //Recorrer todos los niños en el grupo
-  // echo '<pre>';
-  //   var_dump($grupo);
-  // echo '</pre>';
-    // foreach ($grupo['children'] as $child) {
-    //     // Verificamos que el niño tenga un 'id' válido
-    //     if (isset($child['id']) && !empty($child['id'])) {
-    //         // Obtener información detallada del niño usando su ID
-    //         $kidInfo = $a->getChildren($child['id']);
-    //         // Agregar la información al arreglo $kids
-    //         $kids[] = $kidInfo;
-    //     }
-    // }
-?> -->
 <script>
     let groupData = <?= json_encode($grupo) ?>;
-    console.log("Grupos:", groupData );
+    groupData.children.forEach(child => {
+        console.log("ID del niño:", child.id);
+    });
 </script>
 <main>
   <?php
