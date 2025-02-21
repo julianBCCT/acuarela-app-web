@@ -1561,16 +1561,9 @@ function sendEmergencyEmail(
   })
     .then((response) => {
       if (response.ok) {
-        showMessage(
-          container,
-          "Se ha enviado un mensaje de aviso al pariente."
-        );
+        showMessage(container, "Se ha enviado un mensaje de aviso al pariente.");
       } else {
-        showMessage(
-          container,
-          "Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.",
-          true
-        );
+        showMessage(container,"Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.",true);
       }
     })
     .catch((error) => {
@@ -1731,13 +1724,7 @@ function showLightboxParient() {
           href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
         },
       ];
-      buttonsFlot(
-        linkModerado,
-        buttonDataModerado,
-        topPosition,
-        leftPosition,
-        "120px"
-      );
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
       return;
     }
 
@@ -1761,7 +1748,6 @@ function showLightboxParient() {
       console.log("reportedDate: ", reportedDate);
       console.log("todayNY: ", todayNY);
 
-
       if (reportedDate === todayNY) {
         const gravedad = "moderado";
         const email = kidData.guardians[0]?.guardian_email || "";
@@ -1774,8 +1760,7 @@ function showLightboxParient() {
         const temperature = incident.temperature || "[Temperatura]";
         const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
         const severityLevel = incident.gravedad || "[Nivel de gravedad]";
-        const suggestedActions =
-          incident.actions_expected || "[Acciones esperadas]";
+        const suggestedActions = incident.actions_expected || "[Acciones esperadas]";
         sendEmergencyEmail(
           gravedad,
           email,
@@ -1824,14 +1809,9 @@ function showLightboxParient() {
           href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
         },
       ];
-      buttonsFlot(
-        linkModerado,
-        buttonDataModerado,
-        topPosition,
-        leftPosition,
-        "120px"
-      );
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
     }
+    window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
   });
   contentContainer.appendChild(linkGrave);
   contentContainer.appendChild(linkModerado);
@@ -1964,6 +1944,7 @@ const handleReportInfo = async () => {
     description: formValues.descripcion,
     temperature: formValues.temperatura,
     gravedad: formValues["levelgrave"],
+    statehealth: formValues["statehealth"],
     actions_taken: formValues.acciones_tomadas,
     actions_expected: formValues.acciones_esperadas,
     reported_enf: reportedenf,
@@ -2010,6 +1991,7 @@ incidents.forEach((incident) => {
     iconContainer.classList.toggle("rotate");
   });
 });
+
 
 //================> APARTADO HEALTH CHECK <===================
 // =====> Enviar datos al collection HEALTHINFO en strapi para HEALTH CHECK <===
@@ -2231,24 +2213,20 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
           <label class="labelpediatra" for="report">Estado de Salud: </label>
           <select name="report" id="report" required>
             <option value="" disabled selected>Seleccione </option>
-              ${Object.keys(reportTranslations)
-      .map(
-        (key) => `
+              ${Object.keys(reportTranslations).map(
+                (key) => `
                 <option value="${key}" ${kidData.healthinfo?.healthcheck?.report === key
-            ? "selected"
-            : ""
-          }>${key}</option>
-              `
-      )
-      .join("")}
+                ? "selected"
+                : ""
+                }>${key}</option>
+                `)
+              .join("")}
           </select>
           <p class="selected-report-container">
             <span class="circle-indicator"></span>
-            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || "Sin seleccionar"
-    }</span>
+            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || "Sin seleccionar"}</span>
           </p>
-          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ""
-    }</p>
+          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ""}</p>
           <span class="error-message"></span>
       </span>
     </div>      
@@ -2415,13 +2393,21 @@ function showLightboxAddBodyHealthCkeck(
           <div class="circle" data-area="Right Hands" style="top: 52%; left: 2%;"></div>
           <div class="circle" data-area="Left Knee" style="top: 80%; left: 23%;"></div>
           <div class="circle" data-area="Right Knee" style="top: 80%; left: 16%;"></div>
-          <div class="circle" data-area="Left Foot" style="top: 93%; left: 23%;"></div>
-          <div class="circle" data-area="Right Foot" style="top: 93%; left: 16%;"></div>
+          <div class="circle" data-area="Left Ankle" style="top: 93%; left: 23%;"></div>
+          <div class="circle" data-area="Right Ankle" style="top: 93%; left: 16%;"></div>
           <div class="circle" data-area="Back_Head" style="top: 0%; left: 81%;"></div>
+          <div class="circle" data-area="Left Ear" style="top: 25%; left: 72%;"></div>
+          <div class="circle" data-area="Right Ear" style="top: 25%; left: 91%;"></div>
           <div class="circle" data-area="Nape" style="top: 35%; left: 81%;"></div>
           <div class="circle" data-area="Left Shoulder" style="top: 40%; left: 75%;"></div>
           <div class="circle" data-area="Right Shoulder" style="top: 40%; left: 87%;"></div>
+          <div class="circle" data-area="Left Wrist" style="top: 52%; left: 68%;"></div>
+          <div class="circle" data-area="Right Wrist" style="top: 52%; left: 95%;"></div>
+          <div class="circle" data-area="Left Rib" style="top: 55%; left: 76%;"></div>
+          <div class="circle" data-area="Right Rib" style="top: 55%; left: 86%;"></div>
           <div class="circle" data-area="Back" style="top: 50%; left: 81%;"></div>
+          <div class="circle" data-area="Left Foot" style="top: 95%; left: 75%;"></div>
+          <div class="circle" data-area="Right Foot" style="top: 95%; left: 87%;"></div>
         </div>
       </div>
     </div>
@@ -2579,13 +2565,21 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
         <div class="circle" data-area="Right Hands" style="top: 52%; left: 3%;"></div>
         <div class="circle" data-area="Left Knee" style="top: 80%; left: 29%;"></div>
         <div class="circle" data-area="Right Knee" style="top: 80%; left: 21%;"></div>
-        <div class="circle" data-area="Left Foot" style="top: 93%; left: 29%;"></div>
-        <div class="circle" data-area="Right Foot" style="top: 93%; left: 21%;"></div>
+        <div class="circle" data-area="Left Ankle" style="top: 93%; left: 29%;"></div>
+        <div class="circle" data-area="Right Ankle" style="top: 93%; left: 21%;"></div>
         <div class="circle" data-area="Back_Head" style="top: 0%; left: 76%;"></div>
+        <div class="circle" data-area="Left Ear" style="top: 25%; left: 65%;"></div>
+        <div class="circle" data-area="Right Ear" style="top: 25%; left: 87%;"></div>
         <div class="circle" data-area="Nape" style="top: 35%; left: 76%;"></div>
         <div class="circle" data-area="Left Shoulder" style="top: 40%; left: 67%;"></div>
         <div class="circle" data-area="Right Shoulder" style="top: 40%; left: 84%;"></div>
+        <div class="circle" data-area="Left Wrist" style="top: 52%; left: 59%;"></div>
+        <div class="circle" data-area="Right Wrist" style="top: 52%; left: 94%;"></div>
+        <div class="circle" data-area="Left Rib" style="top: 55%; left: 68%;"></div>
+        <div class="circle" data-area="Right Rib" style="top: 55%; left: 83%;"></div>
         <div class="circle" data-area="back" style="top: 50%; left: 76%;"></div>
+        <div class="circle" data-area="Left Foot" style="top: 95%; left: 67%;"></div>
+        <div class="circle" data-area="Right Foot" style="top: 95%; left: 84%;"></div>
       </div>
     </div>
   `;
