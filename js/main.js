@@ -1700,7 +1700,7 @@ function showLightboxParient() {
   `;
   linkModerado.addEventListener("click", () => {
     const container = document.querySelector(".methods-emergency");
-    if (!kidData.healthinfo.incidents || kidData.healthinfo.incidents.length === 0) {
+    if (!kidData.incidents || kidData.incidents.length === 0) {
       showMessage(container,"El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
@@ -1717,8 +1717,7 @@ function showLightboxParient() {
         topPosition = "390px";
         leftPosition = "180px";
       }
-      const buttonDataModerado = [
-        {
+      const buttonDataModerado = [{
           text: "Llenar reporte",
           iconClass: "acuarela acuarela-Telefono",
           href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
@@ -2354,11 +2353,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
 }
 
 // =====> Segundo lightbox para AGREGAR REPORTE (Donde se ve el nino) <===
-function showLightboxAddBodyHealthCkeck(
-  temperature,
-  report,
-  fechaSeleccionada
-) {
+function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) {
   console.log("Temperatura:", temperature);
   console.log("Reporte:", report);
   console.log("Fecha:", fechaSeleccionada);
@@ -2443,14 +2438,10 @@ function showLightboxAddBodyHealthCkeck(
           const selectedArea = event.target.getAttribute("data-area");
           // Guardar el área seleccionada en kidData
           if (!kidData.healthinfo) kidData.healthinfo = {};
-          if (!kidData.healthinfo.healthcheck)
-            kidData.healthinfo.healthcheck = {};
+          if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
 
           kidData.healthinfo.healthcheck.bodychild = selectedArea;
-          console.log(
-            "Área seleccionada:",
-            kidData.healthinfo.healthcheck.bodychild
-          );
+          console.log("Área seleccionada:",kidData.healthinfo.healthcheck.bodychild );
 
           // Resaltar solo el círculo seleccionado
           circles.forEach((c) => c.classList.remove("selected"));
@@ -2488,9 +2479,9 @@ function showLightboxAddBodyHealthCkeck(
         .then((data) => {
           console.log("Respuesta del webhook:", data);
         })
-        .catch((error) => {
-          console.error("Error al enviar los datos:", error);
-        });
+        // .catch((error) => {
+        //   console.error("Error al enviar los datos:", error);
+        // });
     }
   }, 0);
 
