@@ -4,7 +4,23 @@
     groupData.children.forEach(child => {
         console.log("ID del niño:", child.id);
     });
+
+    let kidData = [];
+    const requests = groupData.children.map(child =>
+    fetch("get/getChildren.php?id=" + child.id)
+      .then(response => response.json())
+      .then(data => data) // Retorna los datos
+      .catch(error => console.error("Error obteniendo datos del niño:", error))
+    );
+
+    // Esperar a que todas las peticiones terminen antes de continuar
+    Promise.all(requests).then(results => {
+      kidData = results; // Guardamos los datos de todos los niños
+      console.log("Datos de los niños cargados:", kidData);
+      console.log("Cantidad de niños:", kidData.length);
+    });
 </script>
+
 <main>
   <?php
     $mainHeaderTitle = "{$grupo->name}" ;

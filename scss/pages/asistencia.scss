@@ -1017,6 +1017,7 @@
           background-repeat: no-repeat;
           background-position: right 5px center;
           background-size: 15px;
+          padding: 0 10px;
         }
         
         /* Para navegadores que no soportan `appearance: none` */
@@ -1053,6 +1054,7 @@
 
   .ninosdaily {
     display: flex;
+    justify-content: space-between;
     align-items: center;
     gap: 20px;
     max-height: 100px;
@@ -1182,8 +1184,8 @@
 
       .circle {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 17px;
+        height: 17px;
         background-color: rgba(235, 93, 94, 0.3);
         border-radius: 50%;
         border: 2px solid var(--sandia);
@@ -1338,8 +1340,8 @@
       //}
       .circle {
         position: absolute;
-        width: 20px;
-        height: 20px;
+        width: 17px;
+        height: 17px;
         background-color: rgba(235, 93, 94, 0.3);
         border-radius: 50%;
         border: 2px solid var(--sandia);

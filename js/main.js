@@ -1561,16 +1561,9 @@ function sendEmergencyEmail(
   })
     .then((response) => {
       if (response.ok) {
-        showMessage(
-          container,
-          "Se ha enviado un mensaje de aviso al pariente."
-        );
+        showMessage(container, "Se ha enviado un mensaje de aviso al pariente.");
       } else {
-        showMessage(
-          container,
-          "Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.",
-          true
-        );
+        showMessage(container,"Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.",true);
       }
     })
     .catch((error) => {
@@ -1708,10 +1701,7 @@ function showLightboxParient() {
   linkModerado.addEventListener("click", () => {
     const container = document.querySelector(".methods-emergency");
     if (!kidData.incidents || kidData.incidents.length === 0) {
-      showMessage(
-        container,
-        "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy."
-      );
+      showMessage(container,"El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
@@ -1727,20 +1717,13 @@ function showLightboxParient() {
         topPosition = "390px";
         leftPosition = "180px";
       }
-      const buttonDataModerado = [
-        {
+      const buttonDataModerado = [{
           text: "Llenar reporte",
           iconClass: "acuarela acuarela-Telefono",
           href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
         },
       ];
-      buttonsFlot(
-        linkModerado,
-        buttonDataModerado,
-        topPosition,
-        leftPosition,
-        "120px"
-      );
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
       return;
     }
 
@@ -1757,10 +1740,12 @@ function showLightboxParient() {
     const todayNY = `${parts[4].value}-${parts[0].value}-${parts[2].value}`; // Año-Mes-Día
     let matchFound = false; // Variable para saber si existe un match
 
-    for (let i = 0; i < kidData.incidents.length; i++) {
-      const incident = kidData.incidents[i];
+    for (let i = 0; i < kidData.healthinfo.incidents.length; i++) {
+      const incident = kidData.healthinfo.incidents[i];
       const reportedDate = incident.reported_enf;
       const reportedFor = incident.reported_for;
+      console.log("reportedDate: ", reportedDate);
+      console.log("todayNY: ", todayNY);
 
       if (reportedDate === todayNY) {
         const gravedad = "moderado";
@@ -1774,8 +1759,7 @@ function showLightboxParient() {
         const temperature = incident.temperature || "[Temperatura]";
         const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
         const severityLevel = incident.gravedad || "[Nivel de gravedad]";
-        const suggestedActions =
-          incident.actions_expected || "[Acciones esperadas]";
+        const suggestedActions = incident.actions_expected || "[Acciones esperadas]";
         sendEmergencyEmail(
           gravedad,
           email,
@@ -1824,14 +1808,9 @@ function showLightboxParient() {
           href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
         },
       ];
-      buttonsFlot(
-        linkModerado,
-        buttonDataModerado,
-        topPosition,
-        leftPosition,
-        "120px"
-      );
+      buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
     }
+    window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
   });
   contentContainer.appendChild(linkGrave);
   contentContainer.appendChild(linkModerado);
@@ -1964,6 +1943,7 @@ const handleReportInfo = async () => {
     description: formValues.descripcion,
     temperature: formValues.temperatura,
     gravedad: formValues["levelgrave"],
+    statehealth: formValues["statehealth"],
     actions_taken: formValues.acciones_tomadas,
     actions_expected: formValues.acciones_esperadas,
     reported_enf: reportedenf,
@@ -2010,6 +1990,7 @@ incidents.forEach((incident) => {
     iconContainer.classList.toggle("rotate");
   });
 });
+
 
 //================> APARTADO HEALTH CHECK <===================
 // =====> Enviar datos al collection HEALTHINFO en strapi para HEALTH CHECK <===
@@ -2186,15 +2167,31 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
   `;
 
   const reportTranslations = {
-    "S-Scratch": "Rasguño",
-    "B-Bite": "Mordida",
-    "F-Fall": "Caída",
+    "A-Absent": "Ausente",
+    "B-Bruise": "Moretón",
+    "C-Crusty Eyes": "Ojos con Costra",
+    "CS-Cuts/Scrapes": "Cortes/raspaduras",
+    "D-Diarrhea": "Diarrea",
+    "E-Earache": "Dolor de oídos",
+    "F-Feverish": "Febril",
+    "FC-Flushed Complexion": "Tez enrojecida",
+    "G-Glazed eyes": "Ojos vidriosos",
+    "H-Headache": "Dolor de cabeza",
+    "HA-Hyperactive": "Hiperactiva",
+    "HL-Head Lice": "Piojos",
+    "I-Irritable": "Irritable",
+    "L-Listless": "Apáticio",
+    "M-Mild Cough": "Tos leve",
+    "N-Nasal Discharge": "Secreción nasal",
+    "OK-Okay": "Okay",
+    "OS-Open Sores": "Llagas abiertas",
+    "P-Pale": "Pálida",
     "R-Rash": "Erupción",
-    "T-Temp": "Fiebre",
-    "D-Diaper": "Cambio de pañal",
-    "BM-Bowel": "Evacuación intestinal",
-    "H-Hit": "Golpe",
-    "C-Crying": "Lloró más de lo normal",
+    "S-Sleepy": "Somnolienta",
+    "SC-Severe Cough": "Tos severa",
+    "ST-Sore Throat": "Dolor de garganta",
+    "V-Vomiting": "Vómitos",
+    "W-Wheezing": "Sibilancia"
   };
 
   const dataNino = document.createElement("div");
@@ -2215,24 +2212,20 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
           <label class="labelpediatra" for="report">Estado de Salud: </label>
           <select name="report" id="report" required>
             <option value="" disabled selected>Seleccione </option>
-              ${Object.keys(reportTranslations)
-      .map(
-        (key) => `
+              ${Object.keys(reportTranslations).map(
+                (key) => `
                 <option value="${key}" ${kidData.healthinfo?.healthcheck?.report === key
-            ? "selected"
-            : ""
-          }>${key}</option>
-              `
-      )
-      .join("")}
+                ? "selected"
+                : ""
+                }>${key}</option>
+                `)
+              .join("")}
           </select>
           <p class="selected-report-container">
             <span class="circle-indicator"></span>
-            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || "Sin seleccionar"
-    }</span>
+            <span id="selected-report">${kidData.healthinfo?.healthcheck?.report || "Sin seleccionar"}</span>
           </p>
-          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ""
-    }</p>
+          <p id="selected-report-es">${reportTranslations[kidData.healthinfo?.healthcheck?.report] || ""}</p>
           <span class="error-message"></span>
       </span>
     </div>      
@@ -2360,11 +2353,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
 }
 
 // =====> Segundo lightbox para AGREGAR REPORTE (Donde se ve el nino) <===
-function showLightboxAddBodyHealthCkeck(
-  temperature,
-  report,
-  fechaSeleccionada
-) {
+function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) {
   console.log("Temperatura:", temperature);
   console.log("Reporte:", report);
   console.log("Fecha:", fechaSeleccionada);
@@ -2387,19 +2376,33 @@ function showLightboxAddBodyHealthCkeck(
           <img src="img/info/Ninos_Health_Check_tras.png" alt="Nino vista posterior">
           
           <!-- Círculos sobre las imágenes -->
-          <div class="circle" data-area="head" style="top: 0%; left: 19%;"></div>
-          <div class="circle" data-area="eye" style="top: 21%; left: 15%;"></div>
-          <div class="circle" data-area="mouth" style="top: 32%; left: 19%;"></div>
-          <div class="circle" data-area="shoulder" style="top: 40%; left: 13%;"></div>
-          <div class="circle" data-area="chest" style="top: 45%; left: 19%;"></div>
-          <div class="circle" data-area="stomach" style="top: 59%; left: 19%;"></div>
-          <div class="circle" data-area="elbows" style="top: 49%; left: 28%;"></div>
-          <div class="circle" data-area="hands" style="top: 52%; left: 35%;"></div>
-          <div class="circle" data-area="knee" style="top: 80%; left: 23%;"></div>
-          <div class="circle" data-area="foot" style="top: 93%; left: 23%;"></div>
-          <div class="circle" data-area="back_head" style="top: 0%; left: 82%;"></div>
-          <div class="circle" data-area="nape" style="top: 35%; left: 82%;"></div>
-          <div class="circle" data-area="back" style="top: 50%; left: 82%;"></div>
+          <div class="circle" data-area="Head" style="top: 0%; left: 19%;"></div>
+          <div class="circle" data-area="Right Eye" style="top: 21%; left: 15%;"></div>
+          <div class="circle" data-area="Left Eye" style="top: 21%; left: 22%;"></div>
+          <div class="circle" data-area="Mouth" style="top: 32%; left: 19%;"></div>
+          <div class="circle" data-area="Chest" style="top: 45%; left: 19%;"></div>
+          <div class="circle" data-area="Stomach" style="top: 59%; left: 19%;"></div>
+          <div class="circle" data-area="Left Elbows" style="top: 49%; left: 28%;"></div>
+          <div class="circle" data-area="Right Elbows" style="top: 49%; left: 10%;"></div>
+          <div class="circle" data-area="Left Hands" style="top: 52%; left: 36%;"></div>
+          <div class="circle" data-area="Right Hands" style="top: 52%; left: 2%;"></div>
+          <div class="circle" data-area="Left Knee" style="top: 80%; left: 23%;"></div>
+          <div class="circle" data-area="Right Knee" style="top: 80%; left: 16%;"></div>
+          <div class="circle" data-area="Left Ankle" style="top: 93%; left: 23%;"></div>
+          <div class="circle" data-area="Right Ankle" style="top: 93%; left: 16%;"></div>
+          <div class="circle" data-area="Back_Head" style="top: 0%; left: 81%;"></div>
+          <div class="circle" data-area="Left Ear" style="top: 25%; left: 72%;"></div>
+          <div class="circle" data-area="Right Ear" style="top: 25%; left: 91%;"></div>
+          <div class="circle" data-area="Nape" style="top: 35%; left: 81%;"></div>
+          <div class="circle" data-area="Left Shoulder" style="top: 40%; left: 75%;"></div>
+          <div class="circle" data-area="Right Shoulder" style="top: 40%; left: 87%;"></div>
+          <div class="circle" data-area="Left Wrist" style="top: 52%; left: 68%;"></div>
+          <div class="circle" data-area="Right Wrist" style="top: 52%; left: 95%;"></div>
+          <div class="circle" data-area="Left Rib" style="top: 55%; left: 76%;"></div>
+          <div class="circle" data-area="Right Rib" style="top: 55%; left: 86%;"></div>
+          <div class="circle" data-area="Back" style="top: 50%; left: 81%;"></div>
+          <div class="circle" data-area="Left Foot" style="top: 95%; left: 75%;"></div>
+          <div class="circle" data-area="Right Foot" style="top: 95%; left: 87%;"></div>
         </div>
       </div>
     </div>
@@ -2435,14 +2438,10 @@ function showLightboxAddBodyHealthCkeck(
           const selectedArea = event.target.getAttribute("data-area");
           // Guardar el área seleccionada en kidData
           if (!kidData.healthinfo) kidData.healthinfo = {};
-          if (!kidData.healthinfo.healthcheck)
-            kidData.healthinfo.healthcheck = {};
+          if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
 
           kidData.healthinfo.healthcheck.bodychild = selectedArea;
-          console.log(
-            "Área seleccionada:",
-            kidData.healthinfo.healthcheck.bodychild
-          );
+          console.log("Área seleccionada:",kidData.healthinfo.healthcheck.bodychild );
 
           // Resaltar solo el círculo seleccionado
           circles.forEach((c) => c.classList.remove("selected"));
@@ -2480,9 +2479,9 @@ function showLightboxAddBodyHealthCkeck(
         .then((data) => {
           console.log("Respuesta del webhook:", data);
         })
-        .catch((error) => {
-          console.error("Error al enviar los datos:", error);
-        });
+        // .catch((error) => {
+        //   console.error("Error al enviar los datos:", error);
+        // });
     }
   }, 0);
 
@@ -2545,19 +2544,33 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
         <img src="img/info/Ninos_Health_Check_tras.png" alt="Nino vista posterior">
         
         <!-- Círculos sobre las imágenes -->
-        <div class="circle" data-area="head" style="top: 0%; left: 24%;"></div>
-        <div class="circle" data-area="eye" style="top: 21%; left: 19%;"></div>
-        <div class="circle" data-area="mouth" style="top: 32%; left: 24%;"></div>
-        <div class="circle" data-area="shoulder" style="top: 40%; left: 16%;"></div>
-        <div class="circle" data-area="chest" style="top: 45%; left: 24%;"></div>
-        <div class="circle" data-area="stomach" style="top: 59%; left: 24%;"></div>
-        <div class="circle" data-area="elbows" style="top: 48%; left: 35%;"></div>
-        <div class="circle" data-area="hands" style="top: 52%; left: 45%;"></div>
-        <div class="circle" data-area="knee" style="top: 80%; left: 29%;"></div>
-        <div class="circle" data-area="foot" style="top: 93%; left: 29%;"></div>
-        <div class="circle" data-area="back_head" style="top: 0%; left: 76%;"></div>
-        <div class="circle" data-area="nape" style="top: 35%; left: 76%;"></div>
+        <div class="circle" data-area="Head" style="top: 0%; left: 24%;"></div>
+        <div class="circle" data-area="Right Eye" style="top: 21%; left: 19%;"></div>
+        <div class="circle" data-area="Left Eye" style="top: 21%; left: 28%;"></div>
+        <div class="circle" data-area="Mouth" style="top: 32%; left: 24%;"></div>
+        <div class="circle" data-area="Chest" style="top: 45%; left: 24%;"></div>
+        <div class="circle" data-area="Stomach" style="top: 59%; left: 24%;"></div>
+        <div class="circle" data-area="Left Elbows" style="top: 48%; left: 35%;"></div>
+        <div class="circle" data-area="Right Elbows" style="top: 48%; left: 12%;"></div>
+        <div class="circle" data-area="Left Hands" style="top: 52%; left: 45%;"></div>
+        <div class="circle" data-area="Right Hands" style="top: 52%; left: 3%;"></div>
+        <div class="circle" data-area="Left Knee" style="top: 80%; left: 29%;"></div>
+        <div class="circle" data-area="Right Knee" style="top: 80%; left: 21%;"></div>
+        <div class="circle" data-area="Left Ankle" style="top: 93%; left: 29%;"></div>
+        <div class="circle" data-area="Right Ankle" style="top: 93%; left: 21%;"></div>
+        <div class="circle" data-area="Back_Head" style="top: 0%; left: 76%;"></div>
+        <div class="circle" data-area="Left Ear" style="top: 25%; left: 65%;"></div>
+        <div class="circle" data-area="Right Ear" style="top: 25%; left: 87%;"></div>
+        <div class="circle" data-area="Nape" style="top: 35%; left: 76%;"></div>
+        <div class="circle" data-area="Left Shoulder" style="top: 40%; left: 67%;"></div>
+        <div class="circle" data-area="Right Shoulder" style="top: 40%; left: 84%;"></div>
+        <div class="circle" data-area="Left Wrist" style="top: 52%; left: 59%;"></div>
+        <div class="circle" data-area="Right Wrist" style="top: 52%; left: 94%;"></div>
+        <div class="circle" data-area="Left Rib" style="top: 55%; left: 68%;"></div>
+        <div class="circle" data-area="Right Rib" style="top: 55%; left: 83%;"></div>
         <div class="circle" data-area="back" style="top: 50%; left: 76%;"></div>
+        <div class="circle" data-area="Left Foot" style="top: 95%; left: 67%;"></div>
+        <div class="circle" data-area="Right Foot" style="top: 95%; left: 84%;"></div>
       </div>
     </div>
   `;
@@ -2638,10 +2651,13 @@ function showLightboxNinoHealthCkeck() {
   const wrapper = document.createElement("div");
   wrapper.classList.add("ninosdaily-wrapper");
 
-  children.forEach((kid) => {
+  let selectedKid = null; // Variable para almacenar el niño seleccionado
+  children.forEach(kid => {
     console.log("kid: ", kid);
     const li = document.createElement("div");
     li.classList.add("ninos_slide");
+    li.dataset.kidId = kid.id; // Guarda el ID del niño en el dataset
+    li.dataset.kidName = kid.name; // Guarda el nombre (opcional para depuración)
 
     let photoUrl = kid.photo
       ? `https://acuarelacore.com/api/${kid.photo.formats.small.url}`
@@ -2694,23 +2710,39 @@ function showLightboxNinoHealthCkeck() {
 
   showInfoLightbox("Daily Health Check", contentContainer);
 
-  const btnSiguiente = document.getElementById("btnSiguiente");
   // Selección de un niño y activación del botón
+  const btnSiguiente = document.getElementById("btnSiguiente");
   wrapper.querySelectorAll(".ninos_slide").forEach((nino) => {
     nino.addEventListener("click", () => {
-      wrapper.querySelectorAll(".ninos_slide").forEach((el) => {
-        el.classList.remove("selected");
-      });
-      nino.classList.add("selected");
-      btnSiguiente.classList.remove("btn-disable");
-      btnSiguiente.style.backgroundColor = "var(--cielo)";
-      btnSiguiente.disabled = false;
+      // Quitar la clase 'selected' de todos los elementos
+    wrapper.querySelectorAll(".ninos_slide").forEach((el) => el.classList.remove("selected"));
+
+    // Agregar la clase 'selected' al niño seleccionado
+    nino.classList.add("selected");
+
+    // Activar el botón
+    btnSiguiente.classList.remove("btn-disable");
+    btnSiguiente.style.backgroundColor = "var(--cielo)";
+    btnSiguiente.disabled = false;
+
+    // Obtener el ID del niño desde el dataset
+    const selectedKidId = nino.dataset.kidId;
+    selectedKid = children.find(kid => kid.id === selectedKidId); // Buscar el niño en la lista original
+
+    // Mostrar en consola
+    console.log("Niño seleccionado:", selectedKid);
+    console.log("ID del niño seleccionado:", selectedKid?.id);
     });
   });
   const fechaselec = "null";
   console.log("Fecha:", fechaselec);
   btnSiguiente.addEventListener("click", () => {
-    showLightboxAddHealthCkeck(fechaselec, 1, kid);
+    if (selectedKid) {
+      console.log("ID del niño seleccionado al hacer clic en 'Siguiente':", selectedKid.id);
+      // showLightboxAddHealthCkeck(fechaselec, 1, selectedKid);
+    } else {
+      console.log("No se ha seleccionado ningún niño.");
+    }
   });
 
   // Control deslizante
@@ -2726,22 +2758,8 @@ function showLightboxNinoHealthCkeck() {
     }
     wrapper.style.transform = `translateX(-${index * slideWidth}px)`;
   }
-
   iconoFlechaIzq.addEventListener("click", () => moveSlides("left"));
   iconoFlechaDer.addEventListener("click", () => moveSlides("right"));
-
-  // Selección de un niño y activación del botón
-  wrapper.querySelectorAll(".ninos_slide").forEach((nino) => {
-    nino.addEventListener("click", () => {
-      wrapper.querySelectorAll(".ninos_slide").forEach((el) => {
-        el.classList.remove("selected");
-      });
-      nino.classList.add("selected");
-      btnSiguiente.classList.remove("btn-disable");
-      btnSiguiente.style.backgroundColor = "var(--cielo)";
-      btnSiguiente.disabled = false;
-    });
-  });
 
   const closeButton = document.getElementById("info-close-button");
   const closeHandler = () => {

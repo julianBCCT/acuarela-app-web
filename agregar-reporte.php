@@ -93,42 +93,58 @@
                             <span class="error-message"></span>
                         </span>
 
-                        <!-- <span>
-                            <i class="acuarela acuarela-Salud"></i>
-                            <label for="statehealth_text">Estado de salud</label>
-                            <div class="state_health">
-                                <input 
-                                    type="text" 
-                                    placeholder="Describa el estado de salud del niño o niña" 
-                                    name="statehealth_text" 
-                                    id="statehealth_text"
-                                >
-                                <label for="type_incident">Tipo de incidente</label>
-                                <select name="type_incident" id="type_incident" required>
-                                    <option value="" disabled selected>Seleccione el tipo de incidente</option>
-                                    <option value="S">S (Síntomas generales)</option>
-                                    <option value="C">C (Contusión)</option>
-                                    <option value="B">B (Corte leve)</option>
-                                    <option value="L">L (Lesión leve)</option>
-                                    <option value="B/I">B/I (Golpe/inflamación)</option>
-                                    <option value="N">N (Náusea)</option>
-                                    <option value="A">A (Alergia)</option>
-                                </select>
-                                <label for="statehealth_select">Nivel de gravedad</label>
-                                <select name="statehealth_select" id="statehealth_select" required>
-                                    <option value="" disabled selected>Seleccione el nivel de gravedad</option>
-                                    <option value="L">L (Leve)</option>
-                                    <option value="R">R (Moderado)</option>
-                                    <option value="B">B (Severo)</option>
-                                    <option value="UE">UE (Extremidad superior)</option>
-                                    <option value="LE">LE (Extremidad inferior)</option>
-                                    <option value="H">H (Cabeza)</option>
-                                    <option value="T">T (Tronco)</option>
-                                </select>
-                                <span id="severity_label" class="severity-label">Seleccione un nivel de gravedad</span>
-                                <span class="error-message"></span>
-                            </div>
-                        </span> -->
+                        <?php
+                            $reportTranslations = [
+                                "A-Absent" => "Ausente",
+                                "B-Bruise" => "Moretón",
+                                "C-Crusty Eyes" => "Ojos con Costra",
+                                "CS-Cuts/Scrapes" => "Cortes/raspaduras",
+                                "D-Diarrhea" => "Diarrea",
+                                "E-Earache" => "Dolor de oídos",
+                                "F-Feverish" => "Febril",
+                                "FC-Flushed Complexion" => "Tez enrojecida",
+                                "G-Glazed eyes" => "Ojos vidriosos",
+                                "H-Headache" => "Dolor de cabeza",
+                                "HA-Hyperactive" => "Hiperactiva",
+                                "HL-Head Lice" => "Piojos",
+                                "I-Irritable" => "Irritable",
+                                "L-Listless" => "Apático",
+                                "M-Mild Cough" => "Tos leve",
+                                "N-Nasal Discharge" => "Secreción nasal",
+                                "OK-Okay" => "Okay",
+                                "OS-Open Sores" => "Llagas abiertas",
+                                "P-Pale" => "Pálida",
+                                "R-Rash" => "Erupción",
+                                "S-Sleepy" => "Somnolienta",
+                                "SC-Severe Cough" => "Tos severa",
+                                "ST-Sore Throat" => "Dolor de garganta",
+                                "V-Vomiting" => "Vómitos",
+                                "W-Wheezing" => "Sibilancia"
+                            ];
+                                $selectedStateHealth = isset($kid->healthinfo->incidents->statehealth) ? $kid->healthinfo->incidents->statehealth : "";
+                            ?>
+                        <span class="input-group">
+                            <i class="saludicon acuarela acuarela-Salud"></i>
+                            <label class="labelpediatra" for="report">Estado de salud </label> 
+                            <select class="selectreport" name="statehealth" id="report2">
+                                <option value="" disabled <?= empty($selectedStateHealth) ? 'selected' : '' ?>>Seleccione</option>
+                                <?php foreach ($reportTranslations as $key => $value): ?>
+                                    <option value="<?= $key ?>" <?= ($selectedStateHealth == $key) ? 'selected' : '' ?>>
+                                        <?= $key ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                            <span class="info-select"> 
+                                <span class="selected-report-container">
+                                    <span class="text-real">
+                                        <span class="circle-indicator"></span>
+                                        <span id="selected-report2">Sin seleccionar</span>
+                                    </span>
+                                    <span id="translated-report2"></span> <!-- Aquí se mostrará la traducción -->
+                                </span>
+                            </span>
+                            <span class="error-message"></span>
+                        </span>
 
                         <span class="input-group">
                             <i class="saludicon acuarela acuarela-Informacion"></i>
@@ -159,37 +175,73 @@
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
-        // Verificar si se debe mostrar el botón
+        // ===> Modificar el select y los contenidos mostrados segun su seleccion
+        const selectElement = document.getElementById("report2");
+        const selectedReportSpan = document.getElementById("selected-report2");
+        const translatedReportSpan = document.getElementById("translated-report2");
+
+        // Mapa de traducción de PHP convertido a JavaScript
+        const reportTranslations = <?php echo json_encode($reportTranslations); ?>;
+
+        selectElement.addEventListener("change", function() {
+            const selectedValue = this.value;
+            if (selectedValue) {
+                selectedReportSpan.textContent = selectedValue; // Muestra la opción en inglés
+                translatedReportSpan.textContent = reportTranslations[selectedValue]; // Traducción en español
+            } else {
+                selectedReportSpan.textContent = "Sin seleccionar";
+                translatedReportSpan.textContent = "";
+            }
+        });
+
+
+        // ===> Verificar si se debe mostrar el botón
         if (localStorage.getItem("showEmergencyButton") === "true") {
             const sendSaludDiv = document.querySelector(".send-salud");
+            const guardarBtn = document.querySelector(".btn-add");
 
-            if (sendSaludDiv) {
-                const emergencyButton = document.createElement("button");
-                emergencyButton.className = "emergency_contact";
-                emergencyButton.id = "lightbox-emergencycontact";
-                emergencyButton.textContent = "Contacto de Emergencia";
-                emergencyButton.type = "button"; 
-                emergencyButton.href = "javascript:;";
-                emergencyButton.style.marginLeft = "50px";
+            if (sendSaludDiv && guardarBtn) {
+                guardarBtn.style.display = "none";
 
-                sendSaludDiv.appendChild(emergencyButton);
+                // Crear el contenedor principal
+                const questionDiv = document.createElement("div");
+                questionDiv.className = "emergency-question";
+                questionDiv.innerHTML = `
+                    <i class="acuarela acuarela-Informacion"></i>
+                    <p>¿Quieres enviar un reporte detallado al padre de familia?</p>
+                    <div class="interaction-container">
+                        <input type="radio" name="reportOption" value="yes" id="reportYes">
+                        <label for="reportYes">Sí</label>
+                        <input type="radio" name="reportOption" value="no" id="reportNo">
+                        <label for="reportNo">No</label>
+                        <button class="btn btn-action-primary enfasis btn-big btn-add confirm-button" type="button">Confirmar</button>
+                    </div>
+                `;
 
-                setTimeout(() => {
-                    const emergencycontact_lightbox = document.getElementById("lightbox-emergencycontact");
-                    if (emergencycontact_lightbox) {
-                    emergencycontact_lightbox.addEventListener("click", function (event) {
-                        if (window.innerWidth > 425) {
-                        showLightboxParient();
+                // Agregar la pregunta al DOM
+                sendSaludDiv.appendChild(questionDiv);
+
+                // Evento para manejar la selección
+                document.querySelector(".confirm-button").addEventListener("click", () => {
+                    const selectedOption = document.querySelector('input[name="reportOption"]:checked');
+
+                    if (selectedOption) {
+                        if (selectedOption.value === "yes") {
+                            if (window.innerWidth > 425) {
+                                showLightboxParient();
+                            } else {
+                                showLightboxEmergency();
+                            }
                         } else {
-                        showLightboxEmergency();
+                            window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
                         }
-                    });
+                        questionDiv.remove();
+                        localStorage.removeItem("showEmergencyButton");
+                    } else {
+                        alert("Por favor selecciona una opción.");
                     }
-                }, 100);
+                });
             }
-
-            // Limpiar localStorage para que no aparezca en futuras recargas
-            localStorage.removeItem("showEmergencyButton");
         }
     });
 

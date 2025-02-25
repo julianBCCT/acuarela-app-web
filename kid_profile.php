@@ -236,7 +236,7 @@
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>  <span class="inc-text"> <?= $incident->description ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span>  <span class="inc-text"> <?= $incident->gravedad ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span>  <span class="inc-text"> <?= $incident->temperature ?> °F </span> </p>
-                                                <!-- <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> <?= $incident->statehealth ?> </span> </p> -->
+                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> <?= $incident->statehealth ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span>  <span class="inc-text"> <?= $incident->actions_taken ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span>  <span class="inc-text"> <?= $incident->actions_expected ?> </span> </p>
                                             </div>
