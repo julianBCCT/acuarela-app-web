@@ -1678,7 +1678,8 @@ function showLightboxParient() {
             const gravedad = "grave";
             const email = kidData.guardians[0].guardian_email;
             const name = kidData.guardians[0].guardian_name;
-            sendEmergencyEmail(gravedad, email, name);
+            const lastname = kidData.guardians[0].guardian_lastname;
+            sendEmergencyEmail(gravedad, email, null, name, null, lastname, null, null, null, null, null, null, null);
           },
         },
       ];
@@ -1687,7 +1688,8 @@ function showLightboxParient() {
       const gravedad = "grave";
       const email = kidData.guardians[0].guardian_email;
       const name = kidData.guardians[0].guardian_name;
-      sendEmergencyEmail(gravedad, email, name);
+      const lastname = kidData.guardians[0].guardian_lastname;
+      sendEmergencyEmail(gravedad, email, null, name, null, lastname, null, null, null, null, null, null, null);
     }
   });
 
@@ -1760,20 +1762,8 @@ function showLightboxParient() {
         const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
         const severityLevel = incident.gravedad || "[Nivel de gravedad]";
         const suggestedActions = incident.actions_expected || "[Acciones esperadas]";
-        sendEmergencyEmail(
-          gravedad,
-          email,
-          email2,
-          name,
-          name2,
-          lastname,
-          lastname2,
-          reportedFor,
-          incidentType,
-          temperature,
-          actionsTaken,
-          severityLevel,
-          suggestedActions
+        sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2,
+          reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions
         );
         matchFound = true; // Indicar que se encontro una coincidencia
         break;
@@ -2377,32 +2367,32 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
           
           <!-- Círculos sobre las imágenes -->
           <div class="circle" data-area="Head" style="top: 0%; left: 19%;"></div>
-          <div class="circle" data-area="Right Eye" style="top: 21%; left: 15%;"></div>
-          <div class="circle" data-area="Left Eye" style="top: 21%; left: 22%;"></div>
+          <div class="circle" data-area="Right_Eye" style="top: 21%; left: 15%;"></div>
+          <div class="circle" data-area="Left_Eye" style="top: 21%; left: 22%;"></div>
           <div class="circle" data-area="Mouth" style="top: 32%; left: 19%;"></div>
           <div class="circle" data-area="Chest" style="top: 45%; left: 19%;"></div>
           <div class="circle" data-area="Stomach" style="top: 59%; left: 19%;"></div>
-          <div class="circle" data-area="Left Elbows" style="top: 49%; left: 28%;"></div>
-          <div class="circle" data-area="Right Elbows" style="top: 49%; left: 10%;"></div>
-          <div class="circle" data-area="Left Hands" style="top: 52%; left: 36%;"></div>
-          <div class="circle" data-area="Right Hands" style="top: 52%; left: 2%;"></div>
-          <div class="circle" data-area="Left Knee" style="top: 80%; left: 23%;"></div>
-          <div class="circle" data-area="Right Knee" style="top: 80%; left: 16%;"></div>
-          <div class="circle" data-area="Left Ankle" style="top: 93%; left: 23%;"></div>
-          <div class="circle" data-area="Right Ankle" style="top: 93%; left: 16%;"></div>
+          <div class="circle" data-area="Left_Elbows" style="top: 49%; left: 28%;"></div>
+          <div class="circle" data-area="Right_Elbows" style="top: 49%; left: 10%;"></div>
+          <div class="circle" data-area="Left_Hands" style="top: 52%; left: 36%;"></div>
+          <div class="circle" data-area="Right_Hands" style="top: 52%; left: 2%;"></div>
+          <div class="circle" data-area="Left_Knee" style="top: 80%; left: 23%;"></div>
+          <div class="circle" data-area="Right_Knee" style="top: 80%; left: 16%;"></div>
+          <div class="circle" data-area="Left_Ankle" style="top: 93%; left: 23%;"></div>
+          <div class="circle" data-area="Right_Ankle" style="top: 93%; left: 16%;"></div>
           <div class="circle" data-area="Back_Head" style="top: 0%; left: 81%;"></div>
-          <div class="circle" data-area="Left Ear" style="top: 25%; left: 72%;"></div>
-          <div class="circle" data-area="Right Ear" style="top: 25%; left: 91%;"></div>
+          <div class="circle" data-area="Left_Ear" style="top: 25%; left: 72%;"></div>
+          <div class="circle" data-area="Right_Ear" style="top: 25%; left: 91%;"></div>
           <div class="circle" data-area="Nape" style="top: 35%; left: 81%;"></div>
-          <div class="circle" data-area="Left Shoulder" style="top: 40%; left: 75%;"></div>
-          <div class="circle" data-area="Right Shoulder" style="top: 40%; left: 87%;"></div>
-          <div class="circle" data-area="Left Wrist" style="top: 52%; left: 68%;"></div>
-          <div class="circle" data-area="Right Wrist" style="top: 52%; left: 95%;"></div>
-          <div class="circle" data-area="Left Rib" style="top: 55%; left: 76%;"></div>
-          <div class="circle" data-area="Right Rib" style="top: 55%; left: 86%;"></div>
+          <div class="circle" data-area="Left_Shoulder" style="top: 40%; left: 75%;"></div>
+          <div class="circle" data-area="Right_Shoulder" style="top: 40%; left: 87%;"></div>
+          <div class="circle" data-area="Left_Wrist" style="top: 52%; left: 68%;"></div>
+          <div class="circle" data-area="Right_Wrist" style="top: 52%; left: 95%;"></div>
+          <div class="circle" data-area="Left_Rib" style="top: 55%; left: 76%;"></div>
+          <div class="circle" data-area="Right_Rib" style="top: 55%; left: 86%;"></div>
           <div class="circle" data-area="Back" style="top: 50%; left: 81%;"></div>
-          <div class="circle" data-area="Left Foot" style="top: 95%; left: 75%;"></div>
-          <div class="circle" data-area="Right Foot" style="top: 95%; left: 87%;"></div>
+          <div class="circle" data-area="Left_Foot" style="top: 95%; left: 75%;"></div>
+          <div class="circle" data-area="Right_Foot" style="top: 95%; left: 87%;"></div>
         </div>
       </div>
     </div>
@@ -2517,22 +2507,24 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
   // Datos del niño
   const dataNino = document.createElement("div");
   dataNino.classList.add("dataninobod");
+
   if (resultado) {
     const [year, month, day] = resultado.daily_fecha.split("-").map(Number);
     const fecha = new Date(year, month - 1, day);
     const nombreMes = fecha.toLocaleDateString("es-ES", { month: "long" });
     const mesCapitalizado =
       nombreMes.charAt(0).toUpperCase() + nombreMes.slice(1);
-    const fechaFormateada = `${String(day).padStart(
-      2,
-      "0"
-    )} de ${mesCapitalizado}, ${year}`;
+    
+    // Nuevo formato: "Febrero 04/2025"
+    const fechaFormateada = `${mesCapitalizado} ${String(day).padStart(2, "0")}/${year}`;
+
     dataNino.innerHTML = `
       <p class="dataninobod-date"> ${fechaFormateada} </p>
       <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Temperatura: </span> <span class="ex"><span class="inc"> ${resultado.temperature} </span>°F</span>  </p>
       <p> <span class="hs"><i class="acuarela acuarela-Salud"></i> Reporte: </span> <span class="inc"> ${resultado.report} </span> </p>
     `;
   }
+
 
   // Contenedor de imágenes y círculos
   const novedad = document.createElement("div");
@@ -2545,32 +2537,32 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
         
         <!-- Círculos sobre las imágenes -->
         <div class="circle" data-area="Head" style="top: 0%; left: 24%;"></div>
-        <div class="circle" data-area="Right Eye" style="top: 21%; left: 19%;"></div>
-        <div class="circle" data-area="Left Eye" style="top: 21%; left: 28%;"></div>
+        <div class="circle" data-area="Right_Eye" style="top: 21%; left: 19%;"></div>
+        <div class="circle" data-area="Left_Eye" style="top: 21%; left: 28%;"></div>
         <div class="circle" data-area="Mouth" style="top: 32%; left: 24%;"></div>
         <div class="circle" data-area="Chest" style="top: 45%; left: 24%;"></div>
         <div class="circle" data-area="Stomach" style="top: 59%; left: 24%;"></div>
-        <div class="circle" data-area="Left Elbows" style="top: 48%; left: 35%;"></div>
-        <div class="circle" data-area="Right Elbows" style="top: 48%; left: 12%;"></div>
-        <div class="circle" data-area="Left Hands" style="top: 52%; left: 45%;"></div>
-        <div class="circle" data-area="Right Hands" style="top: 52%; left: 3%;"></div>
-        <div class="circle" data-area="Left Knee" style="top: 80%; left: 29%;"></div>
-        <div class="circle" data-area="Right Knee" style="top: 80%; left: 21%;"></div>
-        <div class="circle" data-area="Left Ankle" style="top: 93%; left: 29%;"></div>
-        <div class="circle" data-area="Right Ankle" style="top: 93%; left: 21%;"></div>
+        <div class="circle" data-area="Left_Elbows" style="top: 48%; left: 35%;"></div>
+        <div class="circle" data-area="Right_Elbows" style="top: 48%; left: 12%;"></div>
+        <div class="circle" data-area="Left_Hands" style="top: 52%; left: 45%;"></div>
+        <div class="circle" data-area="Right_Hands" style="top: 52%; left: 3%;"></div>
+        <div class="circle" data-area="Left_Knee" style="top: 80%; left: 29%;"></div>
+        <div class="circle" data-area="Right_Knee" style="top: 80%; left: 21%;"></div>
+        <div class="circle" data-area="Left_Ankle" style="top: 93%; left: 29%;"></div>
+        <div class="circle" data-area="Right_Ankle" style="top: 93%; left: 21%;"></div>
         <div class="circle" data-area="Back_Head" style="top: 0%; left: 76%;"></div>
-        <div class="circle" data-area="Left Ear" style="top: 25%; left: 65%;"></div>
-        <div class="circle" data-area="Right Ear" style="top: 25%; left: 87%;"></div>
+        <div class="circle" data-area="Left_Ear" style="top: 25%; left: 65%;"></div>
+        <div class="circle" data-area="Right_Ear" style="top: 25%; left: 87%;"></div>
         <div class="circle" data-area="Nape" style="top: 35%; left: 76%;"></div>
-        <div class="circle" data-area="Left Shoulder" style="top: 40%; left: 67%;"></div>
-        <div class="circle" data-area="Right Shoulder" style="top: 40%; left: 84%;"></div>
-        <div class="circle" data-area="Left Wrist" style="top: 52%; left: 59%;"></div>
-        <div class="circle" data-area="Right Wrist" style="top: 52%; left: 94%;"></div>
-        <div class="circle" data-area="Left Rib" style="top: 55%; left: 68%;"></div>
-        <div class="circle" data-area="Right Rib" style="top: 55%; left: 83%;"></div>
+        <div class="circle" data-area="Left_Shoulder" style="top: 40%; left: 67%;"></div>
+        <div class="circle" data-area="Right_Shoulder" style="top: 40%; left: 84%;"></div>
+        <div class="circle" data-area="Left_Wrist" style="top: 52%; left: 59%;"></div>
+        <div class="circle" data-area="Right_Wrist" style="top: 52%; left: 94%;"></div>
+        <div class="circle" data-area="Left_Rib" style="top: 55%; left: 68%;"></div>
+        <div class="circle" data-area="Right_Rib" style="top: 55%; left: 83%;"></div>
         <div class="circle" data-area="back" style="top: 50%; left: 76%;"></div>
-        <div class="circle" data-area="Left Foot" style="top: 95%; left: 67%;"></div>
-        <div class="circle" data-area="Right Foot" style="top: 95%; left: 84%;"></div>
+        <div class="circle" data-area="Left_Foot" style="top: 95%; left: 67%;"></div>
+        <div class="circle" data-area="Right_Foot" style="top: 95%; left: 84%;"></div>
       </div>
     </div>
   `;
@@ -2594,23 +2586,24 @@ function showLightboxViewHealthCkeck(fechaSeleccionada) {
     .split(/[, ]+/)
     .map((area) => area.trim().toLowerCase());
   novedad.querySelectorAll(".circle").forEach((circle) => {
-    const area = circle.getAttribute("data-area").toLowerCase(); // Obtener el área asociada al círculo, asegurar que sea minúscula
+    const area = circle.getAttribute("data-area").toLowerCase(); // Obtener el área en minúsculas
     if (resultado.bodychild === "0") {
-      // Si bodychild es "0", aplicar estos estilos
+      // Si bodychild es "0", mostrar todos en verde
       circle.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
       circle.style.border = "2px solid var(--secundario1)";
+      circle.style.display = "block"; // Asegurar que todos sean visibles
     } else if (areasAfectadas.includes(area)) {
-      // Si el área está afectada, aplicar los estilos de "rojo"
+      // Si el área está afectada, aplicamos los estilos de "rojo"
       circle.style.backgroundColor = "rgba(235, 93, 94, 0.8)";
       circle.style.boxShadow = "0 0 15px rgba(235, 93, 94, 0.5)";
       circle.classList.add("animate");
+      circle.style.display = "block"; // Asegurar que el afectado sea visible
     } else {
-      // Si el área no está afectada, quitar la animación y cambiar el color de fondo
-      circle.classList.remove("animate");
-      circle.style.backgroundColor = "rgba(235, 93, 94, 0.3)";
-      circle.style.boxShadow = "none";
+      // Si el área NO está afectada, ocultarla
+      circle.style.display = "none";
     }
   });
+    
 
   const closeButton = document.getElementById("info-close-button");
   const closeHandler = () => {

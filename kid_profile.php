@@ -229,8 +229,8 @@
                                             <div class="incidentreport">
                                                 <p> Reportado por <?= $incident->reported_for ?> </p>
                                                 <p><i class="acuarela acuarela-Horario"></i> <?= date('H:i', strtotime($incident->reported_enh)) ?> </p>
-                                                <p><i class="acuarela acuarela-Calendario"></i> <?= $incident->reported_enf ?> </p>
-                                            </div>
+                                                <p><i class="acuarela acuarela-Calendario"></i> <?= date('m-d-Y', strtotime($incident->reported_enf)) ?> </p>
+                                                </div>
                                             <div class="incidentdetails">
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Ayuda"></i> <span>Tipo de incidente </span></span>  <span class="inc-text"> <?= $incident->incident_type ?> </span> </p>
                                                 <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>  <span class="inc-text"> <?= $incident->description ?> </span> </p>
