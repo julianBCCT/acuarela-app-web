@@ -1563,7 +1563,7 @@ function sendEmergencyEmail(
       if (response.ok) {
         showMessage(container, "Se ha enviado un mensaje de aviso al pariente.");
       } else {
-        showMessage(container,"Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.",true);
+        showMessage(container, "Hubo un error al enviar el correo. Por favor, inténtelo nuevamente.", true);
       }
     })
     .catch((error) => {
@@ -1703,7 +1703,7 @@ function showLightboxParient() {
   linkModerado.addEventListener("click", () => {
     const container = document.querySelector(".methods-emergency");
     if (!kidData.incidents || kidData.incidents.length === 0) {
-      showMessage(container,"El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
+      showMessage(container, "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy.");
       linkGrave.style.opacity = "0.5";
       let topPosition = "170px";
       let leftPosition = "500px";
@@ -1720,10 +1720,10 @@ function showLightboxParient() {
         leftPosition = "180px";
       }
       const buttonDataModerado = [{
-          text: "Llenar reporte",
-          iconClass: "acuarela acuarela-Telefono",
-          href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
-        },
+        text: "Llenar reporte",
+        iconClass: "acuarela acuarela-Telefono",
+        href: `/miembros/acuarela-app-web/agregar-reporte/${kidData._id}`,
+      },
       ];
       buttonsFlot(linkModerado, buttonDataModerado, topPosition, leftPosition, "120px");
       return;
@@ -2203,13 +2203,13 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
           <select name="report" id="report" required>
             <option value="" disabled selected>Seleccione </option>
               ${Object.keys(reportTranslations).map(
-                (key) => `
+      (key) => `
                 <option value="${key}" ${kidData.healthinfo?.healthcheck?.report === key
-                ? "selected"
-                : ""
-                }>${key}</option>
+          ? "selected"
+          : ""
+        }>${key}</option>
                 `)
-              .join("")}
+      .join("")}
           </select>
           <p class="selected-report-container">
             <span class="circle-indicator"></span>
@@ -2431,7 +2431,7 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
           if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
 
           kidData.healthinfo.healthcheck.bodychild = selectedArea;
-          console.log("Área seleccionada:",kidData.healthinfo.healthcheck.bodychild );
+          console.log("Área seleccionada:", kidData.healthinfo.healthcheck.bodychild);
 
           // Resaltar solo el círculo seleccionado
           circles.forEach((c) => c.classList.remove("selected"));
@@ -2469,9 +2469,9 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
         .then((data) => {
           console.log("Respuesta del webhook:", data);
         })
-        // .catch((error) => {
-        //   console.error("Error al enviar los datos:", error);
-        // });
+      // .catch((error) => {
+      //   console.error("Error al enviar los datos:", error);
+      // });
     }
   }, 0);
 
@@ -2708,23 +2708,23 @@ function showLightboxNinoHealthCkeck() {
   wrapper.querySelectorAll(".ninos_slide").forEach((nino) => {
     nino.addEventListener("click", () => {
       // Quitar la clase 'selected' de todos los elementos
-    wrapper.querySelectorAll(".ninos_slide").forEach((el) => el.classList.remove("selected"));
+      wrapper.querySelectorAll(".ninos_slide").forEach((el) => el.classList.remove("selected"));
 
-    // Agregar la clase 'selected' al niño seleccionado
-    nino.classList.add("selected");
+      // Agregar la clase 'selected' al niño seleccionado
+      nino.classList.add("selected");
 
-    // Activar el botón
-    btnSiguiente.classList.remove("btn-disable");
-    btnSiguiente.style.backgroundColor = "var(--cielo)";
-    btnSiguiente.disabled = false;
+      // Activar el botón
+      btnSiguiente.classList.remove("btn-disable");
+      btnSiguiente.style.backgroundColor = "var(--cielo)";
+      btnSiguiente.disabled = false;
 
-    // Obtener el ID del niño desde el dataset
-    const selectedKidId = nino.dataset.kidId;
-    selectedKid = children.find(kid => kid.id === selectedKidId); // Buscar el niño en la lista original
+      // Obtener el ID del niño desde el dataset
+      const selectedKidId = nino.dataset.kidId;
+      selectedKid = children.find(kid => kid.id === selectedKidId); // Buscar el niño en la lista original
 
-    // Mostrar en consola
-    console.log("Niño seleccionado:", selectedKid);
-    console.log("ID del niño seleccionado:", selectedKid?.id);
+      // Mostrar en consola
+      console.log("Niño seleccionado:", selectedKid);
+      console.log("ID del niño seleccionado:", selectedKid?.id);
     });
   });
   const fechaselec = "null";
@@ -3654,7 +3654,6 @@ mensajeButton.addEventListener("click", function () {
 });
 
 async function buscarPadres() {
-  console.log("buscarPadres");
   try {
     const padresInfo = await fetch(
       `https://acuarelacore.com/api/acuarelausers?rols=5ff790045d6f2e272cfd7394&daycare=${daycareActiveId}`,
@@ -3682,7 +3681,7 @@ async function buscarPadres() {
         };
       })()
     );
-    // console.log("Filtrados: ", filtrarPadresActivos);
+
     return filtrarPadresActivos;
   } catch (error) {
     console.log("No se encontraron los padres");
@@ -3701,7 +3700,7 @@ async function buscarChatsActivos() {
       }
     );
     const chatsActivos = await response.json();
-    // console.log(chatsActivos);
+
     return chatsActivos;
   } catch (error) {
     console.log("No se pueden listar los chats activos");
@@ -3733,7 +3732,7 @@ const sendRegisterEmailChat = async (rol, daycare, email, link, kid) => {
       return result;
     })
     .catch((error) => {
-      console.log("Invitation no sended ", error);
+      // console.log("Invitation no sended ", error);
       // alert("El correo de invitación no se envió.");
       Swal.fire({
         title: "¡Atención!!",
@@ -3810,7 +3809,7 @@ function mostrarPadres(padres) {
           selectedButton = btnChatear;
           mensajeriaPadre();
           // buscarChatsActivos();
-          // console.log(padres);
+
         });
       }
       divPadresInactivos.appendChild(padreElement);
@@ -4032,7 +4031,6 @@ async function divNuevoChatGrupal() {
 
             // Convertir el Map a un array para mantener compatibilidad con el resto del código
             usuariosSeleccionados = Array.from(padresSeleccionadosMap.values());
-            console.log(usuariosSeleccionados);
           });
         });
       } else {
@@ -4153,12 +4151,15 @@ async function divNuevoChatGrupal() {
         const participantIds = usuariosSeleccionados.map(
           (user) => user.userIdPadre
         );
+        roomId = getRoomName(acuarelaId, participantIds);
         participantIds.push(acuarelaId);
 
-        const roomId = `group_${[acuarelaId, ...participantIds]
-          .sort()
-          .join("_")}`;
-        console.log(roomId);
+        // const roomId = `group_${[acuarelaId, ...participantIds]
+        //   .sort()
+        //   .join("_")}`;
+        // console.log(roomId);
+
+        // roomId = getRoomName(acuarelaId, participantIds);
 
         socket.emit("createChat", {
           roomId: roomId, // ID único de la sala
@@ -4272,9 +4273,7 @@ async function divBuscarActivos() {
     let padresFiltrados = padresActivos.filter((item1) =>
       chatsActivos.some((item2) => item2.room.includes(item1.id))
     );
-    // console.log("Filtrados", padresFiltrados);
 
-    // console.log(generarListaChats(chatsActivos, padresFiltrados));
     const chats = generarListaChats(chatsActivos, padresFiltrados);
     mostrarPadres(chats);
     function filtrarPadres(text, padres) {
@@ -4300,7 +4299,6 @@ async function divBuscarActivos() {
 
       if (padres.length > 0) {
         padres.forEach((padre) => {
-          // console.log(padre);
           const padreElement = document.createElement("div");
           padreElement.className = "chats-mensajeria";
           const padrePhoto = document.createElement("img");
@@ -4312,9 +4310,9 @@ async function divBuscarActivos() {
           padreElement.appendChild(padrePhoto);
           padreElement.appendChild(padreName);
           divPadresChats.appendChild(padreElement);
-          console.log(divPadresChats);
 
           padreElement.addEventListener("click", () => {
+
             userIdPadre = padre.id;
             socketPadre = padre.socketId;
             cargarChatPadre(padre.id);
@@ -4474,7 +4472,6 @@ async function cargarChatPadre(userIdPadre) {
         }
       );
       const grupo = await grupoInfo.json();
-      console.log(grupo[0].group_name);
       const usuarioName = document.getElementById("userChat");
       const usuarioImg = document.getElementById("imgUser");
       usuarioImg.src = `https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png`;
@@ -4489,8 +4486,6 @@ async function cargarChatPadre(userIdPadre) {
 
       chatMessages = grupo;
 
-      // mesesMostrados = [currentMonth];
-      console.log(mesesMostrados);
       isLoadingOlderMessages = false;
       cargarMessages(currentMonth);
       contendorMessages.addEventListener("scroll", cargarMensajeScroll);
@@ -4540,7 +4535,6 @@ async function cargarChatPadre(userIdPadre) {
       const currentMonth = new Date().toISOString().slice(0, 7);
 
       mesesMostrados = [currentMonth];
-      console.log(mesesMostrados);
       isLoadingOlderMessages = false;
       cargarMessages(currentMonth);
       contendorMessages.addEventListener("scroll", cargarMensajeScroll);
@@ -4560,7 +4554,6 @@ let participants = [];
 
 let MesMostrado = "";
 function cargarMessages(mes, mostrarPreloader = true) {
-  console.log(mes);
 
   const messagesContainer = document.getElementById("messages");
   let preloader;
@@ -4576,7 +4569,6 @@ function cargarMessages(mes, mostrarPreloader = true) {
   setTimeout(() => {
     if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
       const messagesMonths = chatMessages[0].messages;
-      console.log(messagesMonths);
       participants = chatMessages[0].participants;
 
       const esGrupo = chatMessages[0].room.includes("group_");
@@ -4585,26 +4577,19 @@ function cargarMessages(mes, mostrarPreloader = true) {
 
       // Si el mes solicitado no tiene mensajes, buscar el siguiente mes con datos
       while (mes && !messagesMonths[mes] && mesesDisponibles.length > 0) {
-        console.log("Ingresa al while", mes);
         let index = mesesDisponibles.indexOf(mes);
-        console.log(index);
-        console.log(mesesDisponibles);
         // if (index === -1 || index === mesesDisponibles.length - 1) break;
 
         // if (index === -1 || !mesesDisponibles[index + 1]) {
-        //   console.log("No hay más meses disponibles. Rompiendo el bucle.");
         //   break; // Detenemos el flujo si no hay un siguiente mes válido
         // }
         mes = mesesDisponibles[index + 1]; // Buscar el siguiente mes disponible
         MesMostrado = mes;
-        // console.log(mesesDisponibles[index + 1]);
-        console.log(mes);
         mesesMostrados = [mes];
       }
-      console.log(mes);
 
       if (!mes || !messagesMonths[mes]) {
-        console.log("No hay mensajes en ningún mes.");
+        // console.log("No hay mensajes en ningún mes.");
         if (preloader) preloader.remove();
         mostrarMensajeNoHayMensajes();
         return;
@@ -4612,7 +4597,7 @@ function cargarMessages(mes, mostrarPreloader = true) {
 
       mesesMostrados = [mes];
 
-      console.log(`Cargando mensajes desde el mes: ${mes}`);
+      // console.log(`Cargando mensajes desde el mes: ${mes}`);
 
       let mensajesCargados = messagesMonths[mes].slice().reverse(); // Cargar solo del mes indicado
 
@@ -4672,118 +4657,6 @@ function cargarMessages(mes, mostrarPreloader = true) {
   }, mostrarPreloader ? 1000 : 0);
 }
 
-
-// function cargarMessages(mes, mostrarPreloader = true) {
-//   console.log(mes);
-
-//   const messagesContainer = document.getElementById("messages");
-//   let preloader;
-
-//   // Mostrar el preloader solo si mostrarPreloader es true
-//   if (mostrarPreloader) {
-//     preloader = document.createElement("div");
-//     preloader.className = "preloader";
-//     preloader.innerHTML = '<img src="img/preloader.gif" alt="preloader">';
-//     messagesContainer.appendChild(preloader);
-//   }
-
-//   setTimeout(() => {
-//     if (chatMessages && chatMessages.length > 0 && chatMessages[0].messages) {
-//       const messagesMonths = chatMessages[0].messages;
-//       console.log(messagesMonths);
-//       participants = chatMessages[0].participants;
-
-//       const esGrupo = chatMessages[0].room.includes("group_");
-
-//       let mesesDisponibles = Object.keys(messagesMonths).sort().reverse();
-
-//       // Si el mes solicitado no tiene mensajes, buscar el siguiente mes con datos
-//       while (mes && !messagesMonths[mes] && mesesDisponibles.length > 0) {
-//         let index = mesesDisponibles.indexOf(mes);
-//         // if (index === -1 || index === mesesDisponibles.length - 1) break;
-//         mes = mesesDisponibles[index + 1]; // Buscar el siguiente mes disponible
-//       }
-
-//       if (!mes || !messagesMonths[mes]) {
-//         console.log("No hay mensajes en ningún mes.");
-//         if (preloader) preloader.remove();
-//         mostrarMensajeNoHayMensajes();
-//         return;
-//       }
-
-//       console.log(`Cargando mensajes desde el mes: ${mes}`);
-
-//       let mensajesCargados = messagesMonths[mes].slice().reverse(); // Cargar solo del mes indicado
-
-//       if (mensajesCargados.length === 0) {
-//         console.log("No hay mensajes disponibles en este mes.");
-//         if (preloader) preloader.remove();
-//         mostrarMensajeNoHayMensajes();
-//         return;
-//       }
-
-//       // Guardar la posición actual del scroll
-//       const currentScrollPosition =
-//         messagesContainer.scrollHeight - messagesContainer.scrollTop;
-
-//       mensajesCargados.forEach((msg) => {
-//         const messageElement = document.createElement("div");
-//         const mensajeElement = document.createElement("p");
-//         const nameElement = document.createElement("p");
-//         const horaElement = document.createElement("p");
-//         horaElement.className = "chat-hora";
-//         nameElement.className = "chat-name";
-
-//         // Obtener la hora del mensaje
-//         const horaMensaje = new Date(msg.timestamp);
-//         const options = { hour: "2-digit", minute: "2-digit", hour12: true };
-//         horaElement.textContent = horaMensaje.toLocaleTimeString([], options);
-
-//         // Si es grupo, obtener el nombre del remitente
-//         if (esGrupo && msg.sender !== acuarelaId) {
-//           const participante = participants.find((p) => p.id === msg.sender);
-//           if (participante) {
-//             nameElement.textContent = `${participante.name} ${participante.lastname}`;
-//             messageElement.appendChild(nameElement);
-//           }
-//         }
-
-//         mensajeElement.textContent = msg.content;
-//         messageElement.appendChild(mensajeElement);
-//         messageElement.appendChild(horaElement);
-
-//         messageElement.className =
-//           msg.sender === acuarelaId ? "mensaje-enviado" : "mensaje-recibido";
-
-//         messagesContainer.insertBefore(messageElement, messagesContainer.firstChild);
-//       });
-
-//       // Ajustar la posición del scroll para evitar saltos
-//       messagesContainer.scrollTop =
-//         messagesContainer.scrollHeight - currentScrollPosition;
-
-//       // Verificar si no hay suficiente contenido para hacer scroll
-//       setTimeout(() => {
-//         if (messagesContainer.scrollHeight <= messagesContainer.clientHeight) {
-//           console.log("No hay suficiente contenido para hacer scroll, cargando mes anterior...");
-//           let index = mesesDisponibles.indexOf(mes);
-//           if (index < mesesDisponibles.length - 1) {
-//             let mesAnterior = mesesDisponibles[index + 1];
-//             cargarMessages(mesAnterior, false); // Cargar sin preloader
-//           }
-//         }
-//       }, 100);
-
-//       isLoadingOlderMessages = false;
-//     } else {
-//       mostrarMensajeNoHayMensajes();
-//     }
-
-//     if (preloader) preloader.remove();
-//   }, mostrarPreloader ? 1000 : 0);
-// }
-
-
 // Función para mostrar el mensaje "No hay mensajes previos"
 function mostrarMensajeNoHayMensajes() {
   const noMessagesElement = document.createElement("div");
@@ -4813,27 +4686,11 @@ function cargarMensajeScroll() {
 }
 
 function verificarScrollInicial() {
-  console.log("verificarScrollInicial");
   if (contendorMessages.scrollHeight <= contendorMessages.clientHeight) {
     // Si el contenedor no tiene suficiente contenido para el scroll, cargar más mensajes
     cargarMesAnterior();
   }
 }
-
-// function restarMes(mes) {
-//   const [year, month] = mes.split("-").map(Number); // Dividimos el año y el mes
-//   let newYear = year;
-//   let newMonth = month - 1; // Restamos 1 mes
-//   // Si el mes es 0, restamos un año y ponemos el mes a 12 (diciembre)
-//   if (newMonth === 0) {
-//     newMonth = 12;
-//     newYear -= 1;
-//   }
-//   // Formatear el mes con dos dígitos (01, 02,...)
-//   const formattedMonth = newMonth < 10 ? `0${newMonth}` : newMonth;
-//   // Retornamos la nueva fecha en formato 'YYYY-MM'
-//   return `${newYear}-${formattedMonth}`;
-// }
 
 function restarMes(mes) {
   const availableMonths = Object.keys(chatMessages[0].messages).sort().reverse(); // Ordenar de más reciente a más antiguo
@@ -4847,12 +4704,7 @@ function restarMes(mes) {
 }
 
 function cargarMesAnterior() {
-  console.log("cargarMesAnterior");
   const ultimoMesMostrado = mesesMostrados[mesesMostrados.length - 1];
-  console.log(ultimoMesMostrado);
-  // const ultimoMesMostrado = mesesMostrados[MesMostrado];
-  console.log(ultimoMesMostrado);
-  // Restar un mes al último mes mostrado
   const mesAnterior = restarMes(ultimoMesMostrado);
   // Verificar si tenemos mensajes para ese mes anterior
   if (chatMessages[0].messages[mesAnterior]) {
@@ -4869,7 +4721,6 @@ function cargarMesAnterior() {
 
     cargarMessages(mesAnterior, false); // Mostrar los chats del mes anterior
     mesesMostrados.push(mesAnterior); // Agregar el nuevo mes a la lista de meses mostrados
-    console.log(mesesMostrados);
   } else {
     const fechaElement = document.createElement("div");
     fechaElement.className = "no-more-messages";
@@ -4894,28 +4745,6 @@ function cargarMesAnterior() {
   }
 }
 
-// function getRoomName(user1, user2) {
-
-//   return [user1, user2].sort().join("-");
-
-// }
-
-// function getRoomName(user1, users) {
-//   if (!Array.isArray(users)) {
-//     users = [users]; // Convertir en array si es un solo usuario
-//   }
-
-//   let userIds = [user1, ...users].sort(); // Agregar el ID del admin y ordenar
-
-//   if (userIds.length > 2) {
-//     // Chat grupal: Prefijo "group_"
-//     return `group_${userIds.join("_")}`;
-//   } else {
-//     // Chat individual
-//     return userIds.join("-");
-//   }
-// }
-
 function getRoomName(user, participants) {
   if (!Array.isArray(participants)) {
     participants = [participants]; // Convertir en array si es un solo usuario
@@ -4938,9 +4767,6 @@ function mensajeriaPadre() {
   });
 
   // Agregar el event listener solo una vez
-
-  // console.log(clickListenerAttached);
-
   // if (!clickListenerAttached) {
   btnSendMensaje.addEventListener("click", enviarMensaje);
   // clickListenerAttached = true;
@@ -4949,7 +4775,6 @@ function mensajeriaPadre() {
 }
 
 function enviarMensaje() {
-  console.log("enviarMensaje");
   const messageInput = document.getElementById("messageInput");
   const message = messageInput.value;
 
@@ -4960,7 +4785,6 @@ function enviarMensaje() {
 
   if (message) {
     if (messageInput.value && roomId) {
-      console.log(roomId);
       const message = {
         text: messageInput.value,
         user: user,
@@ -5021,7 +4845,6 @@ function showNotification(notificationMessage, notificationtitle) {
 socket.off("receiveMessage");
 
 socket.on("receiveMessage", (message) => {
-  console.log("receiveMessage");
 
   const messageChatElement = document.getElementById("messageChat");
   if (messageChatElement) {
@@ -5063,7 +4886,10 @@ socket.on("receiveMessage", (message) => {
 });
 
 socket.on("newMessageNotification", (msg) => {
+<<<<<<< HEAD
   console.log("Notificación recibida en el cliente:", msg);
+=======
+>>>>>>> 422c48d1840d90963d0a1f3982ecd8579ee349c4
   const {
     message: { sender, content },
   } = msg;
@@ -5104,7 +4930,6 @@ async function activosListener() {
         },
       }
     );
-    console.log("ActivosListenner");
     usuario = await usuarioInfo.json();
   } catch (error) {
     console.error(error);
