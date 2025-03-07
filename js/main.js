@@ -5063,7 +5063,7 @@ socket.on("receiveMessage", (message) => {
 });
 
 socket.on("newMessageNotification", (msg) => {
-  console.log("newMessageNotification");
+  console.log("Notificación recibida en el cliente:", msg);
   const {
     message: { sender, content },
   } = msg;
