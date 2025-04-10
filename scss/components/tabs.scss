@@ -1,7 +1,9 @@
 .tab-content {
   display: none;
+  background: none;
   &.active {
     display: block;
+    background: none;
   }
 }
 .tab-content-header{

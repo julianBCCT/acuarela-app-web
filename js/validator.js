@@ -151,7 +151,9 @@ if (createAsistenteForm) {
     };
     const baseLink = `https://acuarelacore.com/asistentes/register/${id}/${name}/${lastname}/${mail}/${phone}`;
     const emailAsistentes = await fetch(
-      `https://bilingualchildcaretraining.com/s/emailAsistentes/?name=${`${name} ${lastname}`}&daycare=${daycareName}&email=${mail}&link=${baseLink}`,
+      `https://bilingualchildcaretraining.com/s/emailAsistentes/?name=${`${name} ${lastname}`}&daycare=${
+        foundDaycare.name
+      }&email=${mail}&link=${baseLink}`,
       requestOptions
     )
       .then((response) => response.json())
@@ -184,7 +186,7 @@ if (editAsistenteForm) {
   // Función de manejo de respuesta dinámica Login
   async function handleResponse(data) {
     fadeOut(preloader);
-    // window.location.reload();
+    window.location.reload();
   }
   const validator = new FormValidator(
     editAsistenteForm,

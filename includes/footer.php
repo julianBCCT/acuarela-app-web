@@ -47,9 +47,17 @@
   </div>
 </div>
 <div class="preloader"><img src="img/preloader.gif" alt="preloader" /></div>
+<div class="mensajeria-content">
+  <?php include "includes/mensajeria.php" ?>
+
+  <button id="mainButton" class="main-button">
+    <i id="icono" class="acuarela acuarela-Habla"></i>
+  </button>
+</div>
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@4.1.4/dist/js/splide.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
 <script src="js/validator.js?v=<?=time()?>"></script>
 <script src="js/utils.js?v=<?=time()?>"></script>
 <script src="js/main.js?v=<?=time()?>"></script>

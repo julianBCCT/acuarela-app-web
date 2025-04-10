@@ -101,14 +101,14 @@
             </div>
         </div>
         <div class="chat-barra-mensajes">
-            <input id="messageInput" type="text">
+            <input id="messageInput" type="text" placeholder="Mensaje">
             <i id="sendBtn" class="acuarela acuarela-Enviar"></i>
             <!-- <i class="acuarela acuarela-Adjuntar"></i> -->
         </div>
     </div>
+    
+
+
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
-
-
-
 
 </div>

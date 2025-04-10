@@ -264,7 +264,11 @@ const handleInscripcion = async () => {
 
           if (dataToSend.parents && dataToSend.parents.length > 0) {
             try {
-              await sendEmailsToParents(body.parents, daycareName, formValues);
+              await sendEmailsToParents(
+                body.parents,
+                foundDaycare.name,
+                formValues
+              );
               fadeOut(preloader);
             } catch (error) {
               // Handle error if necessary
@@ -408,6 +412,9 @@ const addReaction = async (body, element) => {
   const reactionData = await reactionResponse.json();
 };
 const addComment = async (body, inputID) => {
+  document.querySelectorAll("#add-comment button").forEach((btn) => {
+    btn.setAttribute("disabled", true);
+  });
   body.content = document.querySelector(inputID).value;
   const commentResponse = await fetch("s/addComment/", {
     method: "POST",
@@ -417,6 +424,9 @@ const addComment = async (body, inputID) => {
   const reactionData = await commentResponse.json();
   Fancybox.close();
   location.reload();
+  document.querySelectorAll("#add-comment button").forEach((btn) => {
+    btn.setAttribute("disabled", false);
+  });
 };
 const showReactions = (element) => {
   let postArticle = document.getElementById(element);
@@ -533,10 +543,16 @@ const requestposts = async () => {
         let templateMedia = ""; // Inicializa templateMedia para cada publicación
         post.media.forEach((singlemedia, index) => {
           let imageUrl;
-          if (singlemedia.formats.medium) {
-            imageUrl = singlemedia.formats.medium.url;
-          } else if (singlemedia.formats.large) {
-            imageUrl = singlemedia.formats.large.url;
+          console.log(singlemedia);
+
+          if (singlemedia.formats) {
+            if (singlemedia.formats.medium) {
+              imageUrl = singlemedia.formats.medium.url;
+            } else if (singlemedia.formats.large) {
+              imageUrl = singlemedia.formats.large.url;
+            } else {
+              imageUrl = singlemedia.url;
+            }
           } else {
             imageUrl = singlemedia.url;
           }
@@ -715,15 +731,19 @@ const requestinscripciones = async () => {
         .filter((insc) => insc !== null)
         .forEach((insc, index) => {
           let { name, lastname, status, percentaje, id, child } = insc;
+          console.log(percentaje);
+
           let template = ``;
           if (child) {
+            console.log(percentaje);
+
             template = `<li class="${percentaje >= 100 ? "complete" : ""}">
               <span id="options">
                 <i class="acuarela acuarela-Opciones"></i>
                 <ul>
                  ${
                    percentaje >= 100
-                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.id}">Editar ninx</a> </li>`
+                     ? ` <li><a id="profile" href="/miembros/acuarela-app-web/inscripciones/${child.inscripcion}">Editar ninx</a> </li>`
                      : ``
                  }
                   <li>
@@ -1241,7 +1261,7 @@ const getChildren = async () => {
             sendEmailRegisterCheck(
               kid.name,
               parentName,
-              daycareName,
+              foundDaycare.name,
               parentName,
               parentEmail,
               "checkout"
@@ -1275,7 +1295,39 @@ const getChildren = async () => {
           // Ejemplo de código para mostrar la ventana:
           document.querySelector("#code-lightbox").style.display = "block";
         };
+        const manualHandle = async (parentId, parentName, parentEmail) => {
+          fadeIn(preloader);
 
+          let data = {
+            children: [kid.id],
+            datetime: today,
+            acudiente: [parentId],
+          };
+
+          const raw = JSON.stringify(data);
+          const requestOptions = {
+            method: "POST",
+            body: raw,
+          };
+
+          fetch(`s/setAsistencia/?type=${typeCheck}`, requestOptions)
+            .then((response) => response.json())
+            .then((result) => {
+              const infoLightbox = document.getElementById("info-lightbox");
+              infoLightbox.style.display = "none";
+              // Para enviar un email de check-in
+              sendEmailRegisterCheck(
+                kid.name,
+                parentName,
+                daycareName,
+                parentName,
+                parentEmail,
+                typeCheck
+              );
+              getChildren();
+            })
+            .catch((error) => console.error(error));
+        };
         // Configura los botones de registro para cada padre/acudiente
         let handleButtonParent = (parentId, parentName, parentEmail) => {
           listItem.classList.toggle("active");
@@ -1286,8 +1338,8 @@ const getChildren = async () => {
           buttonManual.setAttribute("type", "button");
           buttonQR.setAttribute("type", "button");
 
-          buttonManual.innerHTML = `<svg ... >Registro manual</span>`;
-          buttonQR.innerHTML = `<svg ... >Registro por QR</span>`;
+          buttonManual.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M119.93 56.8967L97.288 32.0107C95.2378 29.9787 91.7544 29.9727 89.6013 32.1136C88.525 33.1899 87.9563 34.5688 87.9563 36.0384C87.9563 37.5079 88.5309 38.8927 89.571 39.9331L89.831 40.1931C91.0102 41.3724 91.0102 43.2896 89.831 44.4688C88.6758 45.63 86.8011 45.6541 85.6159 44.5292C85.6159 44.5292 85.6159 44.5233 85.6099 44.5233H85.604C85.604 44.5233 85.604 44.5233 85.598 44.5173L85.5921 44.5114C85.5921 44.5114 85.598 44.5114 85.5861 44.5054L79.2421 38.1614C77.1012 36.0205 73.5996 36.0205 71.4588 38.1614C69.2757 40.3445 69.2757 43.8341 71.4225 45.9809L77.7302 52.2887C78.323 52.8815 78.6133 53.6554 78.6133 54.4296C78.6133 55.2037 78.3171 55.9776 77.7302 56.5704C76.551 57.7497 74.6338 57.7497 73.4545 56.5704L61.0992 44.2092C58.9583 42.0683 55.4568 42.0683 53.3159 44.2092C51.1328 46.3923 51.1328 49.8819 53.2796 52.0287L65.6349 64.384C66.2277 64.9768 66.518 65.7507 66.518 66.5249C66.518 67.2991 66.2217 68.073 65.6349 68.6657C64.4556 69.845 62.5384 69.845 61.3591 68.6657L31.1091 38.4091C30.0327 37.3327 28.6235 36.7944 27.2143 36.7944C25.8051 36.7944 24.3962 37.3327 23.3195 38.4032C21.1424 40.5863 21.1424 44.0819 23.2892 46.2287L68.6645 91.604C69.4687 92.4082 69.7531 93.5997 69.4024 94.6761C69.0455 95.7587 68.1202 96.5508 66.9953 96.7262L36.6664 101.492C32.9834 102.018 30.2379 105.181 30.2379 108.858C30.2379 110.527 31.5927 111.882 33.2618 111.882H90.2848C97.5541 111.882 104.388 109.051 109.528 103.911L119.041 94.3983C124.176 89.2636 127 82.4418 127 75.1847C127 68.4052 124.484 61.9101 119.93 56.8967Z" fill="#0CB5C3"/><path d="M51.9852 31.1637C47.5828 21.4209 37.8582 15.1191 27.2143 15.1191C12.2101 15.1191 0 27.3293 0 42.3334C0 52.9773 6.30153 62.7019 16.0442 67.1106C16.4493 67.292 16.8729 67.3768 17.2901 67.3768C18.4391 67.3768 19.5399 66.7115 20.0479 65.5988C20.7313 64.0748 20.0538 62.2846 18.536 61.5952C10.9523 58.1662 6.04781 50.6066 6.04781 42.3334C6.04781 30.6616 15.5425 21.1667 27.2146 21.1667C35.4877 21.1667 43.0473 26.0712 46.4763 33.6549C47.1598 35.1789 48.956 35.8624 50.4737 35.1667C51.9974 34.4776 52.6747 32.6877 51.9852 31.1637Z" fill="#0CB5C3"/></svg> Registro manual</span>`;
+          buttonQR.innerHTML = `<svg width="127" height="127" viewBox="0 0 127 127" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M3.7207 29.7656C1.66588 29.7656 0 28.0997 0 26.0449V3.7207C0 1.66588 1.66588 0 3.7207 0H26.0449C28.0997 0 29.7656 1.66588 29.7656 3.7207C29.7656 5.77552 28.0997 7.44141 26.0449 7.44141H7.44141V26.0449C7.44141 28.0997 5.77552 29.7656 3.7207 29.7656Z" fill="#0CB5C3"/><path d="M123.279 29.7656C121.224 29.7656 119.559 28.0997 119.559 26.0449V7.44141H100.955C98.9003 7.44141 97.2344 5.77552 97.2344 3.7207C97.2344 1.66588 98.9003 0 100.955 0H123.279C125.334 0 127 1.66588 127 3.7207V26.0449C127 28.0997 125.334 29.7656 123.279 29.7656Z" fill="#0CB5C3"/><path d="M26.0449 127H3.7207C1.66588 127 0 125.334 0 123.279V100.955C0 98.9003 1.66588 97.2344 3.7207 97.2344C5.77552 97.2344 7.44141 98.9003 7.44141 100.955V119.559H26.0449C28.0997 119.559 29.7656 121.224 29.7656 123.279C29.7656 125.334 28.0997 127 26.0449 127Z" fill="#0CB5C3"/><path d="M123.279 127H100.955C98.9003 127 97.2344 125.334 97.2344 123.279C97.2344 121.224 98.9003 119.559 100.955 119.559H119.559V100.955C119.559 98.9003 121.224 97.2344 123.279 97.2344C125.334 97.2344 127 98.9003 127 100.955V123.279C127 125.334 125.334 127 123.279 127Z" fill="#0CB5C3"/><path d="M74.6621 52.3379H96.9863V30.0137H74.6621V52.3379ZM85.8242 37.4551C87.879 37.4551 89.5449 39.121 89.5449 41.1758C89.5449 43.2306 87.879 44.8965 85.8242 44.8965C83.7694 44.8965 82.1035 43.2306 82.1035 41.1758C82.1035 39.121 83.7694 37.4551 85.8242 37.4551Z" fill="#0CB5C3"/><path d="M74.6621 89.5449H82.1035V96.9863H74.6621V89.5449Z" fill="#0CB5C3"/><path d="M30.0137 96.9863H52.3379V74.6621H30.0137V96.9863ZM41.1758 82.1035C43.2306 82.1035 44.8965 83.7694 44.8965 85.8242C44.8965 87.879 43.2306 89.5449 41.1758 89.5449C39.121 89.5449 37.4551 87.879 37.4551 85.8242C37.4551 83.7694 39.121 82.1035 41.1758 82.1035Z" fill="#0CB5C3"/><path d="M30.0137 52.3379H52.3379V30.0137H30.0137V52.3379ZM41.1758 37.4551C43.2306 37.4551 44.8965 39.121 44.8965 41.1758C44.8965 43.2306 43.2306 44.8965 41.1758 44.8965C39.121 44.8965 37.4551 43.2306 37.4551 41.1758C37.4551 39.121 39.121 37.4551 41.1758 37.4551Z" fill="#0CB5C3"/><path d="M100.707 15.1309H26.293C20.1283 15.1309 15.1309 20.1283 15.1309 26.293V100.707C15.1309 106.872 20.1283 111.869 26.293 111.869H100.707C106.872 111.869 111.869 106.872 111.869 100.707V26.293C111.869 20.1283 106.872 15.1309 100.707 15.1309ZM59.7793 100.707C59.7793 102.762 58.1134 104.428 56.0586 104.428H26.293C24.2381 104.428 22.5723 102.762 22.5723 100.707V70.9414C22.5723 68.8866 24.2381 67.2207 26.293 67.2207H56.0586C58.1134 67.2207 59.7793 68.8866 59.7793 70.9414V100.707ZM59.7793 56.0586C59.7793 58.1134 58.1134 59.7793 56.0586 59.7793H26.293C24.2381 59.7793 22.5723 58.1134 22.5723 56.0586V26.293C22.5723 24.2381 24.2381 22.5723 26.293 22.5723H56.0586C58.1134 22.5723 59.7793 24.2381 59.7793 26.293V56.0586ZM89.5449 100.707C89.5449 102.762 87.879 104.428 85.8242 104.428H70.9414C68.8866 104.428 67.2207 102.762 67.2207 100.707V85.8242C67.2207 83.7694 68.8866 82.1035 70.9414 82.1035H85.8242C87.879 82.1035 89.5449 83.7694 89.5449 85.8242V100.707ZM104.428 100.707C104.428 102.762 102.762 104.428 100.707 104.428C98.6522 104.428 96.9863 102.762 96.9863 100.707V95.7461C96.9863 93.6913 98.6522 92.0254 100.707 92.0254C102.762 92.0254 104.428 93.6913 104.428 95.7461V100.707ZM104.428 80.8633C104.428 82.9181 102.762 84.584 100.707 84.584C98.6522 84.584 96.9863 82.9181 96.9863 80.8633V74.6621H70.9414C68.8866 74.6621 67.2207 72.9962 67.2207 70.9414C67.2207 68.8866 68.8866 67.2207 70.9414 67.2207H100.707C102.762 67.2207 104.428 68.8866 104.428 70.9414V80.8633ZM104.428 56.0586C104.428 58.1134 102.762 59.7793 100.707 59.7793H70.9414C68.8866 59.7793 67.2207 58.1134 67.2207 56.0586V26.293C67.2207 24.2381 68.8866 22.5723 70.9414 22.5723H100.707C102.762 22.5723 104.428 24.2381 104.428 26.293V56.0586Z" fill="#0CB5C3"/></svg> Registro por QR</span>`;
 
           // Escucha para el botón de registro manual
           buttonManual.addEventListener("click", () =>
@@ -1341,8 +1393,7 @@ const subirplan = () => {
   contentContainer.classList.add("methods-register");
 
   const linkMensual = document.createElement("a");
-  linkMensual.href =
-    "https://bilingualchildcaretraining.com/checkout/?service=66dfcce23f91241d635ae934";
+  linkMensual.href = "https://buy.stripe.com/9AQbMx2Fa7zHb2E7sV";
   linkMensual.classList.add("precios");
   linkMensual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1350,8 +1401,7 @@ const subirplan = () => {
     <p class=price">$24 / mes</p>
   `;
   const linkAnual = document.createElement("a");
-  linkAnual.href =
-    "https://bilingualchildcaretraining.com/checkout/?service=66df29c33f91241d635ae818";
+  linkAnual.href = "https://buy.stripe.com/28o2bXcfK6vDgmYbJa";
   linkAnual.classList.add("precios");
   linkAnual.innerHTML = `
     <img src="img/icons/clip_path_group.svg"" alt="file">
@@ -1379,7 +1429,7 @@ function showLightboxFinanzas() {
       <li>Administra tus gastos, reportes financieros avanzados.</li>
       <li>Administra tus ingresos.</li>
       <li>Facturación automática y profesional para padres.</li>
-      <li>Recibe pagos electrónicos de padres.</li>
+      <li>Recibe pagos electrónicos de padres. (Comisión por transacción: USD0.50)</li>
     </ul>
   `;
 
@@ -1407,20 +1457,84 @@ function validarSuscripcion() {
   return accesoPermitido;
 }
 
+// Al hacer clic en el botón de CONTACTO DE EMERGENCIAS
+const emergencycontact_lightbox = document.getElementById(
+  "lightbox-emergencycontact"
+);
+if (emergencycontact_lightbox) {
+  emergencycontact_lightbox.addEventListener("click", function (event) {
+    showLightboxEmergency();
+  });
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxEmergency() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkEmergencia = document.createElement("a");
+  linkEmergencia.classList.add("emergency");
+  linkEmergencia.innerHTML = `
+    <img src="img/icons/telefono.svg"" alt="file">
+    <span>Llamar a emergencias </span>
+  `;
+  const linkPariente = document.createElement("a");
+  linkPariente.classList.add("emergency");
+  linkPariente.innerHTML = `
+    <img src="img/icons/familia.svg" alt="file">
+    <span>Contactar al pariente</span>
+  `;
+  linkPariente.addEventListener("click", (event) => {
+    showLightboxParient(); // Llama a tu función
+  });
+
+  contentContainer.appendChild(linkEmergencia);
+  contentContainer.appendChild(linkPariente);
+
+  showInfoLightbox("Contacto de emergencia", contentContainer);
+}
+
+// Función que se ejecuta si el ID es diferente del objetivo (para mostrar el lightbox)
+function showLightboxParient() {
+  const contentContainer = document.createElement("div");
+  contentContainer.classList.add("methods-emergency");
+
+  const linkGrave = document.createElement("a");
+  linkGrave.classList.add("emergency");
+  linkGrave.innerHTML = `
+    <img src="img/icons/ambossandia.svg"" alt="file">
+    <span>Caso grave </span>
+  `;
+
+  const linkModerado = document.createElement("a");
+  linkModerado.classList.add("emergency");
+  linkModerado.innerHTML = `
+    <img src="img/icons/ambospollito.svg"" alt="file">
+    <span>Caso leve o moderado </span>
+  `;
+
+  contentContainer.appendChild(linkGrave);
+  contentContainer.appendChild(linkModerado);
+
+  showInfoLightbox(
+    "Contactar con pariente según nivel de gravedad",
+    contentContainer
+  );
+}
+
 // Al hacer clic en el botón de finanzas
 const finanzas_lightbox = document.getElementById("lightbox-finanzas");
-finanzas_lightbox.addEventListener("click", function (event) {
-  event.preventDefault(); // Evitar el comportamiento predeterminado del clic
-
-  if (validarSuscripcion()) {
-    // Si el ID es correcto, redirigir a la página de finanzas
-    window.location.href =
-      "https://dev.bilingualchildcaretraining.com/miembros/acuarela-app-web/finanzas";
-  } else {
-    // Si no, mostrar el lightbox
-    showLightboxFinanzas();
-  }
-});
+if (finanzas_lightbox) {
+  finanzas_lightbox.addEventListener("click", function (event) {
+    if (validarSuscripcion()) {
+      // Si el ID es correcto, redirigir a la página de finanzas
+      window.location.href = "/miembros/acuarela-app-web/finanzas";
+    } else {
+      // Si no, mostrar el lightbox
+      showLightboxFinanzas();
+    }
+  });
+}
 
 // Validar acceso al cargar la página directamente
 document.addEventListener("DOMContentLoaded", function () {
@@ -1592,31 +1706,33 @@ const getInfoNewGroup = () => {
           if (photo) {
             url = photo.url;
           }
-          document.querySelector(".children").innerHTML += `<li >
-                        <input type="checkbox" name="${id}" id="${id}" ${
-            group && !acuarelauser ? `disabled` : ``
-          } ${childrenGroup.includes(id) ? `checked` : ``}>
-                        <label for="${id}">
-                             ${
-                               photo
-                                 ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
-                                 : `${
-                                     kid.gender === "Masculino"
-                                       ? `<img src="img/mal.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "Femenino"
-                                       ? `<img src="img/fem.png" alt="">`
-                                       : ""
-                                   }${
-                                     kid.gender === "X"
-                                       ? `<img src="img/Nonbinary.png" alt="">`
-                                       : ""
-                                   }`
-                             }
-                            <span>${name}</span>
-                        </label>
-                    </li>`;
+          if (!group) {
+            document.querySelector(".children").innerHTML += `<li >
+                          <input type="checkbox" name="${id}" id="${id}" ${
+              childrenGroup.includes(id) ? `checked` : ``
+            }>
+                          <label for="${id}">
+                               ${
+                                 photo
+                                   ? `<img src='https://acuarelacore.com/api/${photo.formats.small.url}' alt='${kid.name}'>`
+                                   : `${
+                                       kid.gender === "Masculino"
+                                         ? `<img src="img/mal.png" alt="">`
+                                         : ""
+                                     }${
+                                       kid.gender === "Femenino"
+                                         ? `<img src="img/fem.png" alt="">`
+                                         : ""
+                                     }${
+                                       kid.gender === "X"
+                                         ? `<img src="img/Nonbinary.png" alt="">`
+                                         : ""
+                                     }`
+                               }
+                              <span>${name}</span>
+                          </label>
+                      </li>`;
+          }
         });
         fadeOut(preloader);
       })
@@ -1658,7 +1774,10 @@ const getInfoNewAsistente = () => {
 };
 const fields = document.querySelectorAll("input[required], select[required]");
 const percentageSpan = document.querySelector(".percentage");
-
+fields.forEach((field) => {
+  field.parentElement.querySelector("label").innerHTML +=
+    "<span class='required'>*</span>";
+});
 function updatePercentage() {
   const totalFields = fields.length;
   let filledFields = 0;
@@ -1753,8 +1872,10 @@ if (tabs.length > 0) {
       updateUnderline();
     });
   }
-  tabs.forEach((tab) => {
+  tabs.forEach((tab, i) => {
     tab.addEventListener("click", () => {
+      const indexTabSelected = tab.getAttribute("data-index");
+      indexTab = indexTabSelected;
       tabs.forEach((t) => t.classList.remove("active"));
       tab.classList.add("active");
       const target = tab.getAttribute("data-target");
@@ -2099,7 +2220,7 @@ const sendInspectionModeMail = async (userName, email, link) => {
   formdata.append("email", email);
   formdata.append("admin", userName);
   formdata.append("link", link);
-  formdata.append("daycare", daycareName);
+  formdata.append("daycare", foundDaycare.name);
 
   var requestOptions = {
     method: "POST",
@@ -2113,7 +2234,18 @@ const sendInspectionModeMail = async (userName, email, link) => {
     requestOptions
   )
     .then((response) => response.json())
-    .then((result) => fadeOut(preloader))
+    .then((result) => {
+      fadeOut(preloader);
+      Toastify({
+        text: "Informe enviado a tu correo " + emailAdmin,
+        close: true,
+        stopOnFocus: true,
+        style: {
+          background: "linear-gradient(to right, #0cb5c3, #098892)",
+        },
+        duration: 10000,
+      }).showToast();
+    })
     .catch((error) => console.log("error", error));
   return true;
 };
@@ -2239,6 +2371,7 @@ const socket = io("https://acuarelacore.com", {
 socket.emit("register", { userId: acuarelaId });
 
 const asideMensajeria = document.getElementById("mesajeria-menu");
+const icono = document.getElementById("icono");
 const mensajeButton = document.getElementById("mainButton");
 const buscarMensajeria = document.getElementById("buscar-mensajeria");
 const buscadorMensajeria = document.getElementById("chats-buscados");
@@ -2251,13 +2384,42 @@ const chatMensajeria = document.querySelector(".chat-individual");
 const btnSendMensaje = document.getElementById("sendBtn");
 const chatList = document.getElementById("opciones-mensajeria");
 const contendorMessages = document.getElementById("messages");
+let isChatOpen = false;
 
 mensajeButton.addEventListener("click", function () {
-  if (asideMensajeria.style.display === "none") {
-    asideMensajeria.style.display = "block";
-  } else {
-    asideMensajeria.style.display = "none";
-  }
+  // Añadir clase para ocultar el ícono actual
+  icono.classList.add("icon-hidden");
+
+  setTimeout(() => {
+    if (!isChatOpen) {
+      // Mostrar asideMensajeria con animación
+      asideMensajeria.style.display = "flex"; // Asegurar que sea visible
+      setTimeout(() => {
+        asideMensajeria.classList.remove("menu-hidden");
+        asideMensajeria.classList.add("menu-visible");
+      }, 10); // Breve retraso para permitir la transición
+
+      // Cambiar el ícono a "Cancelar"
+      icono.classList.remove("acuarela-Habla", "icon-chat");
+      icono.classList.add("acuarela-Cancelar", "icon-close");
+    } else {
+      // Ocultar asideMensajeria con animación
+      asideMensajeria.classList.remove("menu-visible");
+      asideMensajeria.classList.add("menu-hidden");
+
+      setTimeout(() => {
+        asideMensajeria.style.display = "none"; // Ocultar después de la animación
+      }, 300); // Duración de la animación en CSS
+
+      // Cambiar el ícono a "Habla"
+      icono.classList.remove("acuarela-Cancelar", "icon-close");
+      icono.classList.add("acuarela-Habla", "icon-chat");
+    }
+
+    // Mostrar el nuevo ícono
+    icono.classList.remove("icon-hidden");
+    isChatOpen = !isChatOpen; // Alternar estado
+  }, 300); // Coincidir con la duración de la animación del ícono
 });
 
 async function buscarPadres() {
@@ -2372,10 +2534,10 @@ function mostrarPadres(padres) {
         padreElement.appendChild(btnInvitar);
 
         btnInvitar.addEventListener("click", function () {
-          console.log("Hola", daycareName, padre.email);
+          console.log("Hola", foundDaycare.name, padre.email);
           sendRegisterEmailChat(
             "padre",
-            daycareName,
+            foundDaycare.name,
             padre.email,
             `https://acuarelacore.com/auth/register/${padre.id}`,
             padre.children[0].name
@@ -3161,3 +3323,317 @@ const getAllCategories = async () => {
   const body = await resp.json();
   console.log(body);
 };
+
+// tutos de video
+
+function openVideoModal(videoPath) {
+  // Crear o seleccionar un modal para mostrar el video
+  const modal = document.createElement("div");
+  modal.classList.add("video-modal");
+
+  // Añadir el contenido del modal con un elemento <video> para mostrar el video local
+  modal.innerHTML = `
+    <div class="video-modal-content" onclick="event.stopPropagation()">
+      <span class="close-modal" onclick="closeVideoModal()">&times;</span>
+      <video id="video-player" width="560" height="315" controls autoplay>
+        <source src="${videoPath}" type="video/mp4">
+        Tu navegador no soporta el elemento de video.
+      </video>
+    </div>
+  `;
+
+  // Añadir el modal al cuerpo del documento
+  document.body.appendChild(modal);
+
+  const videoElement = document.getElementById("video-player");
+  videoElement.volume = 0.5; // Volumen al 50%
+
+  // Cerrar el modal al hacer clic fuera del contenedor de contenido
+  modal.addEventListener("click", closeVideoModal);
+}
+
+function closeVideoModal() {
+  const modal = document.querySelector(".video-modal");
+  if (modal) {
+    modal.remove(); // Eliminar el modal del DOM
+  }
+}
+
+// Pop up crear publicación
+document.addEventListener("DOMContentLoaded", () => {
+  // Obtener los elementos del DOM
+  const postModal = document.getElementById("postModal");
+  const openModalButton = document.getElementById("openModalButton");
+  const closeModal = document.getElementById("closeModal");
+  const publishButton = document.getElementById("publishButton");
+  const uploadImageButton = document.getElementById("uploadImageButton");
+  const imageInput = document.getElementById("imageInput");
+  const imagePreview = document.getElementById("imagePreview");
+  const postContent = document.getElementById("postContent");
+  const activitiesListContainer = document.getElementById(
+    "activitiesListContainer"
+  );
+
+  // Abrir modal
+  if (postModal && openModalButton) {
+    // Abrir el modal al hacer clic en el botón "Publicar"
+    openModalButton.addEventListener("click", () => {
+      postModal.style.display = "block";
+    });
+  }
+
+  // Subir imágenes
+  if (uploadImageButton && imageInput && imagePreview) {
+    uploadImageButton.addEventListener("click", () => {
+      imageInput.click();
+    });
+
+    imageInput.addEventListener("change", (event) => {
+      const files = Array.from(event.target.files); // Convierte FileList a array
+      imagePreview.innerHTML = ""; // Limpia las imágenes previas
+
+      files.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = document.createElement("img");
+          img.src = e.target.result;
+          img.alt = "Vista previa de la imagen";
+          imagePreview.appendChild(img);
+        };
+        reader.readAsDataURL(file);
+      });
+    });
+  }
+
+  // Renderizar actividades (si es necesario)
+  if (activitiesListContainer) {
+    activitiesList.forEach((activity) => {
+      const activityItem = document.createElement("div");
+      activityItem.classList.add("activity-item");
+      activityItem.style.backgroundColor = activity.bgcolor;
+      activityItem.style.color = activity.color;
+      activityItem.innerHTML = activity.icon;
+      activityItem.dataset.id = activity.id;
+
+      // Añadir evento para selección
+      activityItem.addEventListener("click", () => {
+        // Desmarcar todas las actividades
+        document
+          .querySelectorAll(".activity-item.selected")
+          .forEach((item) => item.classList.remove("selected"));
+
+        // Marcar la actividad seleccionada
+        activityItem.classList.add("selected");
+      });
+
+      // Agregar actividad al contenedor
+      activitiesListContainer.appendChild(activityItem);
+    });
+  }
+
+  // Publicar contenido
+  if (publishButton && postContent) {
+    // Crear contenedores de mensajes de error
+    const contentError = document.createElement("div");
+    const imageError = document.createElement("div");
+    const activityError = document.createElement("div");
+
+    // Estilo para los mensajes de error
+    const setErrorStyle = (element) => {
+      element.style.color = "red";
+      element.style.fontSize = "1.1em";
+      element.style.marginTop = "5px";
+      element.style.display = "none";
+    };
+
+    // Aplicar estilo a los mensajes
+    setErrorStyle(contentError);
+    setErrorStyle(imageError);
+    setErrorStyle(activityError);
+
+    // Insertar mensajes en el DOM
+    postContent.insertAdjacentElement("afterend", contentError);
+    imagePreview.insertAdjacentElement("afterend", imageError);
+    activitiesListContainer.insertAdjacentElement("afterend", activityError);
+
+    // Función para deseleccionar todas las actividades
+    const clearSelectedActivities = () => {
+      document
+        .querySelectorAll(".activity-item.selected")
+        .forEach((item) => item.classList.remove("selected"));
+    };
+
+    const clearErrors = () => {
+      contentError.style.display = "none";
+      imageError.style.display = "none";
+      activityError.style.display = "none";
+    };
+
+    // Cerrar modal
+    if (closeModal) {
+      closeModal.addEventListener("click", () => {
+        postContent.value = "";
+        imagePreview.innerHTML = "";
+        clearSelectedActivities();
+        clearErrors();
+        postModal.style.display = "none";
+      });
+
+      window.addEventListener("click", (event) => {
+        if (event.target === postModal) {
+          postContent.value = "";
+          imagePreview.innerHTML = "";
+          clearSelectedActivities();
+          clearErrors();
+          postModal.style.display = "none";
+        }
+      });
+    }
+
+    // Publicar contenido
+    publishButton.addEventListener("click", async () => {
+      let isValid = true;
+
+      // Validar contenido del input
+      const content = postContent.value.trim();
+      if (!content) {
+        contentError.textContent = "Por favor, escribe algo antes de publicar.";
+        contentError.style.display = "block";
+        isValid = false;
+      } else {
+        contentError.style.display = "none";
+      }
+
+      // Validar imágenes
+      const images = Array.from(imageInput.files);
+      if (images.length === 0) {
+        imageError.textContent = "Por favor, sube al menos una imagen.";
+        imageError.style.display = "block";
+        isValid = false;
+      } else {
+        imageError.style.display = "none";
+      }
+
+      // Validar actividad seleccionada
+      const selectedActivity = activitiesListContainer.querySelector(
+        ".activity-item.selected"
+      );
+      if (!selectedActivity) {
+        activityError.textContent = "Por favor, selecciona una actividad.";
+        activityError.style.display = "block";
+        isValid = false;
+      } else {
+        activityError.style.display = "none";
+      }
+
+      // Si no pasa alguna validación, detener la publicación
+      if (!isValid) return;
+
+      // Cambiar texto del botón a "Publicando..."
+      publishButton.textContent = "Publicando...";
+      publishButton.disabled = true;
+
+      const formData = new FormData();
+      formData.append("content", content);
+      formData.append("activity", selectedActivity.dataset.id);
+      images.forEach((image) => formData.append("images[]", image));
+
+      try {
+        const response = await fetch("s/addPost/", {
+          method: "POST",
+          body: formData,
+        });
+
+        const result = await response.json();
+        if (response.ok) {
+          // Cambiar el texto del botón y añadir la animación
+          publishButton.textContent = "¡Publicación realizada!";
+          publishButton.classList.add("success-message");
+          publishButton.disabled = true;
+
+          // Añadir animación para desvanecer el botón
+          setTimeout(() => {
+            publishButton.classList.add("fade-out");
+          }, 1000);
+
+          // Recargar la página después de la animación
+          setTimeout(() => {
+            location.reload();
+          }, 2000);
+
+          console.log(result);
+        } else {
+          console.error(result.error);
+        }
+      } catch (error) {
+        console.error("Error en la solicitud:", error);
+      }
+    });
+  }
+});
+
+function handleAddCategories(event, type) {
+  document.querySelector("#addCategoriesGastos button").innerHTML =
+    "Guardando...";
+  event.preventDefault(); // Prevent the form from reloading the page
+
+  const input = document.getElementById("categories-input").value.trim();
+
+  if (!input) {
+    alert("Por favor, ingrese al menos una categoría.");
+    return;
+  }
+
+  // Split categories by comma and trim extra spaces
+  const categories = input
+    .split(",")
+    .map((category) => category.trim())
+    .filter((category) => category);
+
+  if (categories.length === 0) {
+    alert("No se detectaron categorías válidas.");
+    return;
+  }
+
+  // Function to send each category to the server
+  const sendCategory = async (category) => {
+    const formdata = new FormData();
+    formdata.append("name", category); // Assuming `category` is the name
+    formdata.append("type", type); // Replace "gasto" with dynamic type if needed
+
+    try {
+      const response = await fetch("s/addCategories/", {
+        method: "POST",
+        body: formdata,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al enviar la categoría: ${category}`);
+      }
+
+      const result = await response.json();
+      document.querySelector("#addCategoriesGastos button").innerHTML =
+        "Agregar";
+      console.log(`Categoría "${category}" procesada con éxito:`, result);
+    } catch (error) {
+      console.error(`Error al procesar la categoría "${category}":`, error);
+      throw error; // To ensure Promise.all catches this error
+    }
+  };
+
+  // Process each category asynchronously
+  const promises = categories.map(sendCategory);
+
+  // Wait for all promises to resolve
+  Promise.all(promises)
+    .then(() => {
+      alert("Todas las categorías han sido procesadas.");
+      document.getElementById("categories-input").value = ""; // Clear the input
+      fadeOut(document.querySelector("#lightbox-categories-gastos"));
+    })
+    .catch((error) => {
+      alert(
+        `Ocurrió un error al procesar algunas categorías: ${error.message}`
+      );
+    });
+}

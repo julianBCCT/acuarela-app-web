@@ -16,19 +16,6 @@ include "includes/header.php"; ?>
 
         </ul>
     </div>
-    <div class="mensajeria-content">
-        <?php include "includes/mensajeria.php" ?>
-        <button id="mainButton" class="main-button">
-            <i class="acuarela acuarela-Mensajes"></i>
-        </button>
-    </div>
+   
 </main>
-<div class="nofunction">
-    <!-- <?php include "includes/mensajeria.php" ?> -->
-    <button id="fab" class="fab" style="background-color: #EE74A8;">
-        <!-- <i class="acuarela acuarela-24 fab-icon acuarela-Menu menu" id="fab-icon"></i> -->
-        <!-- <i class="acuarela acuarela-Cancelar"></i> -->
-        <i class="acuarela acuarela-Mensajes"></i>
-    </button>
-</div>
 <?php include "includes/footer.php" ?>

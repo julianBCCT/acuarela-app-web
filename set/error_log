@@ -1,0 +1,43 @@
+[04-Jan-2025 00:11:21 UTC] PHP Fatal error:  Array and string offset access syntax with curly braces is no longer supported in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:11:21 UTC] PHP Fatal error:  Array and string offset access syntax with curly braces is no longer supported in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:11:21 UTC] PHP Fatal error:  Array and string offset access syntax with curly braces is no longer supported in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Undefined variable $_POTS in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Undefined variable $_POTS in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Acuarela::setCategories() in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php:6
+Stack trace:
+#0 {main}
+  thrown in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 6
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Undefined variable $_POTS in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Undefined variable $_POTS in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Acuarela::setCategories() in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php:6
+Stack trace:
+#0 {main}
+  thrown in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 6
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Undefined variable $_POTS in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Undefined variable $_POTS in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Warning:  Trying to access array offset on value of type null in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 5
+[04-Jan-2025 00:12:01 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Acuarela::setCategories() in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php:6
+Stack trace:
+#0 {main}
+  thrown in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 6
+[04-Jan-2025 00:13:55 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Acuarela::setCategories() in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php:23
+Stack trace:
+#0 {main}
+  thrown in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 23
+[04-Jan-2025 00:13:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Acuarela::setCategories() in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php:23
+Stack trace:
+#0 {main}
+  thrown in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 23
+[04-Jan-2025 00:13:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Acuarela::setCategories() in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php:23
+Stack trace:
+#0 {main}
+  thrown in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 23
+[04-Jan-2025 00:13:56 UTC] PHP Fatal error:  Uncaught Error: Call to undefined method Acuarela::setCategories() in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php:23
+Stack trace:
+#0 {main}
+  thrown in /home/oldmacdonald/public_html/miembros/acuarela-app-web/set/addCategories.php on line 23

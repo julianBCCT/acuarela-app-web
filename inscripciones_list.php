@@ -4,6 +4,7 @@ include "includes/header.php" ?>
   <?php
   $mainHeaderTitle = "Niñxs agregados";
   $action = '<a href="/miembros/acuarela-app-web/agregar-ninx" class="btn btn-action-primary enfasis btn-big">Agregar niñxs</a>';
+  $videoPath = 'videos/agregar_ninxs.mp4';
   include "templates/sectionHeader.php";
   ?>
   <div class="content">
@@ -15,13 +16,6 @@ include "includes/header.php" ?>
     <ul>
     </ul>
   </div>
-  <div class="mensajeria-content">
-    <?php include "includes/mensajeria.php" ?>
-
-    <button id="mainButton" class="main-button">
-      <i class="acuarela acuarela-Mensajes"></i>
-    </button>
-
-  </div>
+  
 </main>
 <?php include "includes/footer.php" ?>

@@ -10,11 +10,11 @@ $inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
   include "templates/sectionHeader.php";
   ?>
   <div class="navtabs">
-    <div class="navtab active" data-target="basica">Información básica</div>
-    <div class="navtab" data-target="familia">Familia</div>
-    <div class="navtab" data-target="pagos">Horarios y pagos</div>
-    <div class="navtab" data-target="adjuntos">Adjuntos</div>
-    <div class="navtab" data-target="resumen">Resumen</div>
+    <div class="navtab active" data-index="0" data-target="basica">Información básica</div>
+    <div class="navtab" data-index="1" data-target="familia">Familia</div>
+    <div class="navtab" data-index="2" data-target="pagos">Horarios y pagos</div>
+    <div class="navtab" data-index="3" data-target="adjuntos">Adjuntos</div>
+    <div class="navtab" data-index="4" data-target="resumen">Resumen</div>
     <div class="underline"></div>
   </div>
   <div class="content">
@@ -185,23 +185,23 @@ $inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
-                <label for="">Nombres</label>
+                <label for="">Nombres </label>
                 <input type="text" name="guardian1_name" id="guardian1_name" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardian_name : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
-                <label for="">Apellidos</label>
-                <input type="text" name="guardian1_lastname" id="guardian1_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardian_latname : "" ?>" required />
+                <label for="">Apellidos </label>
+                <input type="text" name="guardian1_lastname" id="guardian1_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardian_lastname : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Celular</label>
-                <input type="text" name="guardian1_phone" id="guardian1_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardianphone : "" ?>" required />
+                <input type="text" name="guardian1_phone" id="guardian1_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardian_phone : "" ?>" required />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Correo electrónico</label>
-                <input type="text" name="guardian1_email" id="guardian1_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardianemail : "" ?>" required />
+                <input type="text" name="guardian1_email" id="guardian1_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[0]->guardian_email : "" ?>" required />
               </span>
               <span>
                 <div class="cntr-check">
@@ -238,22 +238,22 @@ $inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Nombres</label>
-                <input type="text" name="guardian2_name" id="guardian2_name" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_name : "" ?>" required />
+                <input type="text" name="guardian2_name" id="guardian2_name" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_name : "" ?>"  />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Apellidos</label>
-                <input type="text" name="guardian2_lastname" id="guardian2_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_latname : "" ?>" required />
+                <input type="text" name="guardian2_lastname" id="guardian2_lastname" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_lastname : "" ?>"  />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Celular</label>
-                <input type="text" name="guardian2_phone" id="guardian2_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardianphone : "" ?>" required />
+                <input type="text" name="guardian2_phone" id="guardian2_phone" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_phone : "" ?>"  />
               </span>
               <span>
                 <i class="acuarela acuarela-"></i>
                 <label for="">Correo electrónico</label>
-                <input type="text" name="guardian2_email" id="guardian2_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardianemail : "" ?>" required />
+                <input type="text" name="guardian2_email" id="guardian2_email" value="<?= $inscripcion != "" ? $inscripcion->guardians[1]->guardian_email : "" ?>"  />
               </span>
               <span>
                 <div class="cntr-check">
@@ -313,48 +313,49 @@ $inscripcion = isset($_GET['id']) ? $a->getInscripciones($_GET['id']) : "";
         </div>
       </div>
       <div id="adjuntos" class="tab-content">
-        <div class="wrapper">
-          <input type="hidden" id="acuerdo-de-registro-id" name="acuerdo-de-registro-id">
-          <input type="file" id="acuerdo-de-registro" name="acuerdo-de-registro" />
-          <label for="acuerdo-de-registro" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir Acuerdo de
-            registro</label>
-        </div>
-        <div class="wrapper">
-          <input type="hidden" id="formulario-de-examen-de-salud-id" name="formulario-de-examen-de-salud-id">
-          <input type="file" id="formulario-de-examen-de-salud" name="formulario-de-examen-de-salud" />
-          <label for="formulario-de-examen-de-salud" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir
-            Formulario de examen de salud</label>
-        </div>
-        <div class="wrapper">
-          <input type="hidden" id="formato-de-alergias-id" name="formato-de-alergias-id">
-          <input type="file" id="formato-de-alergias" name="formato-de-alergias" />
-          <label for="formato-de-alergias" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir Formato de
-            alergias</label>
-        </div>
-        <div class="wrapper">
-          <input type="hidden" id="id-de-los-padres-id" name="id-de-los-padres-id">
-          <input type="file" id="id-de-los-padres" name="id-de-los-padres" />
-          <label for="id-de-los-padres" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir ID de los
-            padres</label>
-        </div>
-        <div class="wrapper">
-          <input type="hidden" id="plan-de-transporte-id" name="plan-de-transporte-id">
-          <input type="file" id="plan-de-transporte" name="plan-de-transporte" />
-          <label for="plan-de-transporte" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir Plan de
-            transporte</label>
-        </div>
-        <div class="wrapper">
-          <input type="hidden" id="acuerdo-de-siestas-id" name="acuerdo-de-siestas-id">
-          <input type="file" id="acuerdo-de-siestas" name="acuerdo-de-siestas" />
-          <label for="acuerdo-de-siestas" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir Acuerdo de
-            siestas</label>
-        </div>
-        <div class="wrapper">
-          <input type="hidden" id="archivos-adicionales-id" name="archivos-adicionales-id">
-          <input type="file" id="archivos-adicionales" name="archivos-adicionales" />
-          <label for="archivos-adicionales" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir archivos
-            adicionales</label>
-        </div>
+      <?php
+      // Plantillas adicionales
+      $additionalFiles = [
+          'acuerdo-de-registro' => 'Acuerdo de registro',
+          'formulario-de-examen-de-salud' => 'Formulario de examen de salud',
+          'formato-de-alergias' => 'Formato de alergias',
+          'id-de-los-padres' => 'ID de los padres',
+          'plan-de-transporte' => 'Plan de transporte',
+          'acuerdo-de-siestas' => 'Acuerdo de siestas',
+          'archivos-adicionales' => 'Archivos adicionales',
+      ];
+  
+      foreach ($additionalFiles as $fileId => $labelText) {
+          // Verificar si el archivo ya existe en $inscripcion->files
+          $exists = false;
+          foreach ($inscripcion->files as $file) {
+              if ($file->name === $fileId) {
+                  $exists = true;
+                  break;
+              }
+          }
+  
+          echo '<div class="wrapper">';
+          
+          if ($exists) {
+              // Estructura para archivos ya existentes
+              echo '
+              <input type="hidden" id="'.$fileId.'-id" name="'.$fileId.'-id" value="'.$fileId.'">
+              <input type="file" id="'.$fileId.'" name="'.$fileId.'" class="selected">
+              <label for="'.$fileId.'" class="btn-1 special"><i class="acuarela acuarela-Aceptar"></i>Subir '.$labelText.'</label>';
+          } else {
+              // Estructura para nuevos archivos
+              echo '
+              <input type="hidden" id="'.$fileId.'-id" name="'.$fileId.'-id">
+              <input type="file" id="'.$fileId.'" name="'.$fileId.'" />
+              <label for="'.$fileId.'" class="btn-1"><i class="acuarela acuarela-Agregar"></i>Subir '.$labelText.'</label>';
+          }
+          
+          echo '</div>';
+      }
+  ?>
+
+
       </div>
       <div id="resumen" class="tab-content">
         <h4>Información básica del niño</h4>

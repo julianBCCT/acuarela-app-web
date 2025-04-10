@@ -62,11 +62,6 @@ include "includes/header.php" ?>
         </div>
         <input type="hidden" name="daycare" id="daycare" value="<?= $a->daycareID ?>">
     </div>
-    <div class="mensajeria-content">
-        <?php include "includes/mensajeria.php" ?>
-        <button id="mainButton" class="main-button">
-            <i class="acuarela acuarela-Mensajes"></i>
-        </button>
-    </div>
+   
 </main>
 <?php include "includes/footer.php" ?>
