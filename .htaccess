@@ -27,4 +27,7 @@ RewriteRule ^agregar-asistente$ agregar-asistente.php?activeTab=3[L,QSA]
 RewriteRule ^administrador-tareas$ checklist.php?activeTab=5[L,QSA]
 RewriteRule ^grupo/([^/]*)$ grupo.php?activeTab=4&id=$1 [L,QSA]
 RewriteRule ^editar-grupo/([^/]*)$ edit_grupo.php?activeTab=4&id=$1 [L,QSA]
+RewriteRule ^agregar-salud/([^/]*)$ agregar-salud.php?activeTab=2&id=$1 [L,QSA]
+RewriteRule ^agregar-reporte/([^/]*)$ agregar-reporte.php?activeTab=2&id=$1 [L,QSA]
+
 
