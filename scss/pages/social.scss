@@ -199,6 +199,7 @@
           .btn_share {
             position: relative;
           }
+
           .share_menu {
             transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
             z-index: 2;
@@ -213,14 +214,17 @@
             align-items: center;
             gap: 20px;
             color: #98a2b7;
+
             svg {
               width: 24px;
             }
+
             div {
               i {
                 font-size: 18px;
               }
             }
+
             button {
               position: relative;
               display: flex;
@@ -241,12 +245,14 @@
                 font-weight: 700;
               }
             }
+
             a {
               &:hover {
                 color: var(--cielo);
               }
             }
           }
+
           button {
             i {
               color: #98a2b7;
@@ -391,6 +397,7 @@
       }
     }
   }
+
   .mensajeria-content {
     display: flex;
     justify-content: center;
@@ -411,6 +418,7 @@
     .main-button {
       text-align: center;
       justify-self: center;
+
       i {
         color: #fff;
         font-size: 25px;
@@ -451,6 +459,7 @@
   .main-button {
     text-align: center;
     justify-self: center;
+
     i {
       color: #fff;
       font-size: 25px;
@@ -467,6 +476,7 @@
     align-items: center;
     z-index: 1000;
     transition: background-color 0.3s ease;
+
     @media only screen and (max-width: 768px) {
       display: flex;
     }
@@ -477,6 +487,7 @@
         flex-direction: column-reverse;
         justify-content: center;
         align-items: center;
+
         li {
           display: flex;
           flex-direction: column;
@@ -488,24 +499,30 @@
           height: 40px;
           width: 40px;
           cursor: pointer;
+
           img {
             height: 100%;
             border-radius: 50%;
           }
+
           p {
             color: white;
             font-size: 14px;
           }
+
           animation: fadeInUp 0.3s ease forwards;
         }
       }
+
       .active {
         background: rgba(20, 10, 76, 1);
       }
+
       .inactive {
         opacity: 0.5;
       }
     }
+
     .chats-buscados {
       position: fixed;
       bottom: 200px;
@@ -521,6 +538,7 @@
       justify-content: center;
       align-items: center;
       z-index: 1000;
+
       .buscador-mensajeria {
         position: absolute;
         bottom: 0;
@@ -533,6 +551,7 @@
         justify-content: center;
         align-items: center;
         background: rgba(20, 10, 76, 1);
+
         i {
           color: white;
           font-size: 16px;
@@ -540,12 +559,15 @@
           cursor: pointer;
         }
       }
+
       .chats-padres {
         overflow-y: auto;
         height: 120px;
+
         #chats-mensajeria {
           justify-content: space-between;
         }
+
         .chats-mensajeria {
           padding: 8px;
           height: 40px;
@@ -554,15 +576,18 @@
           align-items: center;
           // justify-content: space-between;
           border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
           p {
             margin-inline: 5px;
           }
+
           img {
             margin-inline: 10px;
             width: 16px;
             height: 16px;
             border-radius: 50%;
           }
+
           button {
             background-color: #0cb5c3;
             color: white;
@@ -604,6 +629,7 @@
         // border-bottom: 1px solid #ccc;
         // box-shadow: 0px 4px 4px 4px rgba(0, 0, 0, 0.7);
         box-shadow: 0px 0px 10px 2px rgba(0, 0, 0, 0.2);
+
         img {
           height: 32px;
           width: 32px;
@@ -616,6 +642,7 @@
           width: 80%;
           padding-inline: 10px;
         }
+
         i {
           color: rgba(12, 181, 195, 1);
           // height: 16px;
@@ -639,6 +666,7 @@
         display: flex;
         flex-direction: column;
         align-items: flex-end;
+
         // justify-content: flex-end;
         .no-more-messages {
           background-color: #0cb5c3;
@@ -658,6 +686,7 @@
           margin-bottom: 15px;
           max-width: 80%;
           box-shadow: 3px 2px 6px 2px rgba(0, 0, 0, 0.2);
+
           .chat-hora {
             text-align: right;
             font-size: 11px;
@@ -668,6 +697,7 @@
         .mensaje-enviado {
           background: rgba(215, 246, 249, 1);
           justify-self: flex-end;
+
           .chat-hora {
             color: rgba(12, 181, 195, 1);
           }
@@ -676,6 +706,7 @@
         .mensaje-recibido {
           background: rgba(240, 254, 255, 1);
           align-self: flex-start;
+
           .chat-hora {
             color: rgba(20, 10, 76, 1);
           }
@@ -711,9 +742,10 @@
     }
   }
 }
-.active {
-  background: rgba(20, 10, 76, 1);
-}
+
+// .active {
+//   background: rgba(20, 10, 76, 1);
+// }
 
 //   .mensajeria-content {
 //     display: flex;
