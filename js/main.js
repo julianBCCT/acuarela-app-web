@@ -1626,10 +1626,13 @@ function dataParient(kidData) {
       // Crear el contenedor para los datos del pariente (derecha)
       const parienteDataContainer = document.createElement("div");
       parienteDataContainer.classList.add("parentslight-right");
+      const nombre = `${guardian.guardian_name || "No disponible"} ${guardian.guardian_lastname || ""}`.trim();
+      const telefono = guardian.guardian_phone || "No disponible";
+      const email = guardian.guardian_email || "No disponible";
       const datosPariente = [
-        `<strong>Nombre: </strong> ${guardian.guardian_name} ${guardian.guardian_lastname}`,
-        `<strong>Telefono: </strong> ${guardian.guardian_phone}`,
-        `<strong>Email: </strong> ${guardian.guardian_email}`,
+        `<strong>Nombre: </strong> ${nombre || "No disponible"}`,
+        `<strong>Teléfono: </strong> ${telefono}`,
+        `<strong>Email: </strong> ${email}`,
       ];
 
       datosPariente.forEach((dato) => {
@@ -1757,11 +1760,11 @@ function showLightboxParient() {
         const email2 = kidData.guardians[1]?.guardian_email || "";
         const name2 = kidData.guardians[1]?.guardian_name || "";
         const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
-        const incidentType = incident.description || "[Tipo de incidencia]";
-        const temperature = incident.temperature || "[Temperatura]";
-        const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
-        const severityLevel = incident.gravedad || "[Nivel de gravedad]";
-        const suggestedActions = incident.actions_expected || "[Acciones esperadas]";
+        const incidentType = incident.description || "No registrado";
+        const temperature = incident.temperature || "No registrado";
+        const actionsTaken = incident.actions_taken || "No registrado";
+        const severityLevel = incident.gravedad || "No registrado";
+        const suggestedActions = incident.actions_expected || "No registrado";
         sendEmergencyEmail(gravedad, email, email2, name, name2, lastname, lastname2,
           reportedFor, incidentType, temperature, actionsTaken, severityLevel, suggestedActions
         );
@@ -2234,8 +2237,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
   databutton.classList.add("divbutton");
   databutton.innerHTML = `
     <div class="progress-indicator">
-      <span class="circle active"></span>
-      <span class="circle"></span>
+      
     </div>
     <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
   `;
@@ -2268,7 +2270,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
         } else {
           button.style.backgroundColor = "";
           button.disabled = true;
-          utton.style.cursor = "not-allowed";
+          button.style.cursor = "not-allowed";
         }
       }
     }
@@ -2398,12 +2400,18 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
     </div>
   `;
 
+  const partselect = document.createElement("div");
+  partselect.classList.add("partselect");
+  partselect.innerHTML = `
+    <p class="text"> Parte seleccionada </p>
+    <p class="text-indication"> --- </p>
+  `;
+
   const databutton = document.createElement("div");
   databutton.classList.add("divbutton");
   databutton.innerHTML = `
     <div class="progress-indicator">
-      <span class="circle"></span>
-      <span class="circle active"></span>
+      
     </div>
     <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable" type="button" onclick="handleHelthCheckInfo('${temperature}', '${report}', '${fechaSeleccionada}')"> Ingresar </button>   
   `;
@@ -2416,11 +2424,19 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
         circle.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
         circle.style.border = "2px solid var(--secundario1)";
       });
+      const textIndication = document.querySelector(".partselect .text-indication");
+      if (textIndication) {
+        textIndication.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
+        textIndication.style.color = "var(--secundario1)";
+        textIndication.style.border = "2px solid var(--secundario1)";
+        textIndication.textContent = "OK";
+      }
       // Guardar directamente "0" en la info de salud
       if (!kidData.healthinfo) kidData.healthinfo = {};
       if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
       kidData.healthinfo.healthcheck.bodychild = "0";
       console.log("Área seleccionada automáticamente: 0");
+      enviarCorreo();
     } else {
       // Si el reporte es diferente a "Ninguno", permitir selección normal
       circles.forEach((circle) => {
@@ -2436,6 +2452,12 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
           // Resaltar solo el círculo seleccionado
           circles.forEach((c) => c.classList.remove("selected"));
           event.target.classList.add("selected");
+          // Actualizar el texto dinámicamente
+          const textIndication = document.querySelector(".partselect .text-indication");
+          if (textIndication) {
+            const area = selectedArea.replace(/_/g, " "); // Opcional: reemplaza "_" por espacios
+            textIndication.textContent = area;
+          }
           enviarCorreo(); // **Actualizar y enviar los datos correctamente después de seleccionar**
         });
       });
@@ -2476,6 +2498,7 @@ function showLightboxAddBodyHealthCkeck(temperature, report, fechaSeleccionada) 
   }, 0);
 
   contentContainer.appendChild(novedad);
+  contentContainer.appendChild(partselect);
   contentContainer.appendChild(databutton);
   showInfoLightbox("Daily Health Check", contentContainer);
 
@@ -2694,6 +2717,7 @@ function showLightboxNinoHealthCkeck() {
   databutton.classList.add("divbutton");
   databutton.innerHTML = `
     <div class="progress-indicator">
+    
     </div>
     <button id="btnSiguiente" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
   `;
@@ -4886,10 +4910,10 @@ socket.on("receiveMessage", (message) => {
 });
 
 socket.on("newMessageNotification", (msg) => {
-<<<<<<< HEAD
-  console.log("Notificación recibida en el cliente:", msg);
-=======
->>>>>>> 422c48d1840d90963d0a1f3982ecd8579ee349c4
+// <<<<<<< HEAD
+//   console.log("Notificación recibida en el cliente:", msg);
+// =======
+// >>>>>>> 422c48d1840d90963d0a1f3982ecd8579ee349c4
   const {
     message: { sender, content },
   } = msg;

@@ -29,7 +29,7 @@
                         <span class="input-group">
                             <i class="saludicon acuarela acuarela-Usuario"></i>
                             <label class="labelpediatra" for="reportado_por">Reportado por: </label>
-                            <input type="text" placeholder="Describe los síntomas" name="reportado_por" id="reportado_por" 
+                            <input type="text" placeholder="Digitar nombre de quien reporta" name="reportado_por" id="reportado_por" 
                                    value="<?= isset($kid->healthinfo->incidents->reported_for) ? $kid->healthinfo->incidents->reported_for : "" ?>" required>
                             <span class="error-message"></span>
                         </span>
@@ -67,7 +67,7 @@
                         <span class="input-group">
                             <i class="saludicon acuarela acuarela-Informacion"></i>
                             <label class="labelpediatra" for="descripcion">Descripción</label>
-                            <input type="text" placeholder="Describe los síntomas" name="descripcion" id="descripcion" 
+                            <input type="text" placeholder="Describe lo sucedido" name="descripcion" id="descripcion" 
                                    value="<?= isset($kid->healthinfo->incidents->description) ? $kid->healthinfo->incidents->description : "" ?>" required>
                             <span class="error-message"></span>
                         </span>
@@ -75,7 +75,7 @@
                         <span class="input-group">
                             <i class="saludicon acuarela acuarela-Advertencia"></i>
                             <label class="labelpediatra" for="temperatura">Temperatura</label>
-                            <input type="text" placeholder="Describe los síntomas" name="temperatura" id="temperatura" 
+                            <input type="text" placeholder="Digita la temperatura del niño" name="temperatura" id="temperatura" 
                                    value="<?= isset($kid->healthinfo->incidents->temperature) ? $kid->healthinfo->incidents->temperature : "" ?>" required>
                             <span class="tempspan">°F</span>
                             <span class="error-message"></span>

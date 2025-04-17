@@ -27,23 +27,51 @@
                 <div class="basicinfo">
                     <div class="txt">
                         <div class="txt_data">
-                            <p><i class="acuarela acuarela-Evento"></i> <span class="txt_infodata"> <span>Fecha de nacimiento</span> <strong>
-                                    <?=$birthdate_formateada?>
-                                </strong> </span></p>
-                            <p><i class="acuarela acuarela-Calendario"></i> <span class="txt_infodata"> <span>Inscrito desde</span> <strong>
-                                    <?=$published_at_formateada?>
-                                </strong> </span></p>
-                            <p><i class="acuarela acuarela-Localizacion"></i> <span class="txt_infodata"> <span>Ciudad</span> <strong><?=$kid->city?></strong> </span>
+                        <p><i class="acuarela acuarela-Evento"></i>
+                                <span class="txt_infodata">
+                                    <span>Fecha de nacimiento</span>
+                                    <strong><?= $birthdate_formateada ?: 'No disponible' ?></strong>
+                                </span>
                             </p>
-                            <p><i class="acuarela acuarela-Telefono"></i> <span class="txt_infodata"> <span>Número Mamá</span> <strong><?=$kid->acuarelausers[0]->phone?></strong> </span>
+                            <p><i class="acuarela acuarela-Calendario"></i>
+                                <span class="txt_infodata">
+                                    <span>Inscrito desde</span>
+                                    <strong><?= $published_at_formateada ?: 'No disponible' ?></strong>
+                                </span>
                             </p>
-                            <p><i class="acuarela acuarela-Mensajes"></i> <span class="txt_infodata"> <span>Correo Mamá</span> <strong><?=$kid->acuarelausers[0]->mail?></strong> </span>
+                            <p><i class="acuarela acuarela-Localizacion"></i>
+                                <span class="txt_infodata">
+                                    <span>Ciudad</span>
+                                    <strong><?= $kid->city ?: 'No disponible' ?></strong>
+                                </span>
                             </p>
-                            <p><i class="acuarela acuarela-Telefono"></i> <span class="txt_infodata"> <span>Número Papá</span> <strong><?=$kid->acuarelausers[1]->phone?></strong> </span>
-                            </p>
-                            <p><i class="acuarela acuarela-Mensajes"></i> <span class="txt_infodata"> <span>Correo Papá</span> <strong><?=$kid->acuarelausers[1]->mail?></strong> </span>
+                            <p><i class="acuarela acuarela-Telefono"></i>
+                                <span class="txt_infodata">
+                                    <span>Número Mamá</span>
+                                    <strong><?= $kid->acuarelausers[0]->phone ?? 'No disponible' ?></strong>
+                                </span>
                             </p>
 
+                            <p><i class="acuarela acuarela-Mensajes"></i>
+                                <span class="txt_infodata">
+                                    <span>Correo Mamá</span>
+                                    <strong><?= $kid->acuarelausers[0]->mail ?? 'No disponible' ?></strong>
+                                </span>
+                            </p>
+
+                            <p><i class="acuarela acuarela-Telefono"></i>
+                                <span class="txt_infodata">
+                                    <span>Número Papá</span>
+                                    <strong><?= $kid->acuarelausers[1]->phone ?? 'No disponible' ?></strong>
+                                </span>
+                            </p>
+
+                            <p><i class="acuarela acuarela-Mensajes"></i>
+                                <span class="txt_infodata">
+                                    <span>Correo Papá</span>
+                                    <strong><?= $kid->acuarelausers[1]->mail ?? 'No disponible' ?></strong>
+                                </span>
+                            </p>
                             <?php
                                 // echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
                                 // echo '<pre>';
@@ -135,9 +163,16 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->allergies ?? ['Ninguna'] as $alergia): ?>
-                                        <p><?= htmlspecialchars($alergia) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $alergias = $kid->healthinfo->allergies ?? [];
+                                        $alergiasFiltradas = array_filter($alergias, fn($a) => trim($a) !== '');
+                                        if (empty($alergiasFiltradas)): ?>
+                                            <p>Ninguna</p>
+                                        <?php else: ?>
+                                            <?php foreach ($alergiasFiltradas as $alergia): ?>
+                                                <p><?= htmlspecialchars($alergia) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
@@ -149,25 +184,47 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Medicamentos:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->medicines ?? ['Ninguna'] as $medicamento): ?>
-                                        <p><?= htmlspecialchars($medicamento) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $medicamentos = $kid->healthinfo->medicines ?? [];
+                                        $medicamentosFiltrados = array_filter($medicamentos, fn($m) => trim($m) !== '');
+                                        if (empty($medicamentosFiltrados)): ?>
+                                            <p>Ninguno</p>
+                                        <?php else: ?>
+                                            <?php foreach ($medicamentosFiltrados as $med): ?>
+                                                <p><?= htmlspecialchars($med) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Vacunas:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->vacination ?? ['Ninguna'] as $vacuna): ?>
-                                        <p><?= htmlspecialchars($vacuna) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $vacunas = $kid->healthinfo->vacination ?? [];
+                                        $vacunasFiltradas = array_filter($vacunas, fn($v) => trim($v) !== '');
+                                        if (empty($vacunasFiltradas)): ?>
+                                            <p>Ninguna</p>
+                                        <?php else: ?>
+                                            <?php foreach ($vacunasFiltradas as $vac): ?>
+                                                <p><?= htmlspecialchars($vac) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Accidentes:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->accidents ?? ['Ninguna'] as $accidente): ?>
-                                        <p><?= htmlspecialchars($accidente) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $accidentes = $kid->healthinfo->accidents ?? [];
+                                        // Filtramos el array para eliminar valores vacíos ("" o null)
+                                        $accidentesFiltrados = array_filter($accidentes, fn($a) => trim($a) !== '');
+                                        if (empty($accidentesFiltrados)): ?>
+                                            <p>Ninguno</p>
+                                        <?php else: ?>
+                                            <?php foreach ($accidentesFiltrados as $accidente): ?>
+                                                <p><?= htmlspecialchars($accidente) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
@@ -185,7 +242,7 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Sospecha de abuso: </span></p>
                                     <div class="saludcampos-JSON">
-                                        <p><?=$kid->healthinfo->suspected_abuse?></p>
+                                        <p><?= !empty($kid->healthinfo->suspected_abuse) ? $kid->healthinfo->suspected_abuse : 'Ninguna' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -196,9 +253,16 @@
                                         <p class="ung-btn"><i class="iconung acuarela acuarela-Flecha_arriba"></i></p>
                                     </div>
                                     <div class="unguentoscontent show">
-                                        <?php foreach ($kid->healthinfo->ointments ?? ['Ninguna'] as $unguento): ?>
-                                            <p><?= htmlspecialchars($unguento) ?></p>
-                                        <?php endforeach; ?>
+                                        <?php 
+                                        $unguentos = $kid->healthinfo->ointments ?? [];
+                                        $unguentosFiltrados = array_filter($unguentos, fn($u) => trim($u) !== '');
+                                        if (empty($unguentosFiltrados)): ?>
+                                            <p>Ninguno</p>
+                                        <?php else: ?>
+                                            <?php foreach ($unguentosFiltrados as $ung): ?>
+                                                <p><?= htmlspecialchars($ung) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludunguentos">
@@ -207,9 +271,9 @@
                                         <p class="ung-btn"><i class="iconung acuarela acuarela-Flecha_arriba"></i></p>
                                     </div>
                                     <div class="unguentoscontent show">
-                                        <p class="hs-sep3"><strong>Doctor: </strong> <?=$kid->healthinfo->pediatrician?>  </p>
-                                        <p class="hs-sep3"><strong>Teléfono: </strong> <?=$kid->healthinfo->pediatrician_number?> </p>
-                                        <p class="hs-sep3"><strong>Correo: </strong> <?=$kid->healthinfo->pediatrician_email?>  </p>
+                                        <p class="hs-sep3"><strong>Doctor: </strong> <?= !empty($kid->healthinfo->pediatrician) ? $kid->healthinfo->pediatrician : 'No agregados' ?> </p>
+                                        <p class="hs-sep3"><strong>Teléfono: </strong> <?= !empty($kid->healthinfo->pediatrician_number) ? $kid->healthinfo->pediatrician_number : 'No agregados' ?> </p>
+                                        <p class="hs-sep3"><strong>Correo: </strong> <?= !empty($kid->healthinfo->pediatrician_email) ? $kid->healthinfo->pediatrician_email : 'No agregados' ?> </p>
                                     </div>
                                 </div>
                             </div>
@@ -228,18 +292,39 @@
                                         <div class="incidentinfo">
                                             <div class="incidentreport">
                                                 <p> Reportado por <?= $incident->reported_for ?> </p>
-                                                <p><i class="acuarela acuarela-Horario"></i> <?= date('H:i', strtotime($incident->reported_enh)) ?> </p>
+                                                <!-- <p><i class="acuarela acuarela-Horario"></i> <?= date('H:i', strtotime($incident->reported_enh)) ?> </p> -->
                                                 <p><i class="acuarela acuarela-Calendario"></i> <?= date('m-d-Y', strtotime($incident->reported_enf)) ?> </p>
                                                 </div>
-                                            <div class="incidentdetails">
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Ayuda"></i> <span>Tipo de incidente </span></span>  <span class="inc-text"> <?= $incident->incident_type ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>  <span class="inc-text"> <?= $incident->description ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span>  <span class="inc-text"> <?= $incident->gravedad ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span>  <span class="inc-text"> <?= $incident->temperature ?> °F </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> <?= $incident->statehealth ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span>  <span class="inc-text"> <?= $incident->actions_taken ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span>  <span class="inc-text"> <?= $incident->actions_expected ?> </span> </p>
-                                            </div>
+                                                <div class="incidentdetails">
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Ayuda"></i> <span>Tipo de incidente </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->incident_type) ? htmlspecialchars($incident->incident_type) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->description) ? htmlspecialchars($incident->description) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->gravedad) ? htmlspecialchars($incident->gravedad) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span>
+                                                        <span class="inc-text"><?= isset($incident->temperature) && trim($incident->temperature) !== '' ? htmlspecialchars($incident->temperature) . ' °F' : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->statehealth) ? htmlspecialchars($incident->statehealth) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->actions_taken) ? htmlspecialchars($incident->actions_taken) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->actions_expected) ? htmlspecialchars($incident->actions_expected) : 'No registrado' ?></span>
+                                                    </p>
+                                                </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -431,10 +516,8 @@
                         date++;
                         hasDays = true;
                     }
-
                     row.appendChild(cell);
                 }
-
                 // Solo agrega la fila si tiene días útiles
                 if (hasDays || i === 0) {
                     calendar.appendChild(row);
@@ -477,9 +560,11 @@
                 if (healthReport) {
                     if (healthReport.report === "Ninguno") {
                         pReport.textContent = "OK";
-                    } else {
-                        const reportCode = healthReport.report.split('-')[0]; // Extraer solo la parte antes del guion "-"
+                    } else if (typeof healthReport.report === 'string') {
+                        const reportCode = healthReport.report.split('-')[0];
                         pReport.textContent = reportCode;
+                    } else {
+                        pReport.textContent = "--";
                     }
                 } else {
                     pReport.textContent = "--"; // Si no hay datos, mostrar "--"
@@ -622,7 +707,6 @@
                 }
             }
         });
-
     });
 
 </script>
