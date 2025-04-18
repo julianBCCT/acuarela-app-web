@@ -18,10 +18,12 @@ $kid = $a->getChildren($_GET['id']);
                     <div class="sectionsalud">
                         <h3 class="h3salud">Historial de salud: </h3>
                         <div class="decorative-line"></div>
-                        <span class="input-group">
-                            <label class="checkboxsalud" for="asma">Asma</label>
+                        <span class="input-group2">
                             <input type="hidden" name="asma" value="0">
-                            <input type="checkbox" name="asma" id="asma" value="1">
+                            <input type="checkbox" name="asma" id="asma" value="1" hidden>
+                            <label for="asma" class="checkboxsalud">
+                                <span class="fake-checkbox"></span> Asma
+                            </label>
                             <span class="error-message"></span>
                         </span>
                         <span class="input-group">
