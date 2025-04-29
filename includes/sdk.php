@@ -334,6 +334,10 @@ class Acuarela {
     
         return $resp;
     }
+    function setMovements($data){
+        $movements = $this->queryStrapi("movements", $data, "POST");
+        return $movements;
+    }
     
     function getCategories(){
         $categories = $this->queryStrapi("categories");

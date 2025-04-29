@@ -1,3 +1,5 @@
+@use 'sass:color';
+
 aside {
   background: #fbfcfe;
   box-shadow: 0px 2px 8px 0px rgba(0, 0, 0, 0.2);
@@ -90,7 +92,8 @@ aside {
         transform: translateY(-50%);
 
         &:hover {
-          background-color: darken($color: #0cb5c3, $amount: 5);
+          background-color: color.adjust($color: #0cb5c3, $lightness: -5%);
+
         }
 
         &:active {

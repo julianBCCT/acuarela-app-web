@@ -84,21 +84,27 @@ $balance = $ingresosTotal - $gastosTotal;
                 <div class="cardFinanza">
                     <div class="txt">
                         <small>Ingresos</small>
-                        <strong>$<?= $ingresosTotal ?> USD</strong>
+                        <strong>$
+                            <?= $ingresosTotal ?> USD
+                        </strong>
                     </div>
                     <i class="acuarela acuarela-Ingresos"></i>
                 </div>
                 <div class="cardFinanza">
                     <div class="txt">
                         <small>Gastos</small>
-                        <strong>$<?= $gastosTotal ?> USD</strong>
+                        <strong>$
+                            <?= $gastosTotal ?> USD
+                        </strong>
                     </div>
                     <i class="acuarela acuarela-Gastos"></i>
                 </div>
                 <div class="cardFinanza">
                     <div class="txt">
                         <small>Balance</small>
-                        <strong>$<?= $balance ?> USD</strong>
+                        <strong>$
+                            <?= $balance ?> USD
+                        </strong>
                     </div>
                     <i class="acuarela acuarela-Balance"></i>
                 </div>
@@ -108,39 +114,43 @@ $balance = $ingresosTotal - $gastosTotal;
                     <?php
                     if (count($movements) == 0) {
                     ?>
-                        <tr>
-                            <td>
-                                <p style="text-align:center;font-weight:bold;">No se encontraron registros en estas fechas
-                                </p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron registros en estas fechas
+                            </p>
+                        </td>
+                    </tr>
                     <?php
                     } else {
                     ?>
-                        <?php
+                    <?php
                         for ($i = 0; $i < count($movements); $i++) {
                             $movement = $movements[$i];
                         ?>
-                            <tr>
-                                <td>
-                                    <h4><?= $movement->name ?></h4>
-                                </td>
-                                <td><span class="status"
-                                        style="color:<?= $color[$movement->type] ?>;"><?= $text[$movement->type] ?></span></td>
-                                <td><span class="date">
-                                        <?php
+                    <tr>
+                        <td>
+                            <h4>
+                                <?= $movement->name ?>
+                            </h4>
+                        </td>
+                        <td><span class="status" style="color:<?= $color[$movement->type] ?>;">
+                                <?= $text[$movement->type] ?>
+                            </span></td>
+                        <td><span class="date">
+                                <?php
                                         // Crea un objeto DateTime desde la cadena ISO 8601
                                         $movementDate = new DateTime($movement->date);
                                         // Formatea la fecha al formato MM-DD-YYYY
                                         $payDate_formateada = $movementDate->format('m-d-Y');
                                         echo $payDate_formateada;
                                         ?>
-                                    </span></td>
-                                <td> <span class="amount">
-                                        $<?= $movement->amount ?>
-                                    </span></td>
-                            </tr>
-                        <?php } ?>
+                            </span></td>
+                        <td> <span class="amount">
+                                $
+                                <?= $movement->amount ?>
+                            </span></td>
+                    </tr>
+                    <?php } ?>
                     <?php
                     }
                     ?>
@@ -162,11 +172,11 @@ $balance = $ingresosTotal - $gastosTotal;
                 </div>
                 <div class="card__body">
                     <p>
-                    <?php for ($i=0; $i < count($ingresosCat); $i++) { ?>
-                            <?=$ingresosCat[$i]->name?>,
-                            <?php } ?>
-                        </p>
-                    
+                        <?php for ($i=0; $i < count($ingresosCat); $i++) { ?>
+                        <?=$ingresosCat[$i]->name?>,
+                        <?php } ?>
+                    </p>
+
                 </div>
             </div>
             <table>
@@ -174,39 +184,43 @@ $balance = $ingresosTotal - $gastosTotal;
                     <?php
                     if (count($ingresos) == 0) {
                     ?>
-                        <tr>
-                            <td>
-                                <p style="text-align:center;font-weight:bold;">No se encontraron ingresos en estas fechas
-                                </p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron ingresos en estas fechas
+                            </p>
+                        </td>
+                    </tr>
                     <?php
                     } else {
                     ?>
-                        <?php
+                    <?php
                         for ($i = 0; $i < count($ingresos); $i++) {
                             $ingreso = $ingresos[$i];
                         ?>
-                            <tr>
-                                <td>
-                                    <h4><?= $ingreso->name ?></h4>
-                                </td>
-                                <td><span class="status"
-                                        style="color:<?= $color[$ingreso->type] ?>;"><?= $text[$ingreso->type] ?></span></td>
-                                <td><span class="date">
-                                        <?php
+                    <tr>
+                        <td>
+                            <h4>
+                                <?= $ingreso->name ?>
+                            </h4>
+                        </td>
+                        <td><span class="status" style="color:<?= $color[$ingreso->type] ?>;">
+                                <?= $text[$ingreso->type] ?>
+                            </span></td>
+                        <td><span class="date">
+                                <?php
                                         // Crea un objeto DateTime desde la cadena ISO 8601
                                         $ingresoDate = new DateTime($ingreso->date);
                                         // Formatea la fecha al formato MM-DD-YYYY
                                         $payDate_formateada = $ingresoDate->format('m-d-Y');
                                         echo $payDate_formateada;
                                         ?>
-                                    </span></td>
-                                <td> <span class="amount">
-                                        $<?= $ingreso->amount ?>
-                                    </span></td>
-                            </tr>
-                        <?php } ?>
+                            </span></td>
+                        <td> <span class="amount">
+                                $
+                                <?= $ingreso->amount ?>
+                            </span></td>
+                    </tr>
+                    <?php } ?>
                     <?php
                     }
                     ?>
@@ -216,29 +230,30 @@ $balance = $ingresosTotal - $gastosTotal;
             </table>
             <div id="lightbox-categories-ingresos" class="lightbox">
                 <div class="lightbox-content">
-                <form id="addCategoriesGastos" onsubmit="handleAddCategories(event,'ingreso')">
-            <label for="categories-input">Agregar categorías (separadas por comas):</label>
-            <textarea id="categories-input" name="categories" rows="4" placeholder="Ejemplo: comida, transporte, entretenimiento"></textarea>
-            <button type="submit" class="btn btn-action-primary enfasis btn-big">Agregar</button>
-        </form>
-        <button id="activities-close-button"
-            onclick="fadeOut(document.querySelector('#lightbox-categories-ingresos'))"
-            class="lightbox-button">
-            <!-- SVG content as provided -->
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="15.5" stroke="#E1E4E9" />
-                <g clip-path="url(#clip0_1_41059)">
-                    <path
-                        d="M23.3796 20.3855L18.9948 16.0006L23.3796 11.6157C24.2066 10.7888 24.2066 9.44797 23.3796 8.62104C22.5527 7.79411 21.2119 7.79411 20.385 8.62104L15.9997 13.0059L11.6149 8.62069C10.7876 7.79376 9.44677 7.79376 8.6202 8.62069C7.79327 9.44797 7.79327 10.7888 8.6202 11.6153L13.0054 16.0002L8.6202 20.3851C7.79327 21.2124 7.79327 22.5532 8.6202 23.3798C9.03419 23.7934 9.57559 23.9999 10.1177 23.9999C10.6595 23.9999 11.2016 23.7931 11.6152 23.3798L15.9997 18.9952L20.385 23.3801C20.799 23.7934 21.3404 24.0002 21.8825 24.0002C22.4246 24.0002 22.9663 23.7934 23.38 23.3801C24.2066 22.5532 24.2066 21.2127 23.3796 20.3855Z"
-                        fill="#98A2B7" />
-                </g>
-                <defs>
-                    <clipPath id="clip0_1_41059">
-                        <rect width="16" height="16" fill="white" transform="translate(8 8)" />
-                    </clipPath>
-                </defs>
-            </svg>
-        </button>
+                    <form id="addCategoriesGastos" onsubmit="handleAddCategories(event,'ingreso')">
+                        <label for="categories-input">Agregar categorías (separadas por comas):</label>
+                        <textarea id="categories-input" name="categories" rows="4"
+                            placeholder="Ejemplo: comida, transporte, entretenimiento"></textarea>
+                        <button type="submit" class="btn btn-action-primary enfasis btn-big">Agregar</button>
+                    </form>
+                    <button id="activities-close-button"
+                        onclick="fadeOut(document.querySelector('#lightbox-categories-ingresos'))"
+                        class="lightbox-button">
+                        <!-- SVG content as provided -->
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15.5" stroke="#E1E4E9" />
+                            <g clip-path="url(#clip0_1_41059)">
+                                <path
+                                    d="M23.3796 20.3855L18.9948 16.0006L23.3796 11.6157C24.2066 10.7888 24.2066 9.44797 23.3796 8.62104C22.5527 7.79411 21.2119 7.79411 20.385 8.62104L15.9997 13.0059L11.6149 8.62069C10.7876 7.79376 9.44677 7.79376 8.6202 8.62069C7.79327 9.44797 7.79327 10.7888 8.6202 11.6153L13.0054 16.0002L8.6202 20.3851C7.79327 21.2124 7.79327 22.5532 8.6202 23.3798C9.03419 23.7934 9.57559 23.9999 10.1177 23.9999C10.6595 23.9999 11.2016 23.7931 11.6152 23.3798L15.9997 18.9952L20.385 23.3801C20.799 23.7934 21.3404 24.0002 21.8825 24.0002C22.4246 24.0002 22.9663 23.7934 23.38 23.3801C24.2066 22.5532 24.2066 21.2127 23.3796 20.3855Z"
+                                    fill="#98A2B7" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_1_41059">
+                                    <rect width="16" height="16" fill="white" transform="translate(8 8)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </button>
                 </div>
             </div>
         </div>
@@ -257,10 +272,10 @@ $balance = $ingresosTotal - $gastosTotal;
                 </div>
                 <div class="card__body">
                     <p>
-                <?php for ($i=0; $i < count($gastosCat); $i++) { ?>
-                            <?=$gastosCat[$i]->name?>,
-                            <?php } ?>
-                        </p>
+                        <?php for ($i=0; $i < count($gastosCat); $i++) { ?>
+                        <?=$gastosCat[$i]->name?>,
+                        <?php } ?>
+                    </p>
                 </div>
             </div>
             <table>
@@ -268,38 +283,42 @@ $balance = $ingresosTotal - $gastosTotal;
                     <?php
                     if (count($gastos) == 0) {
                     ?>
-                        <tr>
-                            <td>
-                                <p style="text-align:center;font-weight:bold;">No se encontraron gastos en estas fechas</p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron gastos en estas fechas</p>
+                        </td>
+                    </tr>
                     <?php
                     } else {
                     ?>
-                        <?php
+                    <?php
                         for ($i = 0; $i < count($gastos); $i++) {
                             $gasto = $gastos[$i];
                         ?>
-                            <tr>
-                                <td>
-                                    <h4><?= $gasto->name ?></h4>
-                                </td>
-                                <td><span class="status"
-                                        style="color:<?= $color[$gasto->type] ?>;"><?= $text[$gasto->type] ?></span></td>
-                                <td><span class="date">
-                                        <?php
+                    <tr>
+                        <td>
+                            <h4>
+                                <?= $gasto->name ?>
+                            </h4>
+                        </td>
+                        <td><span class="status" style="color:<?= $color[$gasto->type] ?>;">
+                                <?= $text[$gasto->type] ?>
+                            </span></td>
+                        <td><span class="date">
+                                <?php
                                         // Crea un objeto DateTime desde la cadena ISO 8601
                                         $gastoDate = new DateTime($gasto->date);
                                         // Formatea la fecha al formato MM-DD-YYYY
                                         $payDate_formateada = $gastoDate->format('m-d-Y');
                                         echo $payDate_formateada;
                                         ?>
-                                    </span></td>
-                                <td> <span class="amount">
-                                        $<?= $gasto->amount ?>
-                                    </span></td>
-                            </tr>
-                        <?php } ?>
+                            </span></td>
+                        <td> <span class="amount">
+                                $
+                                <?= $gasto->amount ?>
+                            </span></td>
+                    </tr>
+                    <?php } ?>
                     <?php
                     }
                     ?>
@@ -307,84 +326,158 @@ $balance = $ingresosTotal - $gastosTotal;
                 </tbody>
             </table>
             <div id="lightbox-categories-gastos" class="lightbox">
-    <div class="lightbox-content">
-        <form id="addCategoriesGastos" onsubmit="handleAddCategories(event,'gasto')">
-            <label for="categories-input">Agregar categorías (separadas por comas):</label>
-            <textarea id="categories-input" name="categories" rows="4" placeholder="Ejemplo: comida, transporte, entretenimiento"></textarea>
-            <button type="submit" class="btn btn-action-primary enfasis btn-big">Agregar</button>
-        </form>
-        <button id="activities-close-button"
-            onclick="fadeOut(document.querySelector('#lightbox-categories-gastos'))"
-            class="lightbox-button">
-            <!-- SVG content as provided -->
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="15.5" stroke="#E1E4E9" />
-                <g clip-path="url(#clip0_1_41059)">
-                    <path
-                        d="M23.3796 20.3855L18.9948 16.0006L23.3796 11.6157C24.2066 10.7888 24.2066 9.44797 23.3796 8.62104C22.5527 7.79411 21.2119 7.79411 20.385 8.62104L15.9997 13.0059L11.6149 8.62069C10.7876 7.79376 9.44677 7.79376 8.6202 8.62069C7.79327 9.44797 7.79327 10.7888 8.6202 11.6153L13.0054 16.0002L8.6202 20.3851C7.79327 21.2124 7.79327 22.5532 8.6202 23.3798C9.03419 23.7934 9.57559 23.9999 10.1177 23.9999C10.6595 23.9999 11.2016 23.7931 11.6152 23.3798L15.9997 18.9952L20.385 23.3801C20.799 23.7934 21.3404 24.0002 21.8825 24.0002C22.4246 24.0002 22.9663 23.7934 23.38 23.3801C24.2066 22.5532 24.2066 21.2127 23.3796 20.3855Z"
-                        fill="#98A2B7" />
-                </g>
-                <defs>
-                    <clipPath id="clip0_1_41059">
-                        <rect width="16" height="16" fill="white" transform="translate(8 8)" />
-                    </clipPath>
-                </defs>
-            </svg>
-        </button>
-    </div>
-</div>
+                <div class="lightbox-content">
+                    <form id="addCategoriesGastos" onsubmit="handleAddCategories(event,'gasto')">
+                        <label for="categories-input">Agregar categorías (separadas por comas):</label>
+                        <textarea id="categories-input" name="categories" rows="4"
+                            placeholder="Ejemplo: comida, transporte, entretenimiento"></textarea>
+                        <button type="submit" class="btn btn-action-primary enfasis btn-big">Agregar</button>
+                    </form>
+                    <button id="activities-close-button"
+                        onclick="fadeOut(document.querySelector('#lightbox-categories-gastos'))"
+                        class="lightbox-button">
+                        <!-- SVG content as provided -->
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15.5" stroke="#E1E4E9" />
+                            <g clip-path="url(#clip0_1_41059)">
+                                <path
+                                    d="M23.3796 20.3855L18.9948 16.0006L23.3796 11.6157C24.2066 10.7888 24.2066 9.44797 23.3796 8.62104C22.5527 7.79411 21.2119 7.79411 20.385 8.62104L15.9997 13.0059L11.6149 8.62069C10.7876 7.79376 9.44677 7.79376 8.6202 8.62069C7.79327 9.44797 7.79327 10.7888 8.6202 11.6153L13.0054 16.0002L8.6202 20.3851C7.79327 21.2124 7.79327 22.5532 8.6202 23.3798C9.03419 23.7934 9.57559 23.9999 10.1177 23.9999C10.6595 23.9999 11.2016 23.7931 11.6152 23.3798L15.9997 18.9952L20.385 23.3801C20.799 23.7934 21.3404 24.0002 21.8825 24.0002C22.4246 24.0002 22.9663 23.7934 23.38 23.3801C24.2066 22.5532 24.2066 21.2127 23.3796 20.3855Z"
+                                    fill="#98A2B7" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_1_41059">
+                                    <rect width="16" height="16" fill="white" transform="translate(8 8)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
         </div>
         <div id="pendientes" class="tab-content">
             <div class="tab-content-header">
-
+                <button type="button" class="btn btn-action-primary enfasis btn-big"
+                    onclick="fadeIn(document.querySelector('#lightbox-newInvoice'))">Crear Pago</button>
             </div>
             <table>
                 <tbody>
                     <?php
                     if (count($pendientes) == 0) {
                     ?>
-                        <tr>
-                            <td>
-                                <p style="text-align:center;font-weight:bold;">No se encontraron pagos pendiente en estas
-                                    fechas</p>
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <p style="text-align:center;font-weight:bold;">No se encontraron pagos pendiente en estas
+                                fechas</p>
+                        </td>
+                    </tr>
                     <?php
                     } else {
                     ?>
-                        <?php
+                    <?php
                         for ($i = 0; $i < count($pendientes); $i++) {
                             $pendiente = $pendientes[$i];
                         ?>
-                            <tr>
-                                <td>
-                                    <h4><?= $pendiente->name ?></h4>
-                                </td>
-                                <td><span class="status"
-                                        style="color:<?= $color[$pendiente->type] ?>;"><?= $text[$pendiente->type] ?></span></td>
-                                <td><span class="date">
-                                        <?php
+                    <tr>
+                        <td>
+                            <h4>
+                                <?= $pendiente->name ?>
+                            </h4>
+                        </td>
+                        <td><span class="status" style="color:<?= $color[$pendiente->type] ?>;">
+                                <?= $text[$pendiente->type] ?>
+                            </span></td>
+                        <td><span class="date">
+                                <?php
                                         // Crea un objeto DateTime desde la cadena ISO 8601
                                         $pendienteDate = new DateTime($pendiente->date);
                                         // Formatea la fecha al formato MM-DD-YYYY
                                         $payDate_formateada = $pendienteDate->format('m-d-Y');
                                         echo $payDate_formateada;
                                         ?>
-                                    </span></td>
-                                <td> <span class="amount">
-                                        $<?= $pendiente->amount ?>
-                                    </span></td>
-                            </tr>
-                        <?php } ?>
+                            </span></td>
+                        <td> <span class="amount">
+                                $
+                                <?= $pendiente->amount ?>
+                            </span></td>
+                    </tr>
+                    <?php } ?>
                     <?php
                     }
                     ?>
 
                 </tbody>
             </table>
+            <div id="lightbox-newInvoice" class="lightbox">
+                <div class="lightbox-content">
+                    <form id="addInvoiceForm" onsubmit="handleAddMovement(event)">
+                        <h3>Nueva Factura</h3>
+                    <div class="content">
+
+                        <span>
+                            <i class="acuarela acuarela-Pago"></i>
+                            <label for="name">Concepto de pago</label>
+                            <input type="text" name="name" id="name" />
+                        </span>
+                        <span>
+                            <i class="acuarela acuarela-Usuario"></i>
+                            <label for="payer_name">¿Quién realiza el pago?</label>
+                            <select name="payer_name" id="payer_name">
+                                <option>Primaria</option>
+                                <option>high school</option>
+                                <option>CDA</option>
+                                <option>Some College</option>
+                                <option>associate degree</option>
+                                <option>Bachelor degree</option>
+                                <option>Master degree</option>
+                                <option>Other</option>
+                            </select>
+                        </span>
+                        <span>
+                            <i class="acuarela acuarela-Evento"></i>
+                            <label for="date">Fecha</label>
+                            <input type="date" name="date" id="date" />
+                        </span>
+                        <span>
+                            <i class="acuarela acuarela-Ingresos"></i>
+                            <label for="amount">Valor a pagar</label>
+                            <input type="text" name="amount" id="amount" />
+                        </span>
+                        <button type="button" id="createInvoice" class="btn btn-action-primary enfasis btn-big">Crear pago</button>
+                    </div>
+                        <div class="advert" style="display:none;">
+                            <h3>Vas a generar un cobro por concepto de <span class="amount"></span>
+                                USD al padre de <span class="name"></span></h3>
+                            <p>¿Deseas confirmar este cobro?</p>
+                            <div class="flex-btn">
+                                <button type="button" class="btn btn-action-primary enfasis btn-big">Si,
+                                    confirmar</button>
+                                <button type="button" class="btn btn-action-primary enfasis btn-big danger">No,
+                                    cancelar</button>
+                            </div>
+                        </div>
+                    </form>
+                    <button id="activities-close-button"
+                        onclick="fadeOut(document.querySelector('#lightbox-newInvoice'))" class="lightbox-button">
+                        <!-- SVG content as provided -->
+                        <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <circle cx="16" cy="16" r="15.5" stroke="#E1E4E9" />
+                            <g clip-path="url(#clip0_1_41059)">
+                                <path
+                                    d="M23.3796 20.3855L18.9948 16.0006L23.3796 11.6157C24.2066 10.7888 24.2066 9.44797 23.3796 8.62104C22.5527 7.79411 21.2119 7.79411 20.385 8.62104L15.9997 13.0059L11.6149 8.62069C10.7876 7.79376 9.44677 7.79376 8.6202 8.62069C7.79327 9.44797 7.79327 10.7888 8.6202 11.6153L13.0054 16.0002L8.6202 20.3851C7.79327 21.2124 7.79327 22.5532 8.6202 23.3798C9.03419 23.7934 9.57559 23.9999 10.1177 23.9999C10.6595 23.9999 11.2016 23.7931 11.6152 23.3798L15.9997 18.9952L20.385 23.3801C20.799 23.7934 21.3404 24.0002 21.8825 24.0002C22.4246 24.0002 22.9663 23.7934 23.38 23.3801C24.2066 22.5532 24.2066 21.2127 23.3796 20.3855Z"
+                                    fill="#98A2B7" />
+                            </g>
+                            <defs>
+                                <clipPath id="clip0_1_41059">
+                                    <rect width="16" height="16" fill="white" transform="translate(8 8)" />
+                                </clipPath>
+                            </defs>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
- 
+
 </main>
 <?php include "includes/footer.php" ?>

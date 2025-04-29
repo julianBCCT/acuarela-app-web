@@ -1536,20 +1536,6 @@ if (finanzas_lightbox) {
   });
 }
 
-// Validar acceso al cargar la página directamente
-document.addEventListener("DOMContentLoaded", function () {
-  const mainFinanzas = document.getElementById("Finanzas");
-
-  if (window.location.href.includes("/miembros/acuarela-app-web/finanzas")) {
-    if (!validarSuscripcion()) {
-      if (mainFinanzas) {
-        mainFinanzas.innerHTML = ""; // Limpiar el contenido de <main id="Finanzas">
-      }
-      showLightboxFinanzas();
-    }
-  }
-});
-
 const getDataAsistentes = async () => {
   const response = await fetch(`g/getAsistentes/`);
   const asistentes = await response.json();
@@ -2250,104 +2236,7 @@ const sendInspectionModeMail = async (userName, email, link) => {
   return true;
 };
 
-document.addEventListener("DOMContentLoaded", function () {
-  if (
-    document.querySelector(".message") &&
-    !localStorage.getItem("noMoreMessage")
-  ) {
-    fadeIn(document.querySelector(".message"));
-    localStorage.setItem("noMoreMessage", true);
-  }
-  if (
-    !document.querySelector(".social") &&
-    !document.querySelector(".inscripcionesList") &&
-    !document.querySelector(".grupos") &&
-    !document.querySelector(".newgroup") &&
-    !document.querySelector(".newasistente") &&
-    !document.querySelector(".asistencia")
-  ) {
-    fadeOut(preloader);
-  }
-  if (document.querySelector(".inscripcion")) {
-    updatePercentage();
-    new Splide("#family", { pagination: false }).mount();
-    fields.forEach((field) => {
-      field.addEventListener("input", updatePercentage);
-    });
-    document.querySelectorAll('input[type="file"]').forEach((input) => {
-      input.addEventListener("change", async function (event) {
-        if (this.files && this.files.length > 0) {
-          this.classList.add("selected");
-        } else {
-          this.classList.remove("selected");
-        }
-        fadeIn(preloader);
-        const file = event.target.files[0];
-        if (file) {
-          const reader = new FileReader();
-          reader.readAsDataURL(file);
-
-          // Upload image to the server
-          try {
-            let formData = new FormData();
-            formData.append("files", file, file.name);
-            const response = await fetch(
-              "https://acuarelacore.com/api/upload/",
-              {
-                method: "POST",
-                body: formData,
-                // Note: Do not set the Content-Type header. The browser will set it automatically.
-              }
-            );
-            if (!response.ok) {
-              throw new Error("Network response was not ok");
-            }
-            const result = await response.json();
-            const inputWrapper = event.target.closest(".wrapper");
-            const inputID = inputWrapper.querySelector('input[type="hidden"]');
-            const label = inputWrapper.querySelector("label");
-            const icon = label.querySelector("i");
-            if (inputID) {
-              inputID.value = result[0].id;
-            } else {
-              const newInput = document.createElement("input");
-              newInput.type = "hidden";
-              newInput.value = result[0].id;
-              inputWrapper.appendChild(newInput);
-            }
-            icon.className = ""; // Elimina todas las clases
-            icon.classList.add("acuarela", "acuarela-Aceptar"); // Agrega las nuevas clases
-            fadeOut(preloader);
-          } catch (error) {
-            console.error(
-              "Error occurred while making network request: ",
-              error
-            );
-            // handle the error
-          }
-        } else {
-          fadeOut(preloader);
-        }
-      });
-    });
-  }
-  if (document.querySelector(".grupo")) {
-    new Splide("#integrantes", { pagination: false, perPage: 5 }).mount();
-  }
-
-  getChildren();
-  lazyImages();
-  requestposts();
-  requestinscripciones();
-  getAsistentes();
-  getGrupos();
-  getInfoNewGroup();
-  getInfoNewAsistente();
-});
-
 //Funcionalidad de Mensajería
-
-// document.addEventListener("DOMContentLoaded", function () {
 
 let roomId;
 let user;
@@ -2357,9 +2246,6 @@ let userIdAcuarela = acuarelaId;
 let padres = [];
 let chatsActivos = [];
 let padre = [];
-
-// if (currentPath == "/miembros/acuarela-app-web/") {
-// console.log("Id Acuarela", acuarelaId);
 
 const socket = io("https://acuarelacore.com", {
   transports: ["websocket", "polling"],
@@ -3359,6 +3245,131 @@ function closeVideoModal() {
   }
 }
 
+function handleAddCategories(event, type) {
+  document.querySelector("#addCategoriesGastos button").innerHTML =
+    "Guardando...";
+  event.preventDefault(); // Prevent the form from reloading the page
+
+  const input = document.getElementById("categories-input").value.trim();
+
+  if (!input) {
+    alert("Por favor, ingrese al menos una categoría.");
+    return;
+  }
+
+  // Split categories by comma and trim extra spaces
+  const categories = input
+    .split(",")
+    .map((category) => category.trim())
+    .filter((category) => category);
+
+  if (categories.length === 0) {
+    alert("No se detectaron categorías válidas.");
+    return;
+  }
+
+  // Function to send each category to the server
+  const sendCategory = async (category) => {
+    const formdata = new FormData();
+    formdata.append("name", category); // Assuming `category` is the name
+    formdata.append("type", type); // Replace "gasto" with dynamic type if needed
+
+    try {
+      const response = await fetch("s/addCategories/", {
+        method: "POST",
+        body: formdata,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al enviar la categoría: ${category}`);
+      }
+
+      const result = await response.json();
+      document.querySelector("#addCategoriesGastos button").innerHTML =
+        "Agregar";
+      console.log(`Categoría "${category}" procesada con éxito:`, result);
+    } catch (error) {
+      console.error(`Error al procesar la categoría "${category}":`, error);
+      throw error; // To ensure Promise.all catches this error
+    }
+  };
+
+  // Process each category asynchronously
+  const promises = categories.map(sendCategory);
+
+  // Wait for all promises to resolve
+  Promise.all(promises)
+    .then(() => {
+      alert("Todas las categorías han sido procesadas.");
+      document.getElementById("categories-input").value = ""; // Clear the input
+      fadeOut(document.querySelector("#lightbox-categories-gastos"));
+    })
+    .catch((error) => {
+      alert(
+        `Ocurrió un error al procesar algunas categorías: ${error.message}`
+      );
+    });
+}
+function createInvoice() {
+  document.querySelector("#addInvoiceForm .content").style.display = "none";
+  document.querySelector("#addInvoiceForm .advert").style.display = "block";
+  let name = document.querySelector("#addInvoiceForm #payer_name").value;
+  let amount = document.querySelector("#addInvoiceForm #amount").value;
+  document.querySelector(".advert span.name").innerHTML = name;
+  document.querySelector(".advert span.amount").innerHTML = amount;
+}
+
+function handleAddMovement(event) {
+  document.querySelector("#addInvoiceForm button").innerHTML = "Guardando...";
+  event.preventDefault(); // Prevent the form from reloading the page
+
+  // Split categories by comma and trim extra spaces
+  const categories = input
+    .split(",")
+    .map((category) => category.trim())
+    .filter((category) => category);
+
+  // Function to send each category to the server
+  const sendCategory = async (category) => {
+    const formdata = new FormData();
+    formdata.append("name", category); // Assuming `category` is the name
+    formdata.append("type", type); // Replace "gasto" with dynamic type if needed
+
+    try {
+      const response = await fetch("s/createPayLink/", {
+        method: "POST",
+        body: formdata,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error al enviar la categoría: ${category}`);
+      }
+
+      const result = await response.json();
+      document.querySelector("#addInvoiceForm button").innerHTML = "Agregar";
+      console.log(`result Movement`, result);
+    } catch (error) {
+      console.error(`Error Movement:`, error);
+      throw error; // To ensure Promise.all catches this error
+    }
+  };
+
+  // Process each category asynchronously
+  const promises = categories.map(sendCategory);
+
+  // Wait for all promises to resolve
+  Promise.all(promises)
+    .then(() => {
+      document.querySelector("#addInvoiceForm .content").style.display =
+        "block";
+      document.querySelector("#addInvoiceForm .advert").style.display = "none";
+      fadeOut(document.querySelector("#lightbox-newInvoice"));
+    })
+    .catch((error) => {
+      alert(`Ocurrió un error al procesar Movements: ${error.message}`);
+    });
+}
+
 // Pop up crear publicación
 document.addEventListener("DOMContentLoaded", () => {
   // Obtener los elementos del DOM
@@ -3570,70 +3581,109 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
-});
+  const mainFinanzas = document.getElementById("Finanzas");
 
-function handleAddCategories(event, type) {
-  document.querySelector("#addCategoriesGastos button").innerHTML =
-    "Guardando...";
-  event.preventDefault(); // Prevent the form from reloading the page
-
-  const input = document.getElementById("categories-input").value.trim();
-
-  if (!input) {
-    alert("Por favor, ingrese al menos una categoría.");
-    return;
-  }
-
-  // Split categories by comma and trim extra spaces
-  const categories = input
-    .split(",")
-    .map((category) => category.trim())
-    .filter((category) => category);
-
-  if (categories.length === 0) {
-    alert("No se detectaron categorías válidas.");
-    return;
-  }
-
-  // Function to send each category to the server
-  const sendCategory = async (category) => {
-    const formdata = new FormData();
-    formdata.append("name", category); // Assuming `category` is the name
-    formdata.append("type", type); // Replace "gasto" with dynamic type if needed
-
-    try {
-      const response = await fetch("s/addCategories/", {
-        method: "POST",
-        body: formdata,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error al enviar la categoría: ${category}`);
+  if (window.location.href.includes("/miembros/acuarela-app-web/finanzas")) {
+    if (!validarSuscripcion()) {
+      if (mainFinanzas) {
+        mainFinanzas.innerHTML = ""; // Limpiar el contenido de <main id="Finanzas">
       }
-
-      const result = await response.json();
-      document.querySelector("#addCategoriesGastos button").innerHTML =
-        "Agregar";
-      console.log(`Categoría "${category}" procesada con éxito:`, result);
-    } catch (error) {
-      console.error(`Error al procesar la categoría "${category}":`, error);
-      throw error; // To ensure Promise.all catches this error
+      showLightboxFinanzas();
     }
-  };
-
-  // Process each category asynchronously
-  const promises = categories.map(sendCategory);
-
-  // Wait for all promises to resolve
-  Promise.all(promises)
-    .then(() => {
-      alert("Todas las categorías han sido procesadas.");
-      document.getElementById("categories-input").value = ""; // Clear the input
-      fadeOut(document.querySelector("#lightbox-categories-gastos"));
-    })
-    .catch((error) => {
-      alert(
-        `Ocurrió un error al procesar algunas categorías: ${error.message}`
-      );
+  }
+  if (
+    document.querySelector(".message") &&
+    !localStorage.getItem("noMoreMessage")
+  ) {
+    fadeIn(document.querySelector(".message"));
+    localStorage.setItem("noMoreMessage", true);
+  }
+  if (
+    !document.querySelector(".social") &&
+    !document.querySelector(".inscripcionesList") &&
+    !document.querySelector(".grupos") &&
+    !document.querySelector(".newgroup") &&
+    !document.querySelector(".newasistente") &&
+    !document.querySelector(".asistencia")
+  ) {
+    fadeOut(preloader);
+  }
+  if (document.querySelector(".inscripcion")) {
+    updatePercentage();
+    new Splide("#family", { pagination: false }).mount();
+    fields.forEach((field) => {
+      field.addEventListener("input", updatePercentage);
     });
-}
+    document.querySelectorAll('input[type="file"]').forEach((input) => {
+      input.addEventListener("change", async function (event) {
+        if (this.files && this.files.length > 0) {
+          this.classList.add("selected");
+        } else {
+          this.classList.remove("selected");
+        }
+        fadeIn(preloader);
+        const file = event.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.readAsDataURL(file);
+
+          // Upload image to the server
+          try {
+            let formData = new FormData();
+            formData.append("files", file, file.name);
+            const response = await fetch(
+              "https://acuarelacore.com/api/upload/",
+              {
+                method: "POST",
+                body: formData,
+                // Note: Do not set the Content-Type header. The browser will set it automatically.
+              }
+            );
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
+            }
+            const result = await response.json();
+            const inputWrapper = event.target.closest(".wrapper");
+            const inputID = inputWrapper.querySelector('input[type="hidden"]');
+            const label = inputWrapper.querySelector("label");
+            const icon = label.querySelector("i");
+            if (inputID) {
+              inputID.value = result[0].id;
+            } else {
+              const newInput = document.createElement("input");
+              newInput.type = "hidden";
+              newInput.value = result[0].id;
+              inputWrapper.appendChild(newInput);
+            }
+            icon.className = ""; // Elimina todas las clases
+            icon.classList.add("acuarela", "acuarela-Aceptar"); // Agrega las nuevas clases
+            fadeOut(preloader);
+          } catch (error) {
+            console.error(
+              "Error occurred while making network request: ",
+              error
+            );
+            // handle the error
+          }
+        } else {
+          fadeOut(preloader);
+        }
+      });
+    });
+  }
+  if (document.querySelector(".grupo")) {
+    new Splide("#integrantes", { pagination: false, perPage: 5 }).mount();
+  }
+
+  getChildren();
+  lazyImages();
+  requestposts();
+  requestinscripciones();
+  getAsistentes();
+  getGrupos();
+  getInfoNewGroup();
+  getInfoNewAsistente();
+  document
+    .querySelector("#createInvoice")
+    .addEventListener("click", createInvoice);
+});
