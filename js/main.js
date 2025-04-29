@@ -3319,55 +3319,70 @@ function createInvoice() {
   document.querySelector(".advert span.amount").innerHTML = amount;
 }
 
-function handleAddMovement(event) {
+async function handleAddMovement(event) {
   document.querySelector("#addInvoiceForm button").innerHTML = "Guardando...";
   event.preventDefault(); // Prevent the form from reloading the page
 
-  // Split categories by comma and trim extra spaces
-  const categories = input
-    .split(",")
-    .map((category) => category.trim())
-    .filter((category) => category);
-
   // Function to send each category to the server
-  const sendCategory = async (category) => {
-    const formdata = new FormData();
-    formdata.append("name", category); // Assuming `category` is the name
-    formdata.append("type", type); // Replace "gasto" with dynamic type if needed
-
-    try {
-      const response = await fetch("s/createPayLink/", {
-        method: "POST",
-        body: formdata,
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error al enviar la categoría: ${category}`);
-      }
-
-      const result = await response.json();
-      document.querySelector("#addInvoiceForm button").innerHTML = "Agregar";
-      console.log(`result Movement`, result);
-    } catch (error) {
-      console.error(`Error Movement:`, error);
-      throw error; // To ensure Promise.all catches this error
-    }
-  };
-
-  // Process each category asynchronously
-  const promises = categories.map(sendCategory);
-
-  // Wait for all promises to resolve
-  Promise.all(promises)
-    .then(() => {
-      document.querySelector("#addInvoiceForm .content").style.display =
-        "block";
-      document.querySelector("#addInvoiceForm .advert").style.display = "none";
-      fadeOut(document.querySelector("#lightbox-newInvoice"));
-    })
-    .catch((error) => {
-      alert(`Ocurrió un error al procesar Movements: ${error.message}`);
+  const formdata = new FormData();
+  formdata.append("name", document.querySelector("#name").value); // Assuming `category` is the name
+  formdata.append("payer_name", document.querySelector("#payer_name").value); // Replace "gasto" with dynamic type if needed
+  formdata.append("date", document.querySelector("#date").value); // Replace "gasto" with dynamic type if needed
+  formdata.append("amount", document.querySelector("#amount").value); // Replace "gasto" with dynamic type if needed
+  try {
+    const response = await fetch("s/createPayLink/", {
+      method: "POST",
+      body: formdata,
     });
+
+    if (!response.ok) {
+      throw new Error(`Error al enviar la categoría: ${category}`);
+    }
+
+    const result = await response.json();
+    document.querySelector("#addInvoiceForm button").innerHTML = "Agregar";
+    console.log(`result Movement`, result);
+    // Process each category asynchronously
+    const createPaymentLink = async () => {
+      let price = document.querySelector("#amount").value * 100;
+      let tax = price - (price * 0.029 + 30) - 50;
+      try {
+        const requestOptions = {
+          method: "GET",
+          redirect: "follow",
+        };
+
+        // Paso 2: Crear precios
+        const pricesResponse = await fetch(
+          `s/createPrices/?price=${price}`,
+          requestOptions
+        );
+        const prices = await pricesResponse.json();
+
+        // Paso 3: Crear enlace de pago
+        const paymentLinkResponse = await fetch(
+          `s/createPaymentLink/?id=${prices.id}&tax=${tax}`,
+          requestOptions
+        );
+        const result = await paymentLinkResponse.json();
+
+        // Mostrar el resultado en la interfaz
+        const linkElement = document.querySelector(".paymentLink");
+        linkElement.innerHTML = result.url;
+        linkElement.href = result.url;
+
+        console.log("Enlace de pago creado:", result);
+      } catch (error) {
+        console.error("Error al crear el enlace de pago:", error);
+      }
+    };
+    document.querySelector("#addInvoiceForm .content").style.display = "block";
+    document.querySelector("#addInvoiceForm .advert").style.display = "none";
+    fadeOut(document.querySelector("#lightbox-newInvoice"));
+  } catch (error) {
+    console.error(`Error Movement:`, error);
+    throw error; // To ensure Promise.all catches this error
+  }
 }
 
 // Pop up crear publicación

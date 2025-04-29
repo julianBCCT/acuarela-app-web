@@ -16,7 +16,7 @@ try {
     $data = [
         "name" => $_POST["name"], 
         "type_category" => $_POST["type"],
-        "amount" => $_POST["amount"],
+        "amount" => (float) $_POST["amount"],
         "date" => $_POST["date"],
         "name" => $_POST["name"],
         "status" => true,

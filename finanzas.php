@@ -413,7 +413,6 @@ $balance = $ingresosTotal - $gastosTotal;
                     <form id="addInvoiceForm" onsubmit="handleAddMovement(event)">
                         <h3>Nueva Factura</h3>
                     <div class="content">
-
                         <span>
                             <i class="acuarela acuarela-Pago"></i>
                             <label for="name">Concepto de pago</label>
@@ -449,10 +448,11 @@ $balance = $ingresosTotal - $gastosTotal;
                             <h3>Vas a generar un cobro por concepto de <span class="amount"></span>
                                 USD al padre de <span class="name"></span></h3>
                             <p>¿Deseas confirmar este cobro?</p>
+                            <a href="" target="_blank" class="paymentLink"></a>
                             <div class="flex-btn">
-                                <button type="button" class="btn btn-action-primary enfasis btn-big">Si,
+                                <button type="submit" class="btn btn-action-primary enfasis btn-big">Si,
                                     confirmar</button>
-                                <button type="button" class="btn btn-action-primary enfasis btn-big danger">No,
+                                <button type="button" onclick="fadeOut(document.querySelector('#lightbox-newInvoice'))" class="btn btn-action-primary enfasis btn-big danger">No,
                                     cancelar</button>
                             </div>
                         </div>
