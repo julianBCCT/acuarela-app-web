@@ -3318,7 +3318,32 @@ function createInvoice() {
   document.querySelector(".advert span.name").innerHTML = name;
   document.querySelector(".advert span.amount").innerHTML = amount;
 }
+const sendPendingNotification = (linkDePago) => {
+  const myHeaders = new Headers();
 
+  const formdata = new FormData();
+  formdata.append("email", `dreinovcorp@gmail.com`);
+  formdata.append("link", `${linkDePago}`);
+
+  const requestOptions = {
+    method: "POST",
+    headers: myHeaders,
+    body: formdata,
+    redirect: "follow",
+  };
+
+  fetch(
+    "https://bilingualchildcaretraining.com/s/pendingMovementsEmail/",
+    requestOptions
+  )
+    .then((response) => response.json())
+    .then((result) => {
+      return true;
+    })
+    .catch((error) => {
+      return false;
+    });
+};
 async function handleAddMovement(event) {
   document.querySelector("#addInvoiceForm button").innerHTML = "Guardando...";
   event.preventDefault(); // Prevent the form from reloading the page
@@ -3341,41 +3366,40 @@ async function handleAddMovement(event) {
 
     const result = await response.json();
     document.querySelector("#addInvoiceForm button").innerHTML = "Agregar";
-    console.log(`result Movement`, result);
     // Process each category asynchronously
-    const createPaymentLink = async () => {
-      let price = document.querySelector("#amount").value * 100;
-      let tax = price - (price * 0.029 + 30) - 50;
-      try {
-        const requestOptions = {
-          method: "GET",
-          redirect: "follow",
-        };
+    let price = document.querySelector("#amount").value * 100;
+    let commission = price * 0.029 + 30;
+    let tax = price - commission - 50;
+    let finalAmount = Math.round(tax); // o Math.floor() si quieres truncar
+    try {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
 
-        // Paso 2: Crear precios
-        const pricesResponse = await fetch(
-          `s/createPrices/?price=${price}`,
-          requestOptions
-        );
-        const prices = await pricesResponse.json();
+      // Paso 2: Crear precios
+      const pricesResponse = await fetch(
+        `s/createPrices/?price=${price}`,
+        requestOptions
+      );
+      const prices = await pricesResponse.json();
 
-        // Paso 3: Crear enlace de pago
-        const paymentLinkResponse = await fetch(
-          `s/createPaymentLink/?id=${prices.id}&tax=${tax}`,
-          requestOptions
-        );
-        const result = await paymentLinkResponse.json();
+      // Paso 3: Crear enlace de pago
+      const paymentLinkResponse = await fetch(
+        `s/createPaymentLink/?id=${prices.id}&tax=${finalAmount}`,
+        requestOptions
+      );
+      const result = await paymentLinkResponse.json();
 
-        // Mostrar el resultado en la interfaz
-        const linkElement = document.querySelector(".paymentLink");
-        linkElement.innerHTML = result.url;
-        linkElement.href = result.url;
-
-        console.log("Enlace de pago creado:", result);
-      } catch (error) {
-        console.error("Error al crear el enlace de pago:", error);
-      }
-    };
+      // Mostrar el resultado en la interfaz
+      const linkElement = document.querySelector(".paymentLink");
+      linkElement.innerHTML = result.url;
+      linkElement.href = result.url;
+      sendPendingNotification(result.url);
+      console.log("Enlace de pago creado:", result);
+    } catch (error) {
+      console.error("Error al crear el enlace de pago:", error);
+    }
     document.querySelector("#addInvoiceForm .content").style.display = "block";
     document.querySelector("#addInvoiceForm .advert").style.display = "none";
     fadeOut(document.querySelector("#lightbox-newInvoice"));
