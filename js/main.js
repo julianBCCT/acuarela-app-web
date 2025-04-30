@@ -5544,9 +5544,11 @@ document.addEventListener("DOMContentLoaded", () => {
   getGrupos();
   getInfoNewGroup();
   getInfoNewAsistente();
-  document
-    .querySelector("#createInvoice")
-    .addEventListener("click", createInvoice);
+  if (document.querySelector("#createInvoice")) {
+    document
+      .querySelector("#createInvoice")
+      .addEventListener("click", createInvoice);
+  }
 });
 const organizeTasks = (tasks) => {
   const today = new Date().toISOString().split("T")[0]; // Obtiene la fecha actual en formato YYYY-MM-DD
@@ -5592,7 +5594,7 @@ async function getTasks() {
               >${task.name}</span>
             </div>
             <div class="infoDesc">
-            <span class="taskInfo">Asignado a ${task.acuarelauser.name}</span>
+            <span class="taskInfo">Asignado a ${task.acuarelauser?.name}</span>
             <span class="taskDate">${task.date}</span>
             ${
               task.comentarios

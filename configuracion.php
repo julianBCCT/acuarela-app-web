@@ -80,9 +80,9 @@
                   </p>
           </div>
 
-        <button class="button" id="paypal-button">
+        <a class="button" href="/miembros/marketplace">
           <img src="img/stripeLogo.png?v=1" alt="paypal" width="70" />
-        </button>
+        </a>
 
         <div class="icon-container">
           <svg
@@ -110,102 +110,6 @@
           </div>
         </div>
       </div>
-
-      <script>
-
-
-        const paypalButton = document.getElementById("paypal-button");
-        const paypalMessage = document.getElementById("paypal-message");
-
-        const automaticPayment = async (
-          daycareID = "<?=$a->daycareID?>",
-          tracking_id = "<?=$_SESSION['user']->id?>"
-        ) => {
-          try {
-            // Step 1: Fetch the PayPal token
-            const tokenResponse = await fetch("s/paypaltoken/", {
-              method: "POST",
-            });
-            if (!tokenResponse.ok) {
-              throw new Error(
-                `Token request failed with status ${tokenResponse.status}`
-              );
-            }
-            const tokenData = await tokenResponse.json();
-
-            const { access_token } = tokenData;
-
-            // Step 2: Prepare headers and payload for partner referrals API
-            const headers = new Headers({
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${access_token}`,
-            });
-
-            const payload = {
-              tracking_id,
-              operations: [
-                {
-                  operation: "API_INTEGRATION",
-                  api_integration_preference: {
-                    rest_api_integration: {
-                      integration_method: "PAYPAL",
-                      integration_type: "THIRD_PARTY",
-                      third_party_details: { features: ["PAYMENT", "REFUND"] },
-                    },
-                  },
-                },
-              ],
-              products: ["EXPRESS_CHECKOUT"],
-              legal_consents: [{ type: "SHARE_DATA_CONSENT", granted: true }],
-              partner_config_override: {
-                partner_logo_url: "https://acuarela.app/img/logo.svg",
-                return_url: `https://acuarela.app/pagos-electronicos/activar-${daycareID}`,
-                return_url_description: "The URL to return after onboarding.",
-                action_renewal_url: "https://acuarela.app",
-                show_add_credit_card: true,
-              },
-            };
-
-            // Step 3: Call PayPal partner referrals API
-            const response = await fetch(
-              "https://api-m.sandbox.paypal.com/v2/customer/partner-referrals",
-              {
-                method: "POST",
-                headers,
-                body: JSON.stringify(payload),
-              }
-            );
-
-            if (!response.ok) {
-              throw new Error(
-                `PayPal API request failed with status ${response.status}`
-              );
-            }
-
-            const result = await response.json();
-            const link = result.links.find(
-              (link) => link.rel === "action_url"
-            ).href;
-
-            // Open PayPal link
-            window.open(link, "_blank");
-          } catch (error) {
-            console.error("Error during PayPal integration:", error);
-            alert("An error occurred. Please try again.");
-          }
-        };
-
-        paypalButton.addEventListener("click", automaticPayment);
-          console.log(foundDaycare);
-          
-          if(foundDaycare.paypal.isset){
-            document.querySelector("#paypal-message").style.display = "block";
-            document.querySelector("#paypal-button").style.display = "none";
-          }else{
-            document.querySelector(".paypalAlert").style.display = "block";
-
-          }
-      </script>
     </div>
   </div>
 </main>
