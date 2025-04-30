@@ -5,15 +5,19 @@
 
     <div class="icons">
         <ul id="opciones-mensajeria">
-            <li id="buscar-mensajeria">
+            <li id="buscar-mensajeria" title="Buscar chats activos">
                 <i class="acuarela acuarela-Buscar"></i>
             </li>
-            <li id="agregar-mensajeria">
+            <li id="agregar-mensajeria" title="Crear nuevo chat">
                 <i class="acuarela acuarela-Agregar"></i>
             </li>
-            <li class="chat-icon">
+            <!-- <li class="chat-icon" title="Ver chat">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
+            </li> -->
+            <li id="agregar-grupo-mensajeria" title="Crear Grupo">
+                <i class="acuarela acuarela-Ambos"></i>
             </li>
+            <hr style="border: 1px solid #ccc; width: 100%;">
             <!--
             <li class="chat-icon">
                 <img src="https://bilingualchildcaretraining.com/miembros/acuarela-app-web/img/placeholder.png" alt="">
@@ -36,18 +40,7 @@
         <div id="chats-padres" class="chats-padres">
 
         </div>
-        <!-- <div class="chats-mensajeria">
-            <img src="./img/Chat.png" alt="">
-            <p>Nombre persona</p>
-        </div>
-        <div class="chats-mensajeria">
-            <img src="./img/chat2.png" alt="">
-            <p>Nombre persona</p>
-        </div>
-        <div class="chats-mensajeria">
-            <img src="./img/Chat3.png" alt="">
-            <p>Nombre persona</p>
-        </div> -->
+
     </div>
 
     <div id="chats-agregados" class="chats-buscados" style="display: none;">
@@ -59,18 +52,21 @@
         <div id="padres-inactivos" class="chats-padres">
 
         </div>
-        <!-- <div class="chats-mensajeria">
-            <img src="./img/Chat.png" alt="">
-            <p>Nombre persona</p>
+
+    </div>
+
+    <div id="chat-grupal" class="chats-buscados" style="display: none;">
+        <div class="buscador-mensajeria">
+            <i id="btn-crear-grupo" class="acuarela acuarela-Agregar"></i>
+            <i id="btn-buscador-chat-grupal" class="acuarela acuarela-Buscar"></i>
+            <input id="buscador-chat-grupal" type="text">
+            <i id="closeBuscador-grupal" class="acuarela acuarela-Cancelar"></i>
         </div>
-        <div class="chats-mensajeria">
-            <img src="./img/chat2.png" alt="">
-            <p>Nombre persona</p>
+        <div id="div-lista-chats-grupales" class="chats-padres">
+
+
         </div>
-        <div class="chats-mensajeria">
-            <img src="./img/Chat3.png" alt="">
-            <p>Nombre persona</p>
-        </div> -->
+
     </div>
 
     <div id="chat-individual" class="chat-individual" style="display: none;">
@@ -106,7 +102,7 @@
             <!-- <i class="acuarela acuarela-Adjuntar"></i> -->
         </div>
     </div>
-    
+
 
 
     <script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>

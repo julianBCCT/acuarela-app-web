@@ -80,6 +80,17 @@ class Acuarela {
         $resp = $this->queryStrapi("posts?daycareId=$daycare");
         return $resp;
     }
+    function getTasks($daycare = null){
+        if (is_null($daycare)) {
+            $daycare = $this->daycareID;
+        }
+        $resp = $this->queryStrapi("tasks?daycare=$daycare");
+        return $resp;
+    }
+    function createTask($data){
+        $resp = $this->queryStrapi("tasks", $data, "POST");
+        return $resp;
+    }
     function setReactionPost($data){
         $resp = $this->queryStrapi("reactions", $data, "POST");
         return $resp;
@@ -138,6 +149,33 @@ class Acuarela {
             return $respInscripcionComplete;
         }
     }
+    function getHealthinfo($id = "", $daycare = null) {
+        if (is_null($daycare)) {
+            $daycare = $this->daycareID;
+        }
+        if ($id == "") {
+            $resp = $this->queryStrapi("healthinfos?daycare=$daycare");
+        } else {
+            $resp = $this->queryStrapi("healthinfos/{$id}");
+        }
+        return $resp;
+    }
+    
+    function postHealthinfo($data){
+        $data = json_decode($data);
+        $resp = $this->queryStrapi("healthinfos", $data, "POST");
+        return $resp;
+    }
+    function putHealthinfo($data){
+        $data = json_decode($data);
+        if (!isset($data->inscripcion) || empty($data->inscripcion)) {
+            return null; // Evitar enviar una petición sin ID
+        }
+        $resp = $this->queryStrapi("healthinfos/$data->inscripcion", $data, "PUT");
+        return $resp;
+    }
+    
+
     function putInscripcion($data){
         $data = json_decode($data);
         if($data->status == "Borrador"){
