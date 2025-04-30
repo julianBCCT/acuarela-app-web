@@ -81,7 +81,7 @@
           </div>
 
         <button class="button" id="paypal-button">
-          <img src="img/paypalLogo.png" alt="paypal" width="70" />
+          <img src="img/stripeLogo.png?v=1" alt="paypal" width="70" />
         </button>
 
         <div class="icon-container">
