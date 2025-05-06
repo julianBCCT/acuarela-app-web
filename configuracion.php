@@ -80,7 +80,7 @@
                   </p>
           </div>
 
-        <a class="button" href="/miembros/marketplace">
+        <a class="button" href="marketplace">
           <img src="img/stripeLogo.png?v=1" alt="paypal" width="70" />
         </a>
 

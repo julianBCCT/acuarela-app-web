@@ -12,5 +12,5 @@
     recibas por medio de acuarela, tendrá un cobro de USD 0.50 por cada
     transacción exitosa que realicen padres de familia.
   </small>
-  <a href="/miembros/marketplace" class="btn btn-action-secondary enfasis"> Activar pagos electrónicos </a>
+  <a href="marketplace" class="btn btn-action-secondary enfasis"> Activar pagos electrónicos </a>
 </div>
