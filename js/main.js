@@ -103,6 +103,61 @@ const activitiesList = [
 ];
 let fetching = false; // Variable para controlar si se está realizando una solicitud
 let page = 1; // Inicializamos la página en 1
+const manualHandle = async (parentId, parentName, parentEmail, code) => {
+  fadeIn(preloader);
+
+  let data = {};
+
+  // Verificar si el tipo de operación es checkout o no
+  if (typeCheck === "checkout") {
+    data = {
+      children: [kid.id],
+      datetime: today,
+      acudiente: [parentId],
+      code, // Incluir el código si es checkout
+    };
+  } else {
+    data = {
+      children: [kid.id],
+      datetime: today,
+      acudiente: [parentId],
+    };
+  }
+
+  const raw = JSON.stringify(data);
+  const requestOptions = {
+    method: "POST",
+    body: raw,
+  };
+
+  try {
+    const response = await fetch(
+      `s/setAsistencia/?type=${typeCheck}`,
+      requestOptions
+    );
+    const result = await response.json();
+
+    const infoLightbox = document.getElementById("info-lightbox");
+    infoLightbox.style.display = "none";
+
+    // Enviar correo de confirmación (basado en el tipo de registro: check-in o check-out)
+    sendEmailRegisterCheck(
+      kid.name,
+      parentName,
+      daycareName,
+      parentName,
+      parentEmail,
+      typeCheck
+    );
+
+    // Actualizar la lista de niños
+    getChildren();
+  } catch (error) {
+    console.error("Error en el proceso de registro:", error);
+  } finally {
+    fadeOut(preloader);
+  }
+};
 
 const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
   let mailUrl = `https://bilingualchildcaretraining.com/s/endRegister/?rol=${rol}&daycare=${daycare}&email=${email}&link=${link}&kid=${kid}`;
