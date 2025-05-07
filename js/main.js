@@ -999,7 +999,68 @@ const getChildren = async () => {
 
     const renderKids = (kids, container, iconClass, typeCheck) => {
       const fragment = document.createDocumentFragment();
+
       kids.forEach((kid) => {
+        const manualHandle = async (
+          parentId,
+          parentName,
+          parentEmail,
+          code
+        ) => {
+          fadeIn(preloader);
+
+          let data = {};
+
+          // Verificar si el tipo de operación es checkout o no
+          if (typeCheck === "checkout") {
+            data = {
+              children: [kid.id],
+              datetime: today,
+              acudiente: [parentId],
+              code, // Incluir el código si es checkout
+            };
+          } else {
+            data = {
+              children: [kid.id],
+              datetime: today,
+              acudiente: [parentId],
+            };
+          }
+
+          const raw = JSON.stringify(data);
+          const requestOptions = {
+            method: "POST",
+            body: raw,
+          };
+
+          try {
+            const response = await fetch(
+              `s/setAsistencia/?type=${typeCheck}`,
+              requestOptions
+            );
+            const result = await response.json();
+
+            const infoLightbox = document.getElementById("info-lightbox");
+            infoLightbox.style.display = "none";
+
+            // Enviar correo de confirmación (basado en el tipo de registro: check-in o check-out)
+            sendEmailRegisterCheck(
+              kid.name,
+              parentName,
+              daycareName,
+              parentName,
+              parentEmail,
+              typeCheck
+            );
+
+            // Actualizar la lista de niños
+            getChildren();
+          } catch (error) {
+            console.error("Error en el proceso de registro:", error);
+          } finally {
+            fadeOut(preloader);
+          }
+        };
         const template = createKidTemplate(kid, iconClass);
         const listItem = document.createElement("li");
         listItem.innerHTML = template;
@@ -3479,6 +3540,9 @@ const prevStep = () => {
 };
 
 const sendActivity = async () => {
+  document
+    .querySelector(".grupo .steps .btnactions #save")
+    .setAttribute("disabled", true);
   fadeIn(preloader);
 
   const form = document.querySelector("#createActicity"); // Selecciona tu formulario
@@ -5643,7 +5707,9 @@ const taskForm = document.querySelector("#taskForm");
 if (taskForm) {
   taskForm.addEventListener("submit", async (event) => {
     event.preventDefault(); // Evita que se recargue la página
-
+    document
+      .querySelector("button[type='submit']")
+      .setAttribute("disabled", true);
     let formValues = {
       acuarelauser: document.querySelector("#acuarelauser").value,
       date: document.querySelector("#date").value,
@@ -5663,6 +5729,9 @@ if (taskForm) {
       const data = await response.json();
 
       if (response.ok) {
+        document
+          .querySelector("button[type='submit']")
+          .removeAttribute("disabled");
         taskForm.reset(); // Limpia el formulario después de enviar
         Fancybox.close();
         location.reload();

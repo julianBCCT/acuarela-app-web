@@ -122,7 +122,7 @@
               id="description"></textarea></span>
               <div class="btnactions">
                 <button type="button" onclick="prevStep()" class="btn btn-action-secondary enfasis btn-big">Atras</button>
-                <button type="button" onclick="sendActivity()" class="btn btn-action-primary enfasis btn-big">Guardar</button>
+                <button type="button" onclick="sendActivity()" id="save" class="btn btn-action-primary enfasis btn-big">Guardar</button>
               </div>
         </div>
       </div>
