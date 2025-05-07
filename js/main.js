@@ -103,6 +103,61 @@ const activitiesList = [
 ];
 let fetching = false; // Variable para controlar si se está realizando una solicitud
 let page = 1; // Inicializamos la página en 1
+const manualHandle = async (parentId, parentName, parentEmail, code) => {
+  fadeIn(preloader);
+
+  let data = {};
+
+  // Verificar si el tipo de operación es checkout o no
+  if (typeCheck === "checkout") {
+    data = {
+      children: [kid.id],
+      datetime: today,
+      acudiente: [parentId],
+      code, // Incluir el código si es checkout
+    };
+  } else {
+    data = {
+      children: [kid.id],
+      datetime: today,
+      acudiente: [parentId],
+    };
+  }
+
+  const raw = JSON.stringify(data);
+  const requestOptions = {
+    method: "POST",
+    body: raw,
+  };
+
+  try {
+    const response = await fetch(
+      `s/setAsistencia/?type=${typeCheck}`,
+      requestOptions
+    );
+    const result = await response.json();
+
+    const infoLightbox = document.getElementById("info-lightbox");
+    infoLightbox.style.display = "none";
+
+    // Enviar correo de confirmación (basado en el tipo de registro: check-in o check-out)
+    sendEmailRegisterCheck(
+      kid.name,
+      parentName,
+      daycareName,
+      parentName,
+      parentEmail,
+      typeCheck
+    );
+
+    // Actualizar la lista de niños
+    getChildren();
+  } catch (error) {
+    console.error("Error en el proceso de registro:", error);
+  } finally {
+    fadeOut(preloader);
+  }
+};
 
 const sendRegisterEmail = async (rol, daycare, email, link, kid) => {
   let mailUrl = `https://bilingualchildcaretraining.com/s/endRegister/?rol=${rol}&daycare=${daycare}&email=${email}&link=${link}&kid=${kid}`;
@@ -1729,10 +1784,15 @@ function dataParient(kidData) {
       // Crear el contenedor para los datos del pariente (derecha)
       const parienteDataContainer = document.createElement("div");
       parienteDataContainer.classList.add("parentslight-right");
+      const nombre = `${guardian.guardian_name || "No disponible"} ${
+        guardian.guardian_lastname || ""
+      }`.trim();
+      const telefono = guardian.guardian_phone || "No disponible";
+      const email = guardian.guardian_email || "No disponible";
       const datosPariente = [
-        `<strong>Nombre: </strong> ${guardian.guardian_name} ${guardian.guardian_lastname}`,
-        `<strong>Telefono: </strong> ${guardian.guardian_phone}`,
-        `<strong>Email: </strong> ${guardian.guardian_email}`,
+        `<strong>Nombre: </strong> ${nombre || "No disponible"}`,
+        `<strong>Teléfono: </strong> ${telefono}`,
+        `<strong>Email: </strong> ${email}`,
       ];
 
       datosPariente.forEach((dato) => {
@@ -1833,7 +1893,10 @@ function showLightboxParient() {
   `;
   linkModerado.addEventListener("click", () => {
     const container = document.querySelector(".methods-emergency");
-    if (!kidData.incidents || kidData.incidents.length === 0) {
+    if (
+      !kidData.healthinfo?.incidents ||
+      kidData.healthinfo?.incidents.length === 0
+    ) {
       showMessage(
         container,
         "El reporte detallado requiere llenar la incidencia ocurrida el dia de hoy."
@@ -1882,6 +1945,7 @@ function showLightboxParient() {
     const parts = formatter.formatToParts(now);
     const todayNY = `${parts[4].value}-${parts[0].value}-${parts[2].value}`; // Año-Mes-Día
     let matchFound = false; // Variable para saber si existe un match
+    console.log("todayNY: ", todayNY);
 
     for (let i = 0; i < kidData.healthinfo.incidents.length; i++) {
       const incident = kidData.healthinfo.incidents[i];
@@ -1898,12 +1962,11 @@ function showLightboxParient() {
         const email2 = kidData.guardians[1]?.guardian_email || "";
         const name2 = kidData.guardians[1]?.guardian_name || "";
         const lastname2 = kidData.guardians[1]?.guardian_lastname || "";
-        const incidentType = incident.description || "[Tipo de incidencia]";
-        const temperature = incident.temperature || "[Temperatura]";
-        const actionsTaken = incident.actions_taken || "[Acciones tomadas]";
-        const severityLevel = incident.gravedad || "[Nivel de gravedad]";
-        const suggestedActions =
-          incident.actions_expected || "[Acciones esperadas]";
+        const incidentType = incident.description || "No registrado";
+        const temperature = incident.temperature || "No registrado";
+        const actionsTaken = incident.actions_taken || "No registrado";
+        const severityLevel = incident.gravedad || "No registrado";
+        const suggestedActions = incident.actions_expected || "No registrado";
         sendEmergencyEmail(
           gravedad,
           email,
@@ -2109,10 +2172,20 @@ const handleReportInfo = async () => {
   };
   console.log("Enviando datos:", dataToSend);
 
+  const endpoint =
+    kidData.healthinfo && kidData.healthinfo.child === kidData._id
+      ? "s/updateHealthInfo/"
+      : "s/createHealthInfo/";
+
+  const method = endpoint.includes("update") ? "PUT" : "POST";
+
   try {
-    const response = await fetch("s/updateHealthInfo/", {
-      method: "PUT",
-      body: JSON.stringify(dataToSend),
+    const response = await fetch(endpoint, {
+      method: method,
+      body: JSON.stringify({
+        ...dataToSend,
+        inscripcion: kidData.healthinfo ? kidData.healthinfo._id : null,
+      }),
       headers: { "Content-Type": "application/json" },
     });
     const result = await response.json();
@@ -2185,12 +2258,46 @@ const handleHelthCheckInfo = async (temperatura, reporte, fecha) => {
     const body = await response.json();
 
     if (body.id) {
+      enviarCorreo(); // **Actualizar y enviar los datos correctamente después de seleccionar**
       window.location.href = `/miembros/acuarela-app-web/ninxs/${kidData._id}`;
     } else {
       console.error("Error al actualizar HealthInfo: ", body);
     }
   } catch (error) {
     console.error("Error al agregar incidente:", error);
+  }
+
+  // Para enviar correo a papas con el reporte diario del nino
+  function enviarCorreo() {
+    const data = {
+      nino_name: kidData.name || "null",
+      nino_lastname: kidData.lastname || "null",
+      mama_email: kidData.acuarelausers[0]?.mail || "null",
+      papa_email: kidData.acuarelausers[1]?.mail || "null",
+      mama_name: kidData.acuarelausers[0]?.name || "null",
+      papa_name: kidData.acuarelausers[1]?.name || "null",
+      mama_lastname: kidData.acuarelausers[0]?.lastname || "null",
+      papa_lastname: kidData.acuarelausers[1]?.lastname || "null",
+      temperature: temperatura || "null",
+      report: reporte || "null",
+      fechaSeleccionada: fechaFinal || "null",
+      selectedArea: kidData.healthinfo.healthcheck.bodychild || "null",
+    };
+
+    fetch("https://hook.us1.make.com/cbdmhuh35metbkz34tbv8byw7kxiyhk7", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json()) // Si se recibe una respuesta, convertirla a JSON
+      .then((data) => {
+        console.log("Respuesta del webhook:", data);
+      });
+    // .catch((error) => {
+    //   console.error("Error al enviar los datos:", error);
+    // });
   }
 };
 
@@ -2405,8 +2512,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
   databutton.classList.add("divbutton");
   databutton.innerHTML = `
     <div class="progress-indicator">
-      <span class="circle active"></span>
-      <span class="circle"></span>
+      
     </div>
     <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
   `;
@@ -2439,7 +2545,7 @@ function showLightboxAddHealthCkeck(fechaSeleccionada, origen, kid = null) {
         } else {
           button.style.backgroundColor = "";
           button.disabled = true;
-          utton.style.cursor = "not-allowed";
+          button.style.cursor = "not-allowed";
         }
       }
     }
@@ -2573,12 +2679,18 @@ function showLightboxAddBodyHealthCkeck(
     </div>
   `;
 
+  const partselect = document.createElement("div");
+  partselect.classList.add("partselect");
+  partselect.innerHTML = `
+    <p class="text"> Parte seleccionada </p>
+    <p class="text-indication"> --- </p>
+  `;
+
   const databutton = document.createElement("div");
   databutton.classList.add("divbutton");
   databutton.innerHTML = `
     <div class="progress-indicator">
-      <span class="circle"></span>
-      <span class="circle active"></span>
+      
     </div>
     <button id="btnAgregar-reporte" class="btn btn-action-primary enfasis btn-big btn-disable" type="button" onclick="handleHelthCheckInfo('${temperature}', '${report}', '${fechaSeleccionada}')"> Ingresar </button>   
   `;
@@ -2591,11 +2703,21 @@ function showLightboxAddBodyHealthCkeck(
         circle.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
         circle.style.border = "2px solid var(--secundario1)";
       });
+      const textIndication = document.querySelector(
+        ".partselect .text-indication"
+      );
+      if (textIndication) {
+        textIndication.style.backgroundColor = "rgba(101, 192, 142, 0.5)";
+        textIndication.style.color = "var(--secundario1)";
+        textIndication.style.border = "2px solid var(--secundario1)";
+        textIndication.textContent = "OK";
+      }
       // Guardar directamente "0" en la info de salud
       if (!kidData.healthinfo) kidData.healthinfo = {};
       if (!kidData.healthinfo.healthcheck) kidData.healthinfo.healthcheck = {};
       kidData.healthinfo.healthcheck.bodychild = "0";
       console.log("Área seleccionada automáticamente: 0");
+      // enviarCorreo();
     } else {
       // Si el reporte es diferente a "Ninguno", permitir selección normal
       circles.forEach((circle) => {
@@ -2615,46 +2737,21 @@ function showLightboxAddBodyHealthCkeck(
           // Resaltar solo el círculo seleccionado
           circles.forEach((c) => c.classList.remove("selected"));
           event.target.classList.add("selected");
-          enviarCorreo(); // **Actualizar y enviar los datos correctamente después de seleccionar**
+          // Actualizar el texto dinámicamente
+          const textIndication = document.querySelector(
+            ".partselect .text-indication"
+          );
+          if (textIndication) {
+            const area = selectedArea.replace(/_/g, " "); // Opcional: reemplaza "_" por espacios
+            textIndication.textContent = area;
+          }
         });
       });
-    }
-
-    // Para enviar correo a papas con el reporte diario del nino
-    function enviarCorreo() {
-      const data = {
-        nino_name: kidData.name || "null",
-        nino_lastname: kidData.lastname || "null",
-        mama_email: kidData.acuarelausers[0]?.mail || "null",
-        papa_email: kidData.acuarelausers[1]?.mail || "null",
-        mama_name: kidData.acuarelausers[0]?.name || "null",
-        papa_name: kidData.acuarelausers[1]?.name || "null",
-        mama_lastname: kidData.acuarelausers[0]?.lastname || "null",
-        papa_lastname: kidData.acuarelausers[1]?.lastname || "null",
-        temperature: temperature || "null",
-        report: report || "null",
-        fechaSeleccionada: fechaSeleccionada || "null",
-        selectedArea: kidData.healthinfo.healthcheck.bodychild || "null",
-      };
-
-      fetch("https://hook.us1.make.com/cbdmhuh35metbkz34tbv8byw7kxiyhk7", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      })
-        .then((response) => response.json()) // Si se recibe una respuesta, convertirla a JSON
-        .then((data) => {
-          console.log("Respuesta del webhook:", data);
-        });
-      // .catch((error) => {
-      //   console.error("Error al enviar los datos:", error);
-      // });
     }
   }, 0);
 
   contentContainer.appendChild(novedad);
+  contentContainer.appendChild(partselect);
   contentContainer.appendChild(databutton);
   showInfoLightbox("Daily Health Check", contentContainer);
 
@@ -2878,6 +2975,7 @@ function showLightboxNinoHealthCkeck() {
   databutton.classList.add("divbutton");
   databutton.innerHTML = `
     <div class="progress-indicator">
+    
     </div>
     <button id="btnSiguiente" class="btn btn-action-primary enfasis btn-big btn-disable"> Siguiente </button>   
   `;

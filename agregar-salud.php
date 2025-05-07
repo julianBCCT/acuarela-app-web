@@ -18,10 +18,12 @@ $kid = $a->getChildren($_GET['id']);
                     <div class="sectionsalud">
                         <h3 class="h3salud">Historial de salud: </h3>
                         <div class="decorative-line"></div>
-                        <span class="input-group">
-                            <label class="checkboxsalud" for="asma">Asma</label>
+                        <span class="input-group2">
                             <input type="hidden" name="asma" value="0">
-                            <input type="checkbox" name="asma" id="asma" value="1">
+                            <input type="checkbox" name="asma" id="asma" value="1" hidden>
+                            <label for="asma" class="checkboxsalud">
+                                <span class="fake-checkbox"></span> Asma
+                            </label>
                             <span class="error-message"></span>
                         </span>
                         <span class="input-group">
@@ -72,10 +74,10 @@ $kid = $a->getChildren($_GET['id']);
                         </span>
                     </div>
                     <div class="sectionsalud">
-                        <h3 class="h3salud">Unguentos autorizados: </h3>
+                        <h3 class="h3salud">Ungüentos autorizados: </h3>
                         <div class="decorative-line"></div>
                         <span class="input-group">
-                            <label for="name">Unguentos</label>
+                            <label for="name">Ungüentos </label>
                             <input type="text" placeholder="Agregar marcar de cremas, bloqueadores solares, etc" name="unguentos" id="unguentos" 
                                    value="<?= isset($kid->healthinfo->ointments) && is_array($kid->healthinfo->ointments) ? implode(', ', $kid->healthinfo->ointments) : $kid->healthinfo->ointments ?>">
                             <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
@@ -90,23 +92,20 @@ $kid = $a->getChildren($_GET['id']);
                             <label class="labelpediatra" for="name">Médico</label>
                             <input type="text" placeholder="Ingresar nombre del médico" name="pedriatra" id="pedriatra" 
                                    value="<?= isset($kid->healthinfo->pediatrician) ? $kid->healthinfo->pediatrician : "" ?>">
-                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
                         <span class="input-group">
                             <i class="saludicon acuarela acuarela-Telefono"></i>
                             <label class="labelpediatra" for="name">Teléfono</label>
-                            <input type="text" placeholder="Agregar su salud mental" name="pedriatra_numero" id="pedriatra_numero" 
+                            <input type="text" placeholder="Agregar numero del médico" name="pedriatra_numero" id="pedriatra_numero" 
                                    value="<?= isset($kid->healthinfo->pediatrician_number) ? $kid->healthinfo->pediatrician_number : "" ?>">
-                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
                         <span class="input-group">
                             <i class="saludicon acuarela acuarela-Mensajes"></i>
                             <label class="labelpediatra" for="name">Correo electrónico</label>
-                            <input type="text" placeholder="Agregar su salud mental" name="pedriatra_email" id="pedriatra_email" 
+                            <input type="text" placeholder="Agregar correo del medio (Recuerde agregar un correo valido con terminacion @example.com)" name="pedriatra_email" id="pedriatra_email" 
                                    value="<?= isset($kid->healthinfo->pediatrician_email) ? $kid->healthinfo->pediatrician_email : "" ?>">
-                            <i class="agregar-inputs acu acuarela acuarela-Agregar"></i>
                             <span class="error-message"></span>
                         </span>
                     </div>    

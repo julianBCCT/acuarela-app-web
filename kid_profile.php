@@ -27,23 +27,51 @@
                 <div class="basicinfo">
                     <div class="txt">
                         <div class="txt_data">
-                            <p><i class="acuarela acuarela-Evento"></i> <span class="txt_infodata"> <span>Fecha de nacimiento</span> <strong>
-                                    <?=$birthdate_formateada?>
-                                </strong> </span></p>
-                            <p><i class="acuarela acuarela-Calendario"></i> <span class="txt_infodata"> <span>Inscrito desde</span> <strong>
-                                    <?=$published_at_formateada?>
-                                </strong> </span></p>
-                            <p><i class="acuarela acuarela-Localizacion"></i> <span class="txt_infodata"> <span>Ciudad</span> <strong><?=$kid->city?></strong> </span>
+                        <p><i class="acuarela acuarela-Evento"></i>
+                                <span class="txt_infodata">
+                                    <span>Fecha de nacimiento</span>
+                                    <strong><?= $birthdate_formateada ?: 'No disponible' ?></strong>
+                                </span>
                             </p>
-                            <p><i class="acuarela acuarela-Telefono"></i> <span class="txt_infodata"> <span>Número Mamá</span> <strong><?=$kid->acuarelausers[0]->phone?></strong> </span>
+                            <p><i class="acuarela acuarela-Calendario"></i>
+                                <span class="txt_infodata">
+                                    <span>Inscrito desde</span>
+                                    <strong><?= $published_at_formateada ?: 'No disponible' ?></strong>
+                                </span>
                             </p>
-                            <p><i class="acuarela acuarela-Mensajes"></i> <span class="txt_infodata"> <span>Correo Mamá</span> <strong><?=$kid->acuarelausers[0]->mail?></strong> </span>
+                            <p><i class="acuarela acuarela-Localizacion"></i>
+                                <span class="txt_infodata">
+                                    <span>Ciudad</span>
+                                    <strong><?= $kid->city ?: 'No disponible' ?></strong>
+                                </span>
                             </p>
-                            <p><i class="acuarela acuarela-Telefono"></i> <span class="txt_infodata"> <span>Número Papá</span> <strong><?=$kid->acuarelausers[1]->phone?></strong> </span>
-                            </p>
-                            <p><i class="acuarela acuarela-Mensajes"></i> <span class="txt_infodata"> <span>Correo Papá</span> <strong><?=$kid->acuarelausers[1]->mail?></strong> </span>
+                            <p><i class="acuarela acuarela-Telefono"></i>
+                                <span class="txt_infodata">
+                                    <span>Número Mamá</span>
+                                    <strong><?= $kid->acuarelausers[0]->phone ?? 'No disponible' ?></strong>
+                                </span>
                             </p>
 
+                            <p><i class="acuarela acuarela-Mensajes"></i>
+                                <span class="txt_infodata">
+                                    <span>Correo Mamá</span>
+                                    <strong><?= $kid->acuarelausers[0]->mail ?? 'No disponible' ?></strong>
+                                </span>
+                            </p>
+
+                            <p><i class="acuarela acuarela-Telefono"></i>
+                                <span class="txt_infodata">
+                                    <span>Número Papá</span>
+                                    <strong><?= $kid->acuarelausers[1]->phone ?? 'No disponible' ?></strong>
+                                </span>
+                            </p>
+
+                            <p><i class="acuarela acuarela-Mensajes"></i>
+                                <span class="txt_infodata">
+                                    <span>Correo Papá</span>
+                                    <strong><?= $kid->acuarelausers[1]->mail ?? 'No disponible' ?></strong>
+                                </span>
+                            </p>
                             <?php
                                 // echo 'ID recibido: ' . htmlspecialchars($_GET['id']);
                                 // echo '<pre>';
@@ -135,9 +163,16 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Alergias:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->allergies ?? ['Ninguna'] as $alergia): ?>
-                                        <p><?= htmlspecialchars($alergia) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $alergias = $kid->healthinfo->allergies ?? [];
+                                        $alergiasFiltradas = array_filter($alergias, fn($a) => trim($a) !== '');
+                                        if (empty($alergiasFiltradas)): ?>
+                                            <p>Ninguna</p>
+                                        <?php else: ?>
+                                            <?php foreach ($alergiasFiltradas as $alergia): ?>
+                                                <p><?= htmlspecialchars($alergia) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
@@ -149,25 +184,47 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Medicamentos:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->medicines ?? ['Ninguna'] as $medicamento): ?>
-                                        <p><?= htmlspecialchars($medicamento) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $medicamentos = $kid->healthinfo->medicines ?? [];
+                                        $medicamentosFiltrados = array_filter($medicamentos, fn($m) => trim($m) !== '');
+                                        if (empty($medicamentosFiltrados)): ?>
+                                            <p>Ninguno</p>
+                                        <?php else: ?>
+                                            <?php foreach ($medicamentosFiltrados as $med): ?>
+                                                <p><?= htmlspecialchars($med) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Vacunas:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->vacination ?? ['Ninguna'] as $vacuna): ?>
-                                        <p><?= htmlspecialchars($vacuna) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $vacunas = $kid->healthinfo->vacination ?? [];
+                                        $vacunasFiltradas = array_filter($vacunas, fn($v) => trim($v) !== '');
+                                        if (empty($vacunasFiltradas)): ?>
+                                            <p>Ninguna</p>
+                                        <?php else: ?>
+                                            <?php foreach ($vacunasFiltradas as $vac): ?>
+                                                <p><?= htmlspecialchars($vac) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Accidentes:</span></p>
                                     <div class="saludcampos-JSON">
-                                    <?php foreach ($kid->healthinfo->accidents ?? ['Ninguna'] as $accidente): ?>
-                                        <p><?= htmlspecialchars($accidente) ?></p>
-                                    <?php endforeach; ?>
+                                        <?php 
+                                        $accidentes = $kid->healthinfo->accidents ?? [];
+                                        // Filtramos el array para eliminar valores vacíos ("" o null)
+                                        $accidentesFiltrados = array_filter($accidentes, fn($a) => trim($a) !== '');
+                                        if (empty($accidentesFiltrados)): ?>
+                                            <p>Ninguno</p>
+                                        <?php else: ?>
+                                            <?php foreach ($accidentesFiltrados as $accidente): ?>
+                                                <p><?= htmlspecialchars($accidente) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludcampos">
@@ -185,7 +242,7 @@
                                 <div class="saludcampos">
                                     <p class="hs-sep"><i class="acuarela acuarela-Checklist"></i> <span>Sospecha de abuso: </span></p>
                                     <div class="saludcampos-JSON">
-                                        <p><?=$kid->healthinfo->suspected_abuse?></p>
+                                        <p><?= !empty($kid->healthinfo->suspected_abuse) ? $kid->healthinfo->suspected_abuse : 'Ninguna' ?></p>
                                     </div>
                                 </div>
                             </div>
@@ -196,9 +253,16 @@
                                         <p class="ung-btn"><i class="iconung acuarela acuarela-Flecha_arriba"></i></p>
                                     </div>
                                     <div class="unguentoscontent show">
-                                        <?php foreach ($kid->healthinfo->ointments ?? ['Ninguna'] as $unguento): ?>
-                                            <p><?= htmlspecialchars($unguento) ?></p>
-                                        <?php endforeach; ?>
+                                        <?php 
+                                        $unguentos = $kid->healthinfo->ointments ?? [];
+                                        $unguentosFiltrados = array_filter($unguentos, fn($u) => trim($u) !== '');
+                                        if (empty($unguentosFiltrados)): ?>
+                                            <p>Ninguno</p>
+                                        <?php else: ?>
+                                            <?php foreach ($unguentosFiltrados as $ung): ?>
+                                                <p><?= htmlspecialchars($ung) ?></p>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                                 <div class="saludunguentos">
@@ -207,9 +271,9 @@
                                         <p class="ung-btn"><i class="iconung acuarela acuarela-Flecha_arriba"></i></p>
                                     </div>
                                     <div class="unguentoscontent show">
-                                        <p class="hs-sep3"><strong>Doctor: </strong> <?=$kid->healthinfo->pediatrician?>  </p>
-                                        <p class="hs-sep3"><strong>Teléfono: </strong> <?=$kid->healthinfo->pediatrician_number?> </p>
-                                        <p class="hs-sep3"><strong>Correo: </strong> <?=$kid->healthinfo->pediatrician_email?>  </p>
+                                        <p class="hs-sep3"><strong>Doctor: </strong> <?= !empty($kid->healthinfo->pediatrician) ? $kid->healthinfo->pediatrician : 'No agregados' ?> </p>
+                                        <p class="hs-sep3"><strong>Teléfono: </strong> <?= !empty($kid->healthinfo->pediatrician_number) ? $kid->healthinfo->pediatrician_number : 'No agregados' ?> </p>
+                                        <p class="hs-sep3"><strong>Correo: </strong> <?= !empty($kid->healthinfo->pediatrician_email) ? $kid->healthinfo->pediatrician_email : 'No agregados' ?> </p>
                                     </div>
                                 </div>
                             </div>
@@ -228,18 +292,39 @@
                                         <div class="incidentinfo">
                                             <div class="incidentreport">
                                                 <p> Reportado por <?= $incident->reported_for ?> </p>
-                                                <p><i class="acuarela acuarela-Horario"></i> <?= date('H:i', strtotime($incident->reported_enh)) ?> </p>
+                                                <!-- <p><i class="acuarela acuarela-Horario"></i> <?= date('H:i', strtotime($incident->reported_enh)) ?> </p> -->
                                                 <p><i class="acuarela acuarela-Calendario"></i> <?= date('m-d-Y', strtotime($incident->reported_enf)) ?> </p>
                                                 </div>
-                                            <div class="incidentdetails">
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Ayuda"></i> <span>Tipo de incidente </span></span>  <span class="inc-text"> <?= $incident->incident_type ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>  <span class="inc-text"> <?= $incident->description ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span>  <span class="inc-text"> <?= $incident->gravedad ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span>  <span class="inc-text"> <?= $incident->temperature ?> °F </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>  <span class="inc-text"> <?= $incident->statehealth ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span>  <span class="inc-text"> <?= $incident->actions_taken ?> </span> </p>
-                                                <p class="incdet-p"><span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span>  <span class="inc-text"> <?= $incident->actions_expected ?> </span> </p>
-                                            </div>
+                                                <div class="incidentdetails">
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Ayuda"></i> <span>Tipo de incidente </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->incident_type) ? htmlspecialchars($incident->incident_type) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Descripción </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->description) ? htmlspecialchars($incident->description) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Prioridad"></i> <span>Nivel de gravedad </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->gravedad) ? htmlspecialchars($incident->gravedad) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Advertencia"></i> <span>Temperatura </span></span>
+                                                        <span class="inc-text"><?= isset($incident->temperature) && trim($incident->temperature) !== '' ? htmlspecialchars($incident->temperature) . ' °F' : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Salud"></i> <span>Estado de salud </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->statehealth) ? htmlspecialchars($incident->statehealth) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones tomadas </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->actions_taken) ? htmlspecialchars($incident->actions_taken) : 'No registrado' ?></span>
+                                                    </p>
+                                                    <p class="incdet-p">
+                                                        <span class="hs-sep2"><i class="acuarela acuarela-Informacion"></i> <span>Acciones esperadas </span></span>
+                                                        <span class="inc-text"><?= !empty($incident->actions_expected) ? htmlspecialchars($incident->actions_expected) : 'No registrado' ?></span>
+                                                    </p>
+                                                </div>
                                         </div>
                                     </div>
                                 <?php endforeach; ?>
@@ -356,12 +441,22 @@
 </main>
 <?php include "includes/footer.php" ?>
 
+
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         //==> Calendario del HEALTH CHECK
         const calendar = document.querySelector('#calendar tbody');
         const monthSelect = document.querySelector('#month-select');
         const yearSelect = document.querySelector('#year-select');
+
+        const tds = document.querySelectorAll("#calendar td");
+        const btnAddreport = document.getElementById("btnAgregar-reporte");
+        const btnViewreport = document.getElementById("btnView-reporte");
+
+        // Deshabilitar los botones al inicio
+        btnAddreport.disabled = false;
+        btnAddreport.classList.add("active"); 
+        btnViewreport.disabled = true;
 
         const today = new Date();
         let currentYear = today.getFullYear();
@@ -411,14 +506,14 @@
                     if (i === 0 && j < firstDay) {
                         // Días del mes anterior (en gris)
                         const dayNumber = daysInPrevMonth - (firstDay - j - 1);
-                        cell.appendChild(createDayCell(dayNumber, 'prev-month-cell', true));
+                        cell.appendChild(createDayCell(dayNumber, year, month, 'prev-month-cell', true));
                     } else if (date > daysInMonth) {
                         // Días del siguiente mes (en gris, pero solo hasta completar la semana)
-                        cell.appendChild(createDayCell(nextMonthDate, 'next-month-cell', true));
+                        cell.appendChild(createDayCell(nextMonthDate, year, month, 'next-month-cell', true));
                         nextMonthDate++;
                     } else {
                         // Días del mes actual
-                        const dayCell = createDayCell(date);
+                        const dayCell = createDayCell(date, year, month);
                         if (date === today.getDate() && year === today.getFullYear() && month === today.getMonth()) {
                             dayCell.style.backgroundColor = '#0cb5c3'; // Resalta el día actual
                             dayCell.style.color = 'white'; 
@@ -431,10 +526,8 @@
                         date++;
                         hasDays = true;
                     }
-
                     row.appendChild(cell);
                 }
-
                 // Solo agrega la fila si tiene días útiles
                 if (hasDays || i === 0) {
                     calendar.appendChild(row);
@@ -444,15 +537,87 @@
             }
         }
 
+        let fechaSeleccionada = null;
+
+        // Cuando cambias de mes con los <select>, el evento change genera el calendario, pero los <td> nuevos no tienen eventos asignados,
+        function asignarEventosCalendario() {
+            const tds = document.querySelectorAll("#calendar td");
+            tds.forEach(td => {
+                const dayWrapper = td.querySelector(".day-wrapper");
+                if (!dayWrapper) return;
+                const fechaTd = dayWrapper.getAttribute("data-fecha");
+                if (!fechaTd) return;
+
+                const existeFecha = kidData.healthinfo.healthcheck.some(entry => entry.daily_fecha === fechaTd);
+                if (existeFecha) {
+                    td.classList.add("has-data");
+                    td.style.backgroundColor = "var(--fondo2)";
+                }
+
+                td.addEventListener("mouseenter", function () {
+                    if (!this.classList.contains("active")) {
+                        this.style.backgroundColor = "var(--cielo_tenue)";
+                    }
+                });
+
+                td.addEventListener("mouseleave", function () {
+                    if (!this.classList.contains("active")) {
+                        this.style.backgroundColor = this.classList.contains("has-data") ? "#d7f6f9" : "";
+                    }
+                });
+
+                td.addEventListener("click", function () {
+                    tds.forEach(cell => {
+                        cell.classList.remove("active");
+                        if (cell.classList.contains("has-data")) {
+                            cell.style.backgroundColor = "var(--fondo2)";
+                        } else {
+                            cell.style.backgroundColor = "";
+                        }
+                    });
+
+                    this.classList.add("active");
+
+                    if (this.classList.contains("has-data")) {
+                        this.style.backgroundColor = "var(--cielo_tenue)";
+                    } else {
+                        this.style.backgroundColor = "var(--cielo_tenue)";
+                    }
+
+                    const dayWrapper = this.querySelector(".day-wrapper");
+                    if (dayWrapper) {
+                        fechaSeleccionada = dayWrapper.getAttribute("data-fecha");
+                        btnAddreport.setAttribute("data-fecha", fechaSeleccionada);
+                    }
+
+                    const existeFecha = kidData.healthinfo.healthcheck.some(entry => entry.daily_fecha === fechaSeleccionada);
+
+                    btnAddreport.disabled = !existeFecha ? false : true;
+                    btnAddreport.classList.toggle("active", !existeFecha);
+
+                    if (existeFecha) {
+                        btnViewreport.disabled = false;
+                        btnViewreport.classList.add("active");
+                        btnViewreport.setAttribute("data-fecha", fechaSeleccionada);
+                    } else {
+                        btnViewreport.disabled = true;
+                        btnViewreport.classList.remove("active");
+                        btnViewreport.removeAttribute("data-fecha");
+                    }
+                });
+            });
+        }
+
+
         // Función para crear un div con el número del día y los textos "Hola" y "Vamos"
-        function createDayCell(dayNumber, extraClass = '', isGrayed = false) {
+        function createDayCell(dayNumber, year, month, extraClass = '', isGrayed = false) {
             const wrapper = document.createElement('div');
             wrapper.classList.add('day-wrapper');
             if (extraClass) {
                 wrapper.classList.add(extraClass);
             }
             // Formatear la fecha correctamente (YYYY-MM-DD)
-            const formattedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${dayNumber.toString().padStart(2, '0')}`;
+            const formattedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${dayNumber.toString().padStart(2, '0')}`;
             wrapper.setAttribute('data-fecha', formattedDate);
 
             const dayDiv = document.createElement('div');
@@ -477,9 +642,11 @@
                 if (healthReport) {
                     if (healthReport.report === "Ninguno") {
                         pReport.textContent = "OK";
-                    } else {
-                        const reportCode = healthReport.report.split('-')[0]; // Extraer solo la parte antes del guion "-"
+                    } else if (typeof healthReport.report === 'string') {
+                        const reportCode = healthReport.report.split('-')[0];
                         pReport.textContent = reportCode;
+                    } else {
+                        pReport.textContent = "--";
                     }
                 } else {
                     pReport.textContent = "--"; // Si no hay datos, mostrar "--"
@@ -504,112 +671,27 @@
         monthSelect.addEventListener('change', function () {
             currentMonth = parseInt(this.value, 10);
             generateCalendar(currentYear, currentMonth);
+            asignarEventosCalendario();
         });
 
         yearSelect.addEventListener('change', function () {
             currentYear = parseInt(this.value, 10);
             generateCalendar(currentYear, currentMonth);
+            asignarEventosCalendario();
         });
 
         // Generar el calendario inicial
         generateCalendar(currentYear, currentMonth);
+        asignarEventosCalendario();
 
-        const tds = document.querySelectorAll("#calendar td");
-        const btnAddreport = document.getElementById("btnAgregar-reporte");
-        const btnViewreport = document.getElementById("btnView-reporte");
-
-        // Deshabilitar los botones al inicio
-        btnAddreport.disabled = false;
-        btnAddreport.classList.add("active"); 
-        btnViewreport.disabled = true;
-
-        // Pintar de celeste todo los <td> con fechas que existen en kidData
-        tds.forEach(td => {
-            const dayWrapper = td.querySelector(".day-wrapper");
-            if (!dayWrapper) return;
-            const fechaTd = dayWrapper.getAttribute("data-fecha");
-            if (!fechaTd) return;
-            // Verificar si la fecha está en kidData.healthinfo.healthcheck
-            const existeFecha = kidData.healthinfo.healthcheck.some(entry => entry.daily_fecha === fechaTd);
-
-            if (existeFecha) {
-                td.classList.add("has-data"); // Agregar una clase para identificar los td con fecha
-                td.style.backgroundColor = "var(--fondo2)";
-            }
-            // Aplicar hover manualmente
-            td.addEventListener("mouseenter", function () {
-                if (!this.classList.contains("active")) {
-                    this.style.backgroundColor = "var(--cielo_tenue)";
-                }
-            });
-            td.addEventListener("mouseleave", function () {
-                if (!this.classList.contains("active")) {
-                    this.style.backgroundColor = this.classList.contains("has-data") ? "#d7f6f9" : "";
-                }
-            });
-        });
-
-
-        tds.forEach(td => {
-            td.addEventListener("click", function () {
-                // Remover la clase 'active' de todos los td
-                tds.forEach(cell => {
-                    cell.classList.remove("active");
-                    if (cell.classList.contains("has-data")) {
-                        cell.style.backgroundColor = "var(--fondo2)"; // Volver a celeste si tiene datos
-                    } else {
-                        cell.style.backgroundColor = ""; // Restaurar a vacío si no tiene datos
-                    }
-                });
-
-                this.classList.add("active");  // Agregar la clase 'active' al td clickeado
-
-                // Cambiar color solo si tiene datos
-                if (this.classList.contains("has-data")) {
-                    this.style.backgroundColor = "var(--cielo_tenue)"; // Naranja cuando se selecciona
-                } else {
-                    this.style.backgroundColor = "var(--cielo_tenue)"; // Azul claro si no tiene datos
-                }
-
-                // Obtener la fecha del `day-wrapper` dentro del `td`
-                const dayWrapper = this.querySelector(".day-wrapper");
-                let fechaSeleccionada = null;
-                if (dayWrapper) {
-                    fechaSeleccionada = dayWrapper.getAttribute("data-fecha");
-                }
-                
-                // Buscar la fecha en `kidData.healthinfo.healthcheck`
-                const existeFecha = kidData.healthinfo.healthcheck.some(entry => entry.daily_fecha === fechaSeleccionada);
-
-                // Habilitar o deshabilitar los botones según si la fecha existe
-                btnAddreport.disabled = false;
-                btnAddreport.classList.add("active"); 
-                                
-                if (existeFecha) {
-                    btnViewreport.disabled = false;
-                    btnViewreport.classList.add("active"); 
-                    btnViewreport.setAttribute("data-fecha", fechaSeleccionada); // Guardar la fecha en el botón
-                    btnAddreport.disabled = true;
-                    btnAddreport.classList.remove("active"); 
-                } else {
-                    btnViewreport.disabled = true;
-                    btnViewreport.classList.remove("active"); 
-                    btnViewreport.removeAttribute("data-fecha");
-                    btnAddreport.disabled = false;
-                    btnAddreport.classList.add("active"); 
-                    btnAddreport.setAttribute("data-fecha", fechaSeleccionada); // Guardar la fecha en el botón
-                }
-            });
-        });
 
         // Evento para mostrar el Lightbox de agregar reporte
         btnAddreport.addEventListener("click", function () {
             if (!btnAddreport.disabled) {
-                const fechaSeleccionada2 = btnAddreport.getAttribute("data-fecha");
-                if (fechaSeleccionada2) {
-                    showLightboxAddHealthCkeck(fechaSeleccionada2);
+                const fechaSeleccionada = btnAddreport.getAttribute("data-fecha");
+                if (fechaSeleccionada) {
+                    showLightboxAddHealthCkeck(fechaSeleccionada);
                 }
-                showLightboxAddHealthCkeck(fechaSeleccionada2);
             }
         });
 
@@ -622,7 +704,6 @@
                 }
             }
         });
-
     });
 
 </script>
