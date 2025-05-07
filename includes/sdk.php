@@ -214,9 +214,12 @@ class Acuarela {
         }
         return $resp;
     }
-    function getGrupos($id = ""){
+    function getGrupos($id = "", $daycare = null){
+        if (is_null($daycare)) {
+            $daycare = $this->daycareID;
+        }
         if($id == ""){
-            $resp = $this->queryStrapi("groups");
+            $resp = $this->queryStrapi("groupsNew/$daycare");
             $resp = $resp->response;
         }else{
             $resp = $this->queryStrapi("groups/{$id}");
@@ -224,7 +227,11 @@ class Acuarela {
         }
         return $resp;
     }
-    function createGroup($data){
+    function createGroup($data, $daycare = null){
+        if (is_null($daycare)) {
+            $daycare = $this->daycareID;
+        }
+        $data["daycare"] = $daycare;
         $resp = $this->queryStrapi("groups",$data,'POST');
         return $resp;
     }
