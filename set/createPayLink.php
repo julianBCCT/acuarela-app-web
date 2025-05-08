@@ -21,9 +21,10 @@ try {
         "name" => $_POST["name"],
         "status" => true,
         "type" => 2,
-        "daycare" => $_POST["daycare"],
+        "daycare" => $a->daycareID,
         "extra_info" => "",
-        "payer_name" => $_POST["payer_name"]
+        "payer_name" => $_POST["payer_name"],
+        "payer" => $_POST["payer_name"]
     ];
 
     // Call the method to set categories

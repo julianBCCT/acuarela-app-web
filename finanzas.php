@@ -52,6 +52,7 @@ $balance = $ingresosTotal - $gastosTotal;
 ?>
 <main id="Finanzas">
     <?php
+    include "templates/paypalAlert.php";
     $mainHeaderTitle = "Finanzas";
     $action = '';
     include "templates/sectionHeader.php";
@@ -60,7 +61,7 @@ $balance = $ingresosTotal - $gastosTotal;
         <div class="navtab active" data-target="reporte">Reporte contable</div>
         <div class="navtab" data-target="ingresos">Ingresos</div>
         <div class="navtab" data-target="gastos">Gastos</div>
-        <div class="navtab" data-target="pendientes">Pendientes</div>
+        <div class="navtab" data-target="pendientes">Pagos</div>
         <div class="underline"></div>
     </div>
     <div class="content">
@@ -422,15 +423,9 @@ $balance = $ingresosTotal - $gastosTotal;
                             <i class="acuarela acuarela-Usuario"></i>
                             <label for="payer_name">¿Quién realiza el pago?</label>
                             <select name="payer_name" id="payer_name">
-                                <option>Primaria</option>
-                                <option>high school</option>
-                                <option>CDA</option>
-                                <option>Some College</option>
-                                <option>associate degree</option>
-                                <option>Bachelor degree</option>
-                                <option>Master degree</option>
-                                <option>Other</option>
+                                <option value="">Seleccionar un niñx</option>
                             </select>
+                            <input type="hidden" name="payer" id="payer">
                         </span>
                         <span>
                             <i class="acuarela acuarela-Evento"></i>

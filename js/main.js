@@ -5376,9 +5376,6 @@ async function handleAddMovement(event) {
       const result = await paymentLinkResponse.json();
 
       // Mostrar el resultado en la interfaz
-      const linkElement = document.querySelector(".paymentLink");
-      linkElement.innerHTML = result.url;
-      linkElement.href = result.url;
       sendPendingNotification(result.url);
       console.log("Enlace de pago creado:", result);
     } catch (error) {
@@ -5392,9 +5389,46 @@ async function handleAddMovement(event) {
     throw error; // To ensure Promise.all catches this error
   }
 }
+const getChildrenPagos = async () => {
+  try {
+    const response = await fetch(`g/getChildren/`);
+    const res = await response.json();
+    const children = res.response;
+
+    const payerNameSelect = document.querySelector("#payer_name");
+
+    // Limpiar opciones previas por si se ejecuta más de una vez
+    payerNameSelect.innerHTML = "";
+
+    children.forEach((kid) => {
+      const principal = kid.acuarelausers.find((user) => user.is_principal);
+      if (principal) {
+        const option = document.createElement("option");
+        option.value = principal.id;
+        option.dataset.name = principal.name;
+        option.textContent = kid.name;
+        payerNameSelect.appendChild(option);
+      }
+    });
+
+    // Solo un listener, fuera del bucle
+    payerNameSelect.addEventListener("change", (e) => {
+      const selectedOption = e.target.selectedOptions[0];
+      document.querySelector("#payer").value =
+        selectedOption.dataset.name || "";
+    });
+
+    fadeOut(preloader);
+  } catch (error) {
+    console.error("Error fetching children:", error);
+  }
+};
 
 // Pop up crear publicación
 document.addEventListener("DOMContentLoaded", () => {
+  if (document.querySelector("#payer_name")) {
+    getChildrenPagos();
+  }
   // Obtener los elementos del DOM
   const postModal = document.getElementById("postModal");
   const openModalButton = document.getElementById("openModalButton");

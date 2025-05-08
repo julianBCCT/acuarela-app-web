@@ -5,6 +5,7 @@ class Acuarela {
     public $domainWP = "https://application.bilingualchildcaretraining.com/wp-json/wp/v2";
     public $domainWPA = "https://adminwebacuarela.bilingualchildcaretraining.com/wp-json/wp/v2";
     public $daycareID;
+    public $daycareInfo;
     public $userID;
     public $token;
     public $defaultInitialDate;
@@ -14,6 +15,7 @@ class Acuarela {
         $this->userID = $_SESSION["user"]->acuarelauser->id;
         $this->token = $_SESSION["userLogged"]->user->token;
         $this->daycareID = $_SESSION['activeDaycare'];
+        $this->daycareInfo = $this->getDaycareInfo($_SESSION['activeDaycare']);
         // Default initial date
         $this->defaultInitialDate = (new DateTime())
         ->sub(new DateInterval('P7D')) // subtract 7 days
@@ -23,6 +25,11 @@ class Acuarela {
         $this->defaultFinalDate = (new DateTime())
         ->add(new DateInterval('P2D')) // add 2 days
         ->format('Y-m-d');
+    }
+
+    public function setDaycare($id) {
+        $this->daycareID = $id;
+        $this->daycareInfo = $this->getDaycareInfo($id);
     }
     
     function queryStrapi($url, $body = "", $method="GET") {
@@ -202,6 +209,10 @@ class Acuarela {
     function updateChildren($id, $data){
         $resp = $this->queryStrapi("children/{$id}", $data, "PUT");
         return $resp;
+    }
+    function getDaycareInfo($id){
+        $resp = $this->queryStrapi("daycares/{$id}");
+        return $resp->response[0];
     }
     function getAsistentes($id = "", $daycare = null){
         if (is_null($daycare)) {

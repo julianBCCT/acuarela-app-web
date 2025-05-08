@@ -1,4 +1,15 @@
-<?php include "includes/config.php" ?>
+<?php include "includes/config.php";
+$daycares =  $_SESSION["user"]->daycares;
+function findDaycareById($daycares, $id) {
+    foreach ($daycares as $daycare) {
+        if ($daycare->id === $id) {
+            return $daycare;
+        }
+    }
+    return null; // Si no se encuentra
+}
+$foundDaycare = findDaycareById($daycares, $a->daycareID);
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -35,7 +46,6 @@
     let foundDaycare = findDaycareById(daycares, "<?= $a->daycareID ?>");
     document.addEventListener("DOMContentLoaded", function() {
       if (foundDaycare) {
-        document.querySelector('#daycareName').innerText = foundDaycare.name;
         document.querySelector('.logout a').href = `/miembros/daycare/<?= $a->get_alias($_SESSION["user"]->daycares[0]->name) ?>/<?= $a->daycareID ?>`;
       }
     })

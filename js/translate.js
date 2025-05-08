@@ -386,6 +386,11 @@ let words = [
     es: "Vincular publicación a:",
     en: "Link post to:",
   },
+  {
+    id: 196,
+    es: "Cambiar de daycare",
+    en: "Change Daycare",
+  },
 ];
 
 function getTranslateAndReplace() {
