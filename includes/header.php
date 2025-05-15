@@ -6,7 +6,7 @@ $suscripciones = $a->daycareInfo->suscriptions;
 // Crear un array con los IDs de las suscripciones
 $suscripcionIds = [];
 foreach ($suscripciones as $suscripcion) {
-    $suscripcionIds[] = $suscripcion->id;
+    $suscripcionIds[] = $suscripcion->service->id;
 }
 // Pasar los IDs a JavaScript
 echo '<script>';

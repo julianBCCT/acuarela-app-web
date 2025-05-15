@@ -214,6 +214,10 @@ class Acuarela {
         $resp = $this->queryStrapi("daycares/{$id}");
         return $resp->response[0];
     }
+    function updateDaycareInfo($data){
+        $resp = $this->queryStrapi("daycares/{$this->daycareID}", $data, "PUT");
+        return $resp;
+    }
     function getAsistentes($id = "", $daycare = null){
         if (is_null($daycare)) {
             $daycare = $this->daycareID;

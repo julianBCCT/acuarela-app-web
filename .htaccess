@@ -30,6 +30,6 @@ RewriteRule ^grupo/([^/]*)$ grupo.php?activeTab=4&id=$1 [L,QSA]
 RewriteRule ^editar-grupo/([^/]*)$ edit_grupo.php?activeTab=4&id=$1 [L,QSA]
 RewriteRule ^agregar-salud/([^/]*)$ agregar-salud.php?activeTab=2&id=$1 [L,QSA]
 RewriteRule ^agregar-reporte/([^/]*)$ agregar-reporte.php?activeTab=2&id=$1 [L,QSA]
-RewriteRule ^marketplace/([^/]*)$ stripeConfig.php?activeTab=8&stripeid=$1 [L,QSA]
+RewriteRule ^marketplace/([a-zA-Z0-9_-]+)$ stripeConfig.php?activeTab=8&stripeid=$1 [L,QSA]
 
 

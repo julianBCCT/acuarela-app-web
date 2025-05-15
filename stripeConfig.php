@@ -1,5 +1,7 @@
 <?php $classBody = "stripeConfig";
-include "includes/header.php" ?>
+include "includes/header.php";
+$a->updateDaycareInfo(['idStripe'=>$_GET["stripeid"]]);
+?>
 <main>
   <div class="content">
     <img src="img/stripeFinishi.svg" alt="Ilustración de Stripe">

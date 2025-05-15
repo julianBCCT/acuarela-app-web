@@ -1,5 +1,5 @@
 <?php 
- if(!isset($a->daycareInfo->idStripe) && $a->daycareInfo->idStripe == ""){
+ if(!isset($a->daycareInfo->idStripe) || $a->daycareInfo->idStripe == ""){
 
 if($foundSubscription){
 ?>
