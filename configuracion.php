@@ -59,7 +59,7 @@
         <div id="paypal-message" style="display:none;">
           <p
             style="font-size: 21px;line-height: 27px;align-items: center;color: #140A4C;margin-bottom: 15px;text-align: center;font-weight:bold">
-            Tu vinculación a los pagos electrónicos de PayPal está lista
+            Tu vinculación a los pagos electrónicos de Stripe está lista
           </p>
           <p
             style="font-size: 14px;line-height: 22px;align-items: center;color: #140A4C;margin-bottom: 15px;text-align: center;">

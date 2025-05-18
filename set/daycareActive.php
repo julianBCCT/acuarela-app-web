@@ -7,7 +7,10 @@ $a->setDaycare($_GET['daycare']); // Esto actualiza internamente los valores
 
 if (isset($_GET['inscripcion'])) {
     header("Location: /miembros/acuarela-app-web/agregar-ninx");
-} else {
+} else if(isset($_GET['marketplace'])){
+    header("Location: /miembros/acuarela-app-web/marketplaceapp");
+
+}else {
     header("Location: /miembros/acuarela-app-web/");
 }
 exit;
