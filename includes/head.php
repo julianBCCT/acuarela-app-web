@@ -1,4 +1,4 @@
-<?php include "includes/config.php";
+<?php include $_SERVER['DOCUMENT_ROOT'] . "/miembros/acuarela-app-web/includes/config.php";
 $daycares =  $_SESSION["user"]->daycares;
 function findDaycareById($daycares, $id) {
     foreach ($daycares as $daycare) {

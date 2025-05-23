@@ -1,4 +1,4 @@
-<?php include "head.php" ?>
+<?php include $_SERVER['DOCUMENT_ROOT'] . "/miembros/acuarela-app-web/includes/head.php" ?>
 <?php
 
 // Obtener todas las suscripciones del usuario

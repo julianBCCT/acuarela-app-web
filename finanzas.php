@@ -426,6 +426,7 @@ $balance = $ingresosTotal - $gastosTotal;
                                 <option value="">Seleccionar un niñx</option>
                             </select>
                             <input type="hidden" name="payer" id="payer">
+                            <input type="hidden" name="payer_email" id="payer_email">
                         </span>
                         <span>
                             <i class="acuarela acuarela-Evento"></i>

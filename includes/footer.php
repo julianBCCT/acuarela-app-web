@@ -78,7 +78,7 @@
 </div>
 <div class="preloader"><img src="img/preloader.gif" alt="preloader" /></div>
 <div class="mensajeria-content">
-  <?php include "includes/mensajeria.php" ?>
+  <?php include $_SERVER['DOCUMENT_ROOT']."/miembros/acuarela-app-web/includes/mensajeria.php" ?>
 
   <button id="mainButton" class="main-button" title="Mensajería">
     <i id="icono" class="acuarela acuarela-Habla"></i>

@@ -1526,7 +1526,10 @@ function showLightboxFinanzas() {
 function validarSuscripcion() {
   let accesoPermitido = false; // Por defecto, no permitir el acceso
   suscripcionIds.forEach(function (id) {
-    if (id === targetId) {
+    if (
+      id === "66dfcce23f91241d635ae934" ||
+      id === "66df29c33f91241d635ae818"
+    ) {
       accesoPermitido = true; // Si se encuentra el ID, permir el acceso
     }
   });
@@ -4032,8 +4035,9 @@ function mostrarPadres(padres) {
     divPadresInactivos.appendChild(padreElement);
   }
 }
-
-agregarButton.addEventListener("click", divNuevoChat);
+if (agregarButton) {
+  agregarButton.addEventListener("click", divNuevoChat);
+}
 
 async function divNuevoChat() {
   chatButton = document.querySelectorAll(".chat-icon");
@@ -4125,11 +4129,12 @@ async function divNuevoChat() {
 }
 
 // grupoMensajeria.addEventListener("click", divBuscarActivos)
-
-grupoMensajeria.addEventListener("click", () => {
-  // modo = "grupal";
-  divNuevoChatGrupal();
-});
+if (grupoMensajeria) {
+  grupoMensajeria.addEventListener("click", () => {
+    // modo = "grupal";
+    divNuevoChatGrupal();
+  });
+}
 
 let usuariosSeleccionados = [];
 async function divNuevoChatGrupal() {
@@ -4432,12 +4437,14 @@ socket.on(
     }
   }
 );
-
-document.getElementById("closeBuscador").addEventListener("click", () => {
-  buscarMensajeria.click();
-});
-
-buscarMensajeria.addEventListener("click", divBuscarActivos);
+if (document.getElementById("closeBuscador")) {
+  document.getElementById("closeBuscador").addEventListener("click", () => {
+    buscarMensajeria.click();
+  });
+}
+if (buscarMensajeria) {
+  buscarMensajeria.addEventListener("click", divBuscarActivos);
+}
 
 async function divBuscarActivos() {
   chatButton = document.querySelectorAll(".chat-icon");
@@ -4648,13 +4655,14 @@ function mostrarChat(boton) {
 }
 let selectedButton = null;
 const cerrarChat = document.getElementById("closeChat");
-
-cerrarChat.addEventListener("click", () => {
-  const messageInput = document.getElementById("messageInput");
-  messageInput.value = "";
-  mostrarChat(selectedButton);
-  // activosListener();
-});
+if (cerrarChat) {
+  cerrarChat.addEventListener("click", () => {
+    const messageInput = document.getElementById("messageInput");
+    messageInput.value = "";
+    mostrarChat(selectedButton);
+    // activosListener();
+  });
+}
 
 let chatMessages = [];
 let mesesMostrados = [];
@@ -5294,6 +5302,7 @@ function handleAddCategories(event, type) {
       );
     });
 }
+
 function createInvoice() {
   document.querySelector("#addInvoiceForm .content").style.display = "none";
   document.querySelector("#addInvoiceForm .advert").style.display = "block";
@@ -5303,11 +5312,14 @@ function createInvoice() {
   document.querySelector(".advert span.amount").innerHTML = amount;
 }
 const sendPendingNotification = (linkDePago) => {
+  let amount = document.querySelector("#addInvoiceForm #amount").value;
+  let payEm = document.querySelector("#addInvoiceForm #payer_email").value;
   const myHeaders = new Headers();
 
   const formdata = new FormData();
-  formdata.append("email", `dreinovcorp@gmail.com`);
+  formdata.append("email", `${payEm}`);
   formdata.append("link", `${linkDePago}`);
+  formdata.append("amount", `${amount}`);
 
   const requestOptions = {
     method: "POST",
@@ -5406,6 +5418,7 @@ const getChildrenPagos = async () => {
         const option = document.createElement("option");
         option.value = principal.id;
         option.dataset.name = principal.name;
+        option.dataset.email = principal.mail;
         option.textContent = kid.name;
         payerNameSelect.appendChild(option);
       }
@@ -5416,6 +5429,8 @@ const getChildrenPagos = async () => {
       const selectedOption = e.target.selectedOptions[0];
       document.querySelector("#payer").value =
         selectedOption.dataset.name || "";
+      document.querySelector("#payer_email").value =
+        selectedOption.dataset.email || "";
     });
 
     fadeOut(preloader);
@@ -5873,5 +5888,11 @@ if (taskForm) {
     } catch (error) {
       console.error("Error al enviar la tarea:", error);
     }
+  });
+}
+if (document.querySelector("#darkMode")) {
+  document.querySelector("#darkMode").addEventListener("change", () => {
+    console.log("Change DarkMOde");
+    document.body.classList.add("darkMode");
   });
 }

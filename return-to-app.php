@@ -1,8 +1,12 @@
 <?php
+ session_start();
+  include "includes/sdk.php";
+  $a = new Acuarela();
+  $a->updateDaycareInfo(['idStripe'=>$_GET["id"]]);
 $test = isset($_GET['test']);
 $url = $test
-    ? 'exp://192.168.1.4:8081/--/configuration?status=success'
-    : 'com.acuarela.daycares-app://configuration?status=success';
+    ? 'exp://192.168.1.4:8081/--/configuration/pagosSuccess?status=success'
+    : 'com.idt.bogota-app://configuration/pagosSuccess?status=success';
 ?>
 <!DOCTYPE html>
 <html lang="es">
